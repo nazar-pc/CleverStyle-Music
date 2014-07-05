@@ -1,0 +1,22 @@
+{
+	"name"        : "CleverStyle Music",
+	"launch_path" : "/index.html",
+	"description" : "CleverStyle Music",
+	"icons"       : {
+		"128" : "/img/logo-120.png"
+	},
+	"developer"   : {
+		"name" : "Nazar Mokrynskyi",
+		"url"  : "http://cleverstyle.org"
+	},
+	"permissions" : {
+		"device-storage:music" : {
+			"description" : "Music access",
+			"access"      : "readonly"
+		},
+		"storage"              : {
+			"description" : "IndexDB access"
+		}
+	},
+	"type"        : "certified"
+}
