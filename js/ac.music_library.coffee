@@ -43,47 +43,49 @@ do ->
 	library_size		= -1
 	cs.music_library	=
 		add					: (name) ->
-			@.onready ->
-				transaction	= db.transaction(['music'], 'readwrite')
-				store		= transaction.objectStore('music')
-				try
-					store.add(
-						name	: name
-					)
-				catch e
-					#
+			@onready ->
+				db
+					.transaction(['music'], 'readwrite')
+						.objectStore('music')
+							.put(
+								name	: name
+							)
 		get					: (id, callback) ->
-			@.onready ->
+			callback	= callback.bind(@)
+			@onready ->
 				db
 					.transaction(['music'])
 						.objectStore('music')
 							.get(id).onsuccess	= ->
-								result = @.result
+								result = @result
 								if result
 									callback(result)
 		get_all				: (callback, filter) ->
-			@.onready ->
+			callback	= callback.bind(@)
+			filter		= filter || -> true
+			@onready ->
 				all					= []
 				db
 					.transaction(['music'])
 						.objectStore('music')
 							.openCursor().onsuccess	= ->
-								result	= @.result
+								result	= @result
 								if result
-									if !filter || filter(result.value)
+									if filter(result.value)
 										all.push(result.value)
 									result.continue()
 								else
 									callback(all)
 		get_next_id_to_play	: (callback) ->
-			current_playlist = localStorage.getItem('current_playlist')
+			callback			= callback.bind(@)
+			current_playlist	= localStorage.getItem('current_playlist')
 			if current_playlist
 				current_playlist	= JSON.parse(current_playlist)
 				next_item			= current_playlist.pop()
 				localStorage.setItem('current_playlist', JSON.stringify(current_playlist))
 				callback(next_item)
 			else
-				@.get_all (all) ->
+				@get_all (all) ->
 					current_playlist	= []
 					all.forEach (value) ->
 						current_playlist.push(value.id)
@@ -92,12 +94,20 @@ do ->
 					if current_playlist.length
 						localStorage.setItem('current_playlist', JSON.stringify(current_playlist))
 					else
-						@.clean_playlist()
+						@clean_playlist()
 					callback(next_item)
+		del					: (id) ->
+			@onready ->
+				db
+					.transaction(['music'], 'readwrite')
+						.objectStore('music')
+							.delete(id)
 		clean_playlist		: ->
 			localStorage.removeItem('current_playlist')
 		size				: (callback, filter) ->
-			@.onready ->
+			callback	= callback.bind(@)
+			filter		= filter || -> true
+			@onready ->
 				if library_size >= 0 && !filter
 					callback(library_size)
 				calculated_size	= 0
@@ -105,7 +115,7 @@ do ->
 					.transaction(['music'])
 						.objectStore('music')
 							.openCursor().onsuccess	= ->
-								result	= @.result
+								result	= @result
 								if result
 									if !filter || filter(result.value)
 										++calculated_size
@@ -114,7 +124,32 @@ do ->
 									if !filter
 										library_size = calculated_size
 									callback(calculated_size)
+		rescan				: (callback) ->
+			callback	= callback.bind(@)
+			@onready ->
+				new_files		= []
+				remove_old_files	= =>
+					@get_all (all) =>
+						all.forEach (file) =>
+							if file.name not in new_files
+								@del(file.id)
+							return
+						callback()
+				do =>
+					music_storage	= navigator.getDeviceStorage('music')
+					cursor			= music_storage.enumerate()
+					cursor.onsuccess = =>
+						if cursor.result
+							file = cursor.result
+							@add(file.name)
+							new_files.push(file.name)
+							cursor.continue()
+						else
+							remove_old_files()
+					cursor.onerror = ->
+						console.error(@error.name)
 		onready				: (callback) ->
+			callback	= callback.bind(@)
 			if db
 				callback()
 			else

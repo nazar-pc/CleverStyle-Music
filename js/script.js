@@ -12,37 +12,21 @@
 (function() {
 
   $(function() {
-    var music_library, music_storage;
+    var add_player_on_page, music_library, music_storage;
     music_storage = navigator.getDeviceStorage('music');
     music_library = cs.music_library;
-    return music_library.onready(function() {
-      return (function() {
-        var cursor;
-        cursor = music_storage.enumerate();
-        cursor.onsuccess = function() {
-          var file;
-          if (this.result) {
-            file = this.result;
-            music_library.add(file.name);
-            return this["continue"]();
-          } else {
-            music_library.clean_playlist();
-            return music_library.get_next_id_to_play(function(id) {
-              return music_library.get(id, function(item) {
-                return music_storage.get(item.name).onsuccess = function() {
-                  var src;
-                  src = window.URL.createObjectURL(this.result);
-                  return $('body').append("<p>" + item.name + "</p><audio src='" + src + "' controls></audio>");
-                };
-              });
-            });
-          }
-        };
-        return cursor.onerror = function() {
-          return console.error(this.error.name);
-        };
-      })();
-    });
+    add_player_on_page = function() {
+      return music_library.get_next_id_to_play(function(id) {
+        return music_library.get(id, function(item) {
+          return music_storage.get(item.name).onsuccess = function() {
+            var src;
+            src = window.URL.createObjectURL(this.result);
+            return $('body').append("<p>" + item.name + "</p><audio src='" + src + "' controls></audio>");
+          };
+        });
+      });
+    };
+    return add_player_on_page();
   });
 
 }).call(this);

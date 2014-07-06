@@ -10,6 +10,7 @@
 
 
 (function() {
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   if (!window.cs) {
     window.cs = {};
@@ -60,19 +61,13 @@
     return cs.music_library = {
       add: function(name) {
         return this.onready(function() {
-          var store, transaction;
-          transaction = db.transaction(['music'], 'readwrite');
-          store = transaction.objectStore('music');
-          try {
-            return store.add({
-              name: name
-            });
-          } catch (e) {
-
-          }
+          return db.transaction(['music'], 'readwrite').objectStore('music').put({
+            name: name
+          });
         });
       },
       get: function(id, callback) {
+        callback = callback.bind(this);
         return this.onready(function() {
           return db.transaction(['music']).objectStore('music').get(id).onsuccess = function() {
             var result;
@@ -84,6 +79,10 @@
         });
       },
       get_all: function(callback, filter) {
+        callback = callback.bind(this);
+        filter = filter || function() {
+          return true;
+        };
         return this.onready(function() {
           var all;
           all = [];
@@ -91,7 +90,7 @@
             var result;
             result = this.result;
             if (result) {
-              if (!filter || filter(result.value)) {
+              if (filter(result.value)) {
                 all.push(result.value);
               }
               return result["continue"]();
@@ -103,6 +102,7 @@
       },
       get_next_id_to_play: function(callback) {
         var current_playlist, next_item;
+        callback = callback.bind(this);
         current_playlist = localStorage.getItem('current_playlist');
         if (current_playlist) {
           current_playlist = JSON.parse(current_playlist);
@@ -126,10 +126,19 @@
           });
         }
       },
+      del: function(id) {
+        return this.onready(function() {
+          return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id);
+        });
+      },
       clean_playlist: function() {
         return localStorage.removeItem('current_playlist');
       },
       size: function(callback, filter) {
+        callback = callback.bind(this);
+        filter = filter || function() {
+          return true;
+        };
         return this.onready(function() {
           var calculated_size;
           if (library_size >= 0 && !filter) {
@@ -153,7 +162,46 @@
           };
         });
       },
+      rescan: function(callback) {
+        callback = callback.bind(this);
+        return this.onready(function() {
+          var new_files, remove_old_files,
+            _this = this;
+          new_files = [];
+          remove_old_files = function() {
+            return _this.get_all(function(all) {
+              all.forEach(function(file) {
+                var _ref;
+                if (_ref = file.name, __indexOf.call(new_files, _ref) < 0) {
+                  _this.del(file.id);
+                }
+              });
+              return callback();
+            });
+          };
+          return (function() {
+            var cursor, music_storage;
+            music_storage = navigator.getDeviceStorage('music');
+            cursor = music_storage.enumerate();
+            cursor.onsuccess = function() {
+              var file;
+              if (cursor.result) {
+                file = cursor.result;
+                _this.add(file.name);
+                new_files.push(file.name);
+                return cursor["continue"]();
+              } else {
+                return remove_old_files();
+              }
+            };
+            return cursor.onerror = function() {
+              return console.error(this.error.name);
+            };
+          })();
+        });
+      },
       onready: function(callback) {
+        callback = callback.bind(this);
         if (db) {
           callback();
         } else {
