@@ -19,6 +19,12 @@ Polymer(
 		music_library.get_next_id_to_play (id) ->
 			music_library.get(id, (item) ->
 				music_storage.get(item.name).onsuccess = ->
-					AV.Player.fromURL(window.URL.createObjectURL(@result)).play()
+					window.player = AV.Player.fromURL(window.URL.createObjectURL(@result))
+					# Change channel type to play in background
+					player.on('ready', ->
+						console.log 'ready'
+						@device.device.node.context.mozAudioChannelType = 'content'
+					)
+					player.play()
 			)
 )

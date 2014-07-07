@@ -10,12 +10,15 @@
 		"url"  : "http://cleverstyle.org"
 	},
 	"permissions" : {
-		"device-storage:music" : {
-			"description" : "Music access",
+		"device-storage:music"  : {
+			"description" : "Music storage access",
 			"access"      : "readonly"
 		},
-		"storage"              : {
-			"description" : "IndexDB access"
+		"storage"               : {
+			"description" : "IndexDB access to store library and do not rescan whole library on each start"
+		},
+		"audio-channel-content" : {
+			"description" : "Play sound in background"
 		}
 	},
 	"type"        : "certified"
