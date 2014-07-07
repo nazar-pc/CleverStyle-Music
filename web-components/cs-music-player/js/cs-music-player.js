@@ -29,7 +29,6 @@
           return music_storage.get(item.name).onsuccess = function() {
             window.player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
             player.on('ready', function() {
-              console.log('ready');
               return this.device.device.node.context.mozAudioChannelType = 'content';
             });
             return player.play();

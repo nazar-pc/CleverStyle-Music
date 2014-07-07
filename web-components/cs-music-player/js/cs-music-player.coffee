@@ -22,7 +22,6 @@ Polymer(
 					window.player = AV.Player.fromURL(window.URL.createObjectURL(@result))
 					# Change channel type to play in background
 					player.on('ready', ->
-						console.log 'ready'
 						@device.device.node.context.mozAudioChannelType = 'content'
 					)
 					player.play()
