@@ -19,14 +19,12 @@
       return music_library.get_next_id_to_play(function(id) {
         return music_library.get(id, function(item) {
           return music_storage.get(item.name).onsuccess = function() {
-            var src;
-            src = window.URL.createObjectURL(this.result);
-            return $('body').append("<p>" + item.name + "</p><audio src='" + src + "' controls></audio>");
+            return AV.Player.fromURL(window.URL.createObjectURL(this.result)).play();
           };
         });
       });
     };
-    return add_player_on_page();
+    return window.play = add_player_on_page;
   });
 
 }).call(this);

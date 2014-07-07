@@ -1,0 +1,1 @@
+Polymer('cs-music-player');

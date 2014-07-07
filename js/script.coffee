@@ -12,10 +12,10 @@ $ ->
 		music_library.get_next_id_to_play (id) ->
 			music_library.get(id, (item) ->
 				music_storage.get(item.name).onsuccess = ->
-					src = window.URL.createObjectURL(@result)
-					$('body').append("<p>#{item.name}</p><audio src='#{src}' controls></audio>")
+					AV.Player.fromURL(window.URL.createObjectURL(@result)).play()
 			)
-	add_player_on_page()
+	window.play = add_player_on_page
+#	add_player_on_page()
 #	music_library.rescan ->
 #		@clean_playlist()
 #		add_player_on_page()

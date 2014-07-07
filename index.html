@@ -1,7 +1,18 @@
 <!DOCTYPE html>
-<title>CleverStyle Music</title>
-<meta charset="utf-8">
-<script src="js/aa.common.js"></script>
-<script src="js/aa.jquery-2.1.1.min.js"></script>
-<script src="js/ac.music_library.js"></script>
-<script src="js/script.js"></script>
+<head>
+	<title>CleverStyle Music</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="css/normalize.css">
+	<script src="js/aa.platform.hacked-for-firefox-os-without-eval.js"></script>
+	<script src="js/ab.common.js"></script>
+	<script src="js/ab.jquery-2.1.1.min.js"></script>
+	<script src="js/ac.aurora.js"></script>
+	<script src="js/ac.mp3.js"></script>
+	<script src="js/ac.music_library.js"></script>
+	<script src="js/script.js"></script>
+	<link rel="import" href="web-components/polymer/polymer.html">
+	<link rel="import" href="web-components/cs-music-player/cs-music-player.html">
+</head>
+<body unresolved>
+	<cs-music-player></cs-music-player>
+</body>
