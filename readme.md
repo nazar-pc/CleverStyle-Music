@@ -9,12 +9,12 @@ There is almost nothing to see here right now, but, hopefully, soon it will beco
 
 # Install
 
-1) Download and extract content of this repository somewhere on local drive
-2) Mozilla Firefox > Tools > Web Developer > App Manager
-3) Add Packaged App
-4) Choose directory with downloaded files
-5) Start Simulator (If you do not have Firefox OS Simulator extension installed yet - you have to install it)
-6) Click "CleverStyle Music" icon on home screen inside simulator
+* Download and extract content of this repository somewhere on local drive
+* Mozilla Firefox > Tools > Web Developer > App Manager
+* Add Packaged App
+* Choose directory with downloaded files
+* Start Simulator (If you do not have Firefox OS Simulator extension installed yet - you have to install it)
+* Click "CleverStyle Music" icon on home screen inside simulator
 
 # Contribute
 
