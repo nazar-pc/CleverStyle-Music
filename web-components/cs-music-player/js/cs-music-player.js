@@ -27,7 +27,8 @@
       return music_library.get_next_id_to_play(function(id) {
         return music_library.get(id, function(item) {
           return music_storage.get(item.name).onsuccess = function() {
-            window.player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
+            var player;
+            player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
             player.on('ready', function() {
               return this.device.device.node.context.mozAudioChannelType = 'content';
             });

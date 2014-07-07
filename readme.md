@@ -7,4 +7,15 @@ There are some interesting technologies used here, like [Polymer](http://www.pol
 
 There is almost nothing to see here right now, but, hopefully, soon it will become something useful:)
 
+# Install
+
+1) Download and extract content of this repository somewhere on local drive
+2) Mozilla Firefox > Tools > Web Developer > App Manager
+3) Add Packaged App
+4) Choose directory with downloaded files
+5) Start Simulator (If you do not have Firefox OS Simulator extension installed yet - you have to install it)
+6) Click "CleverStyle Music" icon on home screen inside simulator
+
+# Contribute
+
 Feel free to share some ideas for future application in issues, fork and contribute!
