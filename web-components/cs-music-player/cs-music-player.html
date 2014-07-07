@@ -1,6 +1,8 @@
 <polymer-element name="cs-music-player">
 	<template>
 		<link rel="stylesheet" href="css/cs-music-player.css">
+		<button on-tap="{{rescan}}">Rescan library, refresh playlist</button>
+		<button on-tap="{{play}}">Play random track</button>
 	</template>
 	<script src="js/cs-music-player.js"></script>
 </polymer-element>
