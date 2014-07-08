@@ -18,7 +18,9 @@ cs-title {
 
 cs-artist, cs-title {
   display: block;
-  margin: 0; }
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
 
 cs-controls {
   display: block;
