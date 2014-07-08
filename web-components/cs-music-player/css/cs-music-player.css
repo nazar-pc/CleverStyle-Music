@@ -7,9 +7,32 @@
  */
 :host {
   background: url(../img/bg.jpg) no-repeat center center/cover fixed;
+  color: #fff;
   display: block;
   height: 100vh;
+  position: relative;
   width: 100vw; }
 
-h2 {
-  color: #fff; }
+cs-title {
+  font-size: 1.3rem; }
+
+cs-artist, cs-title {
+  display: block;
+  margin: 0; }
+
+cs-controls {
+  display: block;
+  height: 3rem;
+  overflow: hidden;
+  position: absolute;
+  top: calc(100vh - 3rem);
+  width: 100%; }
+  cs-controls cs-control {
+    cursor: pointer;
+    font-size: 1.5rem;
+    text-align: center; }
+    cs-controls cs-control:hover {
+      text-shadow: 0 0 2px #fff; }
+
+button {
+  color: #000; }

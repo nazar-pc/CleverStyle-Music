@@ -10,14 +10,17 @@
 
 
 (function() {
-  var music_library, music_storage;
+  var music_library, music_storage, player;
 
   music_storage = navigator.getDeviceStorage('music');
 
   music_library = cs.music_library;
 
+  player = null;
+
   Polymer('cs-music-player', {
-    header: '',
+    title: 'Unknown',
+    artist: 'Unknown',
     rescan: function() {
       return music_library.rescan(function() {
         this.clean_playlist();
@@ -25,27 +28,49 @@
       });
     },
     play: function() {
-      var root;
-      root = this;
-      return music_library.get_next_id_to_play(function(id) {
-        return music_library.get(id, function(data) {
-          return music_storage.get(data.name).onsuccess = function() {
-            var player;
-            player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
-            player.on('ready', function() {
-              return this.device.device.node.context.mozAudioChannelType = 'content';
-            });
-            player.play();
-            return music_library.get_meta(id, function(data) {
-              if (data) {
-                return root.header = "" + data.title + " - " + data.artist;
-              } else {
-                return root.header = '';
-              }
-            });
-          };
+      var element, play_button;
+      element = this;
+      play_button = element.shadowRoot.querySelector('[icon=play]');
+      if (player) {
+        if (player.playing) {
+          player.pause();
+          return play_button.icon = 'play';
+        } else {
+          player.play();
+          return play_button.icon = 'pause';
+        }
+      } else {
+        return music_library.get_next_id_to_play(function(id) {
+          return music_library.get(id, function(data) {
+            return music_storage.get(data.name).onsuccess = function() {
+              player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
+              player.on('ready', function() {
+                return this.device.device.node.context.mozAudioChannelType = 'content';
+              });
+              player.play();
+              play_button.icon = 'pause';
+              return music_library.get_meta(id, function(data) {
+                if (data) {
+                  element.title = data.title || 'Unknown';
+                  element.artist = data.artist || 'Unknown';
+                  if (data.album) {
+                    return element.artist += ": " + data.album;
+                  }
+                } else {
+                  element.title = 'Unknown';
+                  return element.artist = 'Unknown';
+                }
+              });
+            };
+          });
         });
-      });
+      }
+    },
+    prev: function() {
+      return alert('No implemented yet');
+    },
+    next: function() {
+      return alert('No implemented yet');
     }
   });
 

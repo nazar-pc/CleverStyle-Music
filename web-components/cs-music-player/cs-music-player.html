@@ -1,9 +1,19 @@
 <polymer-element name="cs-music-player">
 	<template>
 		<link rel="stylesheet" href="css/cs-music-player.css">
-		<h2>{{header}}</h2>
+		<cs-title>{{title}}</cs-title>
+		<cs-artist>{{artist}}</cs-artist>
 		<button on-tap="{{rescan}}">Rescan library, refresh playlist</button>
-		<button on-tap="{{play}}">Play random track</button>
+		<cs-controls horizontal layout center>
+			<cs-control flex icon="step-backward" on-tap="{{prev}}"></cs-control>
+			<cs-control flex icon="play" on-tap="{{play}}"></cs-control>
+			<cs-control flex icon="step-forward" on-tap="{{next}}"></cs-control>
+		</cs-controls>
 	</template>
 	<script src="js/cs-music-player.js"></script>
+</polymer-element>
+<polymer-element name="cs-control" attributes="icon" noscript>
+	<template>
+		<i class="fa fa-{{icon}}"></i>
+	</template>
 </polymer-element>
