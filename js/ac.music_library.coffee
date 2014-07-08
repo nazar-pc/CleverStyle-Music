@@ -95,6 +95,7 @@ do ->
 													insert_meta
 													title	: metadata.title || ''
 													artist	: metadata.artist || ''
+													album	: metadata.album || ''
 													genre	: genre || ''
 													year	: metadata.year || metadata.recordingTime || ''
 												)
