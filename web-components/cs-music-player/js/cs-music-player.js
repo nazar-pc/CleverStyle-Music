@@ -17,6 +17,7 @@
   music_library = cs.music_library;
 
   Polymer('cs-music-player', {
+    header: '',
     rescan: function() {
       return music_library.rescan(function() {
         this.clean_playlist();
@@ -24,15 +25,24 @@
       });
     },
     play: function() {
+      var root;
+      root = this;
       return music_library.get_next_id_to_play(function(id) {
-        return music_library.get(id, function(item) {
-          return music_storage.get(item.name).onsuccess = function() {
+        return music_library.get(id, function(data) {
+          return music_storage.get(data.name).onsuccess = function() {
             var player;
             player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
             player.on('ready', function() {
               return this.device.device.node.context.mozAudioChannelType = 'content';
             });
-            return player.play();
+            player.play();
+            return music_library.get_meta(id, function(data) {
+              if (data) {
+                return root.header = "" + data.title + " - " + data.artist;
+              } else {
+                return root.header = '';
+              }
+            });
           };
         });
       });

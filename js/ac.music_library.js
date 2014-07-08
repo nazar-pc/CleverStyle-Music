@@ -17,13 +17,14 @@
   }
 
   (function() {
-    var db, library_size, on_db_ready, request;
+    var db, genres_list, library_size, music_storage, on_db_ready, request;
     if (!window.indexedDB) {
       alert("Indexed DB is not supported O_o");
       return;
     }
     db = null;
     on_db_ready = [];
+    music_storage = navigator.getDeviceStorage('music');
     request = indexedDB.open('music_db', 1);
     request.onsuccess = function() {
       var callback;
@@ -36,18 +37,26 @@
       console.error(e);
     };
     request.onupgradeneeded = function() {
-      var store;
+      var meta_store, music_store;
       db = request.result;
       if (db.objectStoreNames.contains('music')) {
         db.deleteObjectStore('music');
       }
-      store = db.createObjectStore('music', {
+      music_store = db.createObjectStore('music', {
         keyPath: 'id',
         autoIncrement: true
       });
-      store.createIndex('name', 'name', {
+      music_store.createIndex('name', 'name', {
         unique: true
       });
+      meta_store = db.createObjectStore('meta', {
+        keyPath: 'id'
+      });
+      meta_store.createIndex('title', 'title');
+      meta_store.createIndex('artist', 'artist');
+      meta_store.createIndex('album', 'album');
+      meta_store.createIndex('genre', 'genre');
+      meta_store.createIndex('year', 'year');
       db.transaction.oncomplete = function() {
         var callback, _results;
         _results = [];
@@ -58,16 +67,72 @@
       };
     };
     library_size = -1;
-    return cs.music_library = {
-      add: function(name) {
+    cs.music_library = {
+      add: function(name, callback) {
+        callback = (callback || function() {}).bind(this);
         return this.onready(function() {
           return db.transaction(['music'], 'readwrite').objectStore('music').put({
             name: name
-          });
+          }).onsuccess = callback;
         });
       },
+      parse_metadata: function(name, callback) {
+        callback = (callback || function() {}).bind(this);
+        return db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess = function() {
+          var data;
+          if (this.result) {
+            data = this.result;
+            return music_storage.get(data.name).onsuccess = function() {
+              var asset, duration_loaded, insert_meta, metadata_loaded, proceed_insertion;
+              if (this.result) {
+                insert_meta = {
+                  id: data.id
+                };
+                metadata_loaded = false;
+                duration_loaded = false;
+                proceed_insertion = function() {
+                  return db.transaction(['meta'], 'readwrite').objectStore('meta').put(insert_meta).onsuccess = function() {
+                    return callback();
+                  };
+                };
+                asset = AV.Asset.fromURL(window.URL.createObjectURL(this.result));
+                asset.get('metadata', function(metadata) {
+                  var genre;
+                  if (!metadata) {
+                    return;
+                  }
+                  genre = metadata.genre || '';
+                  genre = new String(genre).replace(/^\(?([0-9]+)\)?$/, function(match, genre_index) {
+                    return genres_list[parseInt(genre_index)];
+                  });
+                  $.extend(insert_meta, {
+                    title: metadata.title || '',
+                    artist: metadata.artist || '',
+                    genre: genre || '',
+                    year: metadata.year || metadata.recordingTime || ''
+                  });
+                  if (duration_loaded) {
+                    return proceed_insertion();
+                  } else {
+                    return metadata_loaded = true;
+                  }
+                });
+                return asset.get('duration', function(duration) {
+                  duration = duration || 0;
+                  insert_meta.duration = Math.floor(duration / 1000);
+                  if (metadata_loaded) {
+                    return proceed_insertion();
+                  } else {
+                    return duration_loaded = true;
+                  }
+                });
+              }
+            };
+          }
+        };
+      },
       get: function(id, callback) {
-        callback = callback.bind(this);
+        callback = (callback || function() {}).bind(this);
         return this.onready(function() {
           return db.transaction(['music']).objectStore('music').get(id).onsuccess = function() {
             var result;
@@ -78,8 +143,20 @@
           };
         });
       },
+      get_meta: function(id, callback) {
+        callback = (callback || function() {}).bind(this);
+        return this.onready(function() {
+          return db.transaction(['meta']).objectStore('meta').get(id).onsuccess = function() {
+            var result;
+            result = this.result;
+            if (result) {
+              return callback(result);
+            }
+          };
+        });
+      },
       get_all: function(callback, filter) {
-        callback = callback.bind(this);
+        callback = (callback || function() {}).bind(this);
         filter = filter || function() {
           return true;
         };
@@ -102,7 +179,7 @@
       },
       get_next_id_to_play: function(callback) {
         var current_playlist, next_item;
-        callback = callback.bind(this);
+        callback = (callback || function() {}).bind(this);
         current_playlist = localStorage.getItem('current_playlist');
         if (current_playlist) {
           current_playlist = JSON.parse(current_playlist);
@@ -128,14 +205,16 @@
       },
       del: function(id) {
         return this.onready(function() {
-          return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id);
+          return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id).onsuccess = function() {
+            return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id);
+          };
         });
       },
       clean_playlist: function() {
         return localStorage.removeItem('current_playlist');
       },
       size: function(callback, filter) {
-        callback = callback.bind(this);
+        callback = (callback || function() {}).bind(this);
         filter = filter || function() {
           return true;
         };
@@ -162,8 +241,8 @@
           };
         });
       },
-      rescan: function(callback) {
-        callback = callback.bind(this);
+      rescan: function(done_callback) {
+        done_callback = (done_callback || function() {}).bind(this);
         return this.onready(function() {
           var new_files, remove_old_files,
             _this = this;
@@ -176,20 +255,30 @@
                   _this.del(file.id);
                 }
               });
-              return callback();
+              return done_callback();
             });
           };
           return (function() {
-            var cursor, music_storage;
+            var cursor;
             music_storage = navigator.getDeviceStorage('music');
             cursor = music_storage.enumerate();
             cursor.onsuccess = function() {
               var file;
               if (cursor.result) {
                 file = cursor.result;
-                _this.add(file.name);
-                new_files.push(file.name);
-                return cursor["continue"]();
+                return db.transaction(['music']).objectStore('music').index('name').get(file.name).onsuccess = function(e) {
+                  if (!e.target.result) {
+                    return _this.add(file.name, function() {
+                      return this.parse_metadata(file.name, function() {
+                        new_files.push(file.name);
+                        return cursor["continue"]();
+                      });
+                    });
+                  } else {
+                    new_files.push(file.name);
+                    return cursor["continue"]();
+                  }
+                };
               } else {
                 return remove_old_files();
               }
@@ -201,7 +290,7 @@
         });
       },
       onready: function(callback) {
-        callback = callback.bind(this);
+        callback = (callback || function() {}).bind(this);
         if (db) {
           callback();
         } else {
@@ -209,6 +298,7 @@
         }
       }
     };
+    return genres_list = ['Blues', 'Classic Rock', 'Country', 'Dance', 'Disco', 'Funk', 'Grunge', 'Hip-Hop', 'Jazz', 'Metal', 'New Age', 'Oldies', 'Other', 'Pop', 'R&B', 'Rap', 'Reggae', 'Rock', 'Techno', 'Industrial', 'Alternative', 'Ska', 'Death Metal', 'Pranks', 'Soundtrack', 'Euro-Techno', 'Ambient', 'Trip-Hop', 'Vocal', 'Jazz+Funk', 'Fusion', 'Trance', 'Classical', 'Instrumental', 'Acid', 'House', 'Game', 'Sound Clip', 'Gospel', 'Noise', 'AlternRock', 'Bass', 'Soul', 'Punk', 'Space', 'Meditative', 'Instrumental Pop', 'Instrumental Rock', 'Ethnic', 'Gothic', 'Darkwave', 'Techno-Industrial', 'Electronic', 'Pop-Folk', 'Eurodance', 'Dream', 'Southern Rock', 'Comedy', 'Cult', 'Gangsta Rap', 'Top 40', 'Christian Rap', 'Pop / Funk', 'Jungle', 'Native American', 'Cabaret', 'New Wave', 'Psychedelic', 'Rave', 'Showtunes', 'Trailer', 'Lo-Fi', 'Tribal', 'Acid Punk', 'Acid Jazz', 'Polka', 'Retro', 'Musical', 'Rock & Roll', 'Hard Rock', 'Folk', 'Folk-Rock', 'National Folk', 'Swing', 'Fast Fusion', 'Bebob', 'Latin', 'Revival', 'Celtic', 'Bluegrass', 'Avantgarde', 'Gothic Rock', 'Progressive Rock', 'Psychedelic Rock', 'Symphonic Rock', 'Slow Rock', 'Big Band', 'Chorus', 'Easy Listening', 'Acoustic', 'Humour', 'Speech', 'Chanson', 'Opera', 'Chamber Music', 'Sonata', 'Symphony', 'Booty Bass', 'Primus', 'Porn Groove', 'Satire', 'Slow Jam', 'Club', 'Tango', 'Samba', 'Folklore', 'Ballad', 'Power Ballad', 'Rhythmic Soul', 'Freestyle', 'Duet', 'Punk Rock', 'Drum Solo', 'A Cappella', 'Euro-House', 'Dance Hall', 'Goa', 'Drum & Bass', 'Club-House', 'Hardcore', 'Terror', 'Indie', 'BritPop', 'Negerpunk', 'Polsk Punk', 'Beat', 'Christian Gangsta Rap', 'Heavy Metal', 'Black Metal', 'Crossover', 'Contemporary Christian', 'Christian Rock', 'Merengue', 'Salsa', 'Thrash Metal', 'Anime', 'JPop', 'Synthpop', 'Abstract', 'Art Rock', 'Baroque', 'Bhangra', 'Big Beat', 'Breakbeat', 'Chillout', 'Downtempo', 'Dub', 'EBM', 'Eclectic', 'Electro', 'Electroclash', 'Emo', 'Experimental', 'Garage', 'Global', 'IDM', 'Illbient', 'Industro-Goth', 'Jam Band', 'Krautrock', 'Leftfield', 'Lounge', 'Math Rock', 'New Romantic', 'Nu-Breakz', 'Post-Punk', 'Post-Rock', 'Psytrance', 'Shoegaze', 'Space Rock', 'Trop Rock', 'World Music', 'Neoclassical', 'Audiobook', 'Audio Theatre', 'Neue Deutsche Welle', 'Podcast', 'Indie Rock', 'G-Funk', 'Dubstep', 'Garage Rock', 'Psybient'];
   })();
 
 }).call(this);
