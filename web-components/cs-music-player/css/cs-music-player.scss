@@ -15,16 +15,29 @@
 	width      : 100vw;
 }
 
-cs-title {
-	@extend cs-artist;
-	font-size : 1.3rem;
-}
-
 cs-artist {
 	display       : block;
+	height        : 1.2rem;
+	line-height   : 1.2rem;
 	overflow      : hidden;
 	text-overflow : ellipsis;
 	white-space   : nowrap;
+}
+
+cs-title {
+	@extend cs-artist;
+	font-size   : 1.3rem;
+	height      : 1.8rem;
+	line-height : 1.8rem;
+}
+
+cs-cover {
+	background : url(../img/bg.jpg) no-repeat center center / contain;
+	height     : calc(100vh - 8rem);
+	left       : 2rem;
+	position   : absolute;
+	top        : 4rem;
+	width      : calc(100vw - 4rem);
 }
 
 cs-controls {

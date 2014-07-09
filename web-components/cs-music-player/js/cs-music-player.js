@@ -23,6 +23,13 @@
   Polymer('cs-music-player', {
     title: 'Unknown',
     artist: 'Unknown',
+    ready: function() {
+      return new Blur({
+        el: this,
+        path: '/web-components/cs-music-player/img/bg.jpg',
+        radius: 10
+      });
+    },
     rescan: function() {
       return music_library.rescan(function() {
         music_playlist.refresh();
@@ -51,10 +58,19 @@
             }
             player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
             player.on('ready', function() {
-              var cover, _ref, _ref1;
-              this.device.device.node.context.mozAudioChannelType = 'content';
-              cover = (_ref = player.asset.metadata.coverArt) != null ? _ref.toBlobURL() : void 0;
-              return element.style.backgroundImage = ((_ref1 = player.asset.metadata.coverArt) != null ? _ref1.toBlobURL() : void 0) ? "url(" + cover : '';
+              var _this = this;
+              return setTimeout((function() {
+                var cover, _ref;
+                cover = ((_ref = player.asset.metadata.coverArt) != null ? _ref.toBlobURL() : void 0) || '/web-components/cs-music-player/img/bg.jpg';
+                _this.device.device.node.context.mozAudioChannelType = 'content';
+                element.style.backgroundImage = "url(" + cover;
+                element.shadowRoot.querySelector('cs-cover').style.backgroundImage = "url(" + cover;
+                return new Blur({
+                  el: element,
+                  path: cover,
+                  radius: 10
+                });
+              }), 0);
             });
             player.on('end', function() {
               return element.next();

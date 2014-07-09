@@ -15,6 +15,12 @@ Polymer(
 	'cs-music-player',
 	title	: 'Unknown'
 	artist	: 'Unknown'
+	ready	: ->
+		new Blur(
+			el			: @
+			path		: '/web-components/cs-music-player/img/bg.jpg'
+			radius		: 10
+		)
 	rescan	: ->
 		music_library.rescan ->
 			music_playlist.refresh()
@@ -37,9 +43,17 @@ Polymer(
 					player = AV.Player.fromURL(window.URL.createObjectURL(@result))
 					# Change channel type to play in background
 					player.on('ready', ->
-						@device.device.node.context.mozAudioChannelType = 'content'
-						cover	= player.asset.metadata.coverArt?.toBlobURL()
-						element.style.backgroundImage = if player.asset.metadata.coverArt?.toBlobURL() then "url(#{cover}" else ''
+						setTimeout (=>
+							cover	= player.asset.metadata.coverArt?.toBlobURL() || '/web-components/cs-music-player/img/bg.jpg'
+							@device.device.node.context.mozAudioChannelType						= 'content'
+							element.style.backgroundImage										= "url(#{cover}"
+							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= "url(#{cover}"
+							new Blur(
+								el			: element
+								path		: cover
+								radius		: 10
+							)
+						), 0
 					)
 					# Next track after end of current
 					player.on('end', ->
