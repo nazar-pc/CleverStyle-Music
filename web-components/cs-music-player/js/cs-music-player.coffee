@@ -38,6 +38,8 @@ Polymer(
 					# Change channel type to play in background
 					player.on('ready', ->
 						@device.device.node.context.mozAudioChannelType = 'content'
+						cover	= player.asset.metadata.coverArt?.toBlobURL()
+						element.style.backgroundImage = if player.asset.metadata.coverArt?.toBlobURL() then "url(#{cover}" else ''
 					)
 					# Next track after end of current
 					player.on('end', ->

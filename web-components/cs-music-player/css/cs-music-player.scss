@@ -28,12 +28,13 @@ cs-artist {
 }
 
 cs-controls {
-	display  : block;
-	height   : 3rem;
-	overflow : hidden;
-	position : absolute;
-	top      : calc(100vh - 3rem);
-	width    : 100%;
+	background : rgba(0, 0, 0, 0.3);
+	display    : block;
+	height     : 3rem;
+	overflow   : hidden;
+	position   : absolute;
+	top        : calc(100vh - 3rem);
+	width      : 100%;
 
 	cs-control {
 		cursor     : pointer;

@@ -23,6 +23,7 @@ cs-artist, cs-title {
   white-space: nowrap; }
 
 cs-controls {
+  background: rgba(0, 0, 0, 0.3);
   display: block;
   height: 3rem;
   overflow: hidden;

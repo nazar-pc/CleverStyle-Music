@@ -51,7 +51,10 @@
             }
             player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
             player.on('ready', function() {
-              return this.device.device.node.context.mozAudioChannelType = 'content';
+              var cover, _ref, _ref1;
+              this.device.device.node.context.mozAudioChannelType = 'content';
+              cover = (_ref = player.asset.metadata.coverArt) != null ? _ref.toBlobURL() : void 0;
+              return element.style.backgroundImage = ((_ref1 = player.asset.metadata.coverArt) != null ? _ref1.toBlobURL() : void 0) ? "url(" + cover : '';
             });
             player.on('end', function() {
               return element.next();
