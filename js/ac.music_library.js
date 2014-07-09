@@ -12,10 +12,6 @@
 (function() {
   var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  if (!window.cs) {
-    window.cs = {};
-  }
-
   (function() {
     var db, genres_list, library_size, music_storage, on_db_ready, request;
     if (!window.indexedDB) {
@@ -83,20 +79,10 @@
           if (this.result) {
             data = this.result;
             return music_storage.get(data.name).onsuccess = function() {
-              var asset, duration_loaded, insert_meta, metadata_loaded, proceed_insertion;
+              var asset;
               if (this.result) {
-                insert_meta = {
-                  id: data.id
-                };
-                metadata_loaded = false;
-                duration_loaded = false;
-                proceed_insertion = function() {
-                  return db.transaction(['meta'], 'readwrite').objectStore('meta').put(insert_meta).onsuccess = function() {
-                    return callback();
-                  };
-                };
                 asset = AV.Asset.fromURL(window.URL.createObjectURL(this.result));
-                asset.get('metadata', function(metadata) {
+                return asset.get('metadata', function(metadata) {
                   var genre;
                   if (!metadata) {
                     return;
@@ -105,27 +91,16 @@
                   genre = new String(genre).replace(/^\(?([0-9]+)\)?$/, function(match, genre_index) {
                     return genres_list[parseInt(genre_index)];
                   });
-                  $.extend(insert_meta, {
+                  return db.transaction(['meta'], 'readwrite').objectStore('meta').put({
+                    id: data.id,
                     title: metadata.title || '',
                     artist: metadata.artist || '',
                     album: metadata.album || '',
                     genre: genre || '',
                     year: metadata.year || metadata.recordingTime || ''
-                  });
-                  if (duration_loaded) {
-                    return proceed_insertion();
-                  } else {
-                    return metadata_loaded = true;
-                  }
-                });
-                return asset.get('duration', function(duration) {
-                  duration = duration || 0;
-                  insert_meta.duration = Math.floor(duration / 1000);
-                  if (metadata_loaded) {
-                    return proceed_insertion();
-                  } else {
-                    return duration_loaded = true;
-                  }
+                  }).onsuccess = function() {
+                    return callback();
+                  };
                 });
               }
             };
@@ -178,41 +153,12 @@
           };
         });
       },
-      get_next_id_to_play: function(callback) {
-        var current_playlist, next_item;
-        callback = (callback || function() {}).bind(this);
-        current_playlist = localStorage.getItem('current_playlist');
-        if (current_playlist) {
-          current_playlist = JSON.parse(current_playlist);
-          next_item = current_playlist.pop();
-          localStorage.setItem('current_playlist', JSON.stringify(current_playlist));
-          return callback(next_item);
-        } else {
-          return this.get_all(function(all) {
-            current_playlist = [];
-            all.forEach(function(value) {
-              return current_playlist.push(value.id);
-            });
-            current_playlist.shuffle();
-            next_item = current_playlist.pop();
-            if (current_playlist.length) {
-              localStorage.setItem('current_playlist', JSON.stringify(current_playlist));
-            } else {
-              this.clean_playlist();
-            }
-            return callback(next_item);
-          });
-        }
-      },
       del: function(id) {
         return this.onready(function() {
           return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id).onsuccess = function() {
             return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id);
           };
         });
-      },
-      clean_playlist: function() {
-        return localStorage.removeItem('current_playlist');
       },
       size: function(callback, filter) {
         callback = (callback || function() {}).bind(this);

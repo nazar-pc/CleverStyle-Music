@@ -10,11 +10,13 @@
 
 
 (function() {
-  var music_library, music_storage, player;
+  var music_library, music_playlist, music_storage, player;
 
   music_storage = navigator.getDeviceStorage('music');
 
   music_library = cs.music_library;
+
+  music_playlist = cs.music_playlist;
 
   player = null;
 
@@ -23,15 +25,17 @@
     artist: 'Unknown',
     rescan: function() {
       return music_library.rescan(function() {
-        this.clean_playlist();
+        music_playlist.refresh();
         return alert('Rescanned successfully, playlist refreshed');
       });
     },
-    play: function() {
-      var element, play_button;
+    play: function(id) {
+      var element, play_button,
+        _this = this;
+      id = !isNaN(parseInt(id)) ? id : void 0;
       element = this;
       play_button = element.shadowRoot.querySelector('[icon=play]');
-      if (player) {
+      if (player && !id) {
         if (player.playing) {
           player.pause();
           return play_button.icon = 'play';
@@ -39,38 +43,52 @@
           player.play();
           return play_button.icon = 'pause';
         }
-      } else {
-        return music_library.get_next_id_to_play(function(id) {
-          return music_library.get(id, function(data) {
-            return music_storage.get(data.name).onsuccess = function() {
-              player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
-              player.on('ready', function() {
-                return this.device.device.node.context.mozAudioChannelType = 'content';
-              });
-              player.play();
-              play_button.icon = 'pause';
-              return music_library.get_meta(id, function(data) {
-                if (data) {
-                  element.title = data.title || 'Unknown';
-                  element.artist = data.artist || 'Unknown';
-                  if (data.album) {
-                    return element.artist += ": " + data.album;
-                  }
-                } else {
-                  element.title = 'Unknown';
-                  return element.artist = 'Unknown';
+      } else if (id) {
+        return music_library.get(id, function(data) {
+          return music_storage.get(data.name).onsuccess = function() {
+            if (player != null) {
+              player.stop();
+            }
+            player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
+            player.on('ready', function() {
+              return this.device.device.node.context.mozAudioChannelType = 'content';
+            });
+            player.on('end', function() {
+              return element.next();
+            });
+            player.play();
+            play_button.icon = 'pause';
+            return music_library.get_meta(id, function(data) {
+              if (data) {
+                element.title = data.title || 'Unknown';
+                element.artist = data.artist || 'Unknown';
+                if (data.album) {
+                  return element.artist += ": " + data.album;
                 }
-              });
-            };
-          });
+              } else {
+                element.title = 'Unknown';
+                return element.artist = 'Unknown';
+              }
+            });
+          };
+        });
+      } else {
+        return music_playlist.current(function(id) {
+          return _this.play(id);
         });
       }
     },
     prev: function() {
-      return alert('No implemented yet');
+      var _this = this;
+      return music_playlist.prev(function(id) {
+        return _this.play(id);
+      });
     },
     next: function() {
-      return alert('No implemented yet');
+      var _this = this;
+      return music_playlist.next(function(id) {
+        return _this.play(id);
+      });
     }
   });
 

@@ -9,6 +9,8 @@
  * Randomize array element order in-place.
  * Using Fisher-Yates shuffle algorithm.
 ###
+if !window.cs
+	window.cs = {}
 Array::shuffle = ->
 	for i in [(@.length - 1) .. 1]
 		j = Math.floor(Math.random() * (i + 1))

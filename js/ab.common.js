@@ -17,6 +17,10 @@
 
 (function() {
 
+  if (!window.cs) {
+    window.cs = {};
+  }
+
   Array.prototype.shuffle = function() {
     var i, j, _i, _ref, _ref1;
     for (i = _i = _ref = this.length - 1; _ref <= 1 ? _i <= 1 : _i >= 1; i = _ref <= 1 ? ++_i : --_i) {

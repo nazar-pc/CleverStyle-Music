@@ -5,8 +5,6 @@
  * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
  * @license     MIT License, see license.txt
 ###
-if !window.cs
-	window.cs = {}
 do ->
 	if !window.indexedDB
 		alert "Indexed DB is not supported O_o"
@@ -52,7 +50,7 @@ do ->
 		return
 	library_size		= -1
 	cs.music_library	=
-		add					: (name, callback) ->
+		add				: (name, callback) ->
 			callback	= (callback || ->).bind(@)
 			@onready ->
 				db
@@ -62,7 +60,7 @@ do ->
 								name	: name
 							)
 							.onsuccess = callback
-		parse_metadata		: (name, callback) ->
+		parse_metadata	: (name, callback) ->
 			callback	= (callback || ->).bind(@)
 			db
 				.transaction(['music'])
@@ -73,17 +71,7 @@ do ->
 									data	= @result
 									music_storage.get(data.name).onsuccess = ->
 										if @result
-											insert_meta			= {id : data.id}
-											metadata_loaded		= false
-											duration_loaded		= false
-											proceed_insertion	= ->
-												db
-													.transaction(['meta'], 'readwrite')
-														.objectStore('meta')
-															.put(insert_meta)
-															.onsuccess = ->
-																callback()
-											asset				= AV.Asset.fromURL(window.URL.createObjectURL(@result))
+											asset	= AV.Asset.fromURL(window.URL.createObjectURL(@result))
 											asset.get('metadata', (metadata) ->
 												if !metadata
 													return
@@ -91,28 +79,21 @@ do ->
 												genre	= new String(genre).replace(/^\(?([0-9]+)\)?$/, (match, genre_index) ->
 													return genres_list[parseInt(genre_index)]
 												)
-												$.extend(
-													insert_meta
-													title	: metadata.title || ''
-													artist	: metadata.artist || ''
-													album	: metadata.album || ''
-													genre	: genre || ''
-													year	: metadata.year || metadata.recordingTime || ''
-												)
-												if duration_loaded
-													proceed_insertion()
-												else
-													metadata_loaded	= true
+												db
+													.transaction(['meta'], 'readwrite')
+														.objectStore('meta')
+															.put(
+																id		: data.id
+																title	: metadata.title || ''
+																artist	: metadata.artist || ''
+																album	: metadata.album || ''
+																genre	: genre || ''
+																year	: metadata.year || metadata.recordingTime || ''
+															)
+															.onsuccess = ->
+																callback()
 											)
-											asset.get('duration', (duration) ->
-												duration				= duration || 0
-												insert_meta.duration	= Math.floor(duration / 1000)
-												if metadata_loaded
-													proceed_insertion()
-												else
-													duration_loaded	= true
-											)
-		get					: (id, callback) ->
+		get				: (id, callback) ->
 			callback	= (callback || ->).bind(@)
 			@onready ->
 				db
@@ -122,7 +103,7 @@ do ->
 								result = @result
 								if result
 									callback(result)
-		get_meta			: (id, callback) ->
+		get_meta		: (id, callback) ->
 			callback	= (callback || ->).bind(@)
 			@onready ->
 				db
@@ -132,7 +113,7 @@ do ->
 								result = @result
 								if result
 									callback(result)
-		get_all				: (callback, filter) ->
+		get_all			: (callback, filter) ->
 			callback	= (callback || ->).bind(@)
 			filter		= filter || -> true
 			@onready ->
@@ -148,27 +129,7 @@ do ->
 									result.continue()
 								else
 									callback(all)
-		get_next_id_to_play	: (callback) ->
-			callback			= (callback || ->).bind(@)
-			current_playlist	= localStorage.getItem('current_playlist')
-			if current_playlist
-				current_playlist	= JSON.parse(current_playlist)
-				next_item			= current_playlist.pop()
-				localStorage.setItem('current_playlist', JSON.stringify(current_playlist))
-				callback(next_item)
-			else
-				@get_all (all) ->
-					current_playlist	= []
-					all.forEach (value) ->
-						current_playlist.push(value.id)
-					current_playlist.shuffle()
-					next_item	= current_playlist.pop()
-					if current_playlist.length
-						localStorage.setItem('current_playlist', JSON.stringify(current_playlist))
-					else
-						@clean_playlist()
-					callback(next_item)
-		del					: (id) ->
+		del				: (id) ->
 			@onready ->
 				db
 					.transaction(['music'], 'readwrite')
@@ -179,9 +140,7 @@ do ->
 									.transaction(['meta'], 'readwrite')
 										.objectStore('meta')
 											.delete(id)
-		clean_playlist		: ->
-			localStorage.removeItem('current_playlist')
-		size				: (callback, filter) ->
+		size			: (callback, filter) ->
 			callback	= (callback || ->).bind(@)
 			filter		= filter || -> true
 			@onready ->
@@ -201,7 +160,7 @@ do ->
 									if !filter
 										library_size = calculated_size
 									callback(calculated_size)
-		rescan				: (done_callback) ->
+		rescan			: (done_callback) ->
 			done_callback	= (done_callback || ->).bind(@)
 			@onready ->
 				new_files		= []
@@ -237,7 +196,7 @@ do ->
 							remove_old_files()
 					cursor.onerror = ->
 						console.error(@error.name)
-		onready				: (callback) ->
+		onready			: (callback) ->
 			callback	= (callback || ->).bind(@)
 			if db
 				callback()
