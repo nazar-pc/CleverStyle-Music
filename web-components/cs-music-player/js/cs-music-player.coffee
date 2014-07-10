@@ -10,17 +10,18 @@ music_storage	= navigator.getDeviceStorage('music')
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
 player			= null
+file_to_play	= null
 
 Polymer(
 	'cs-music-player',
 	title	: 'Unknown'
 	artist	: 'Unknown'
 	ready	: ->
-		new Blur(
-			el			: @
-			path		: '/web-components/cs-music-player/img/bg.jpg'
-			radius		: 10
-		)
+#		new Blur(
+#			el			: @
+#			path		: '/web-components/cs-music-player/img/bg.jpg'
+#			radius		: 10
+#		)
 	rescan	: ->
 		music_library.rescan ->
 			music_playlist.refresh()
@@ -40,20 +41,41 @@ Polymer(
 			music_library.get(id, (data) ->
 				music_storage.get(data.name).onsuccess = ->
 					player?.stop()
-					player = AV.Player.fromURL(window.URL.createObjectURL(@result))
+					if file_to_play
+						URL.revokeObjectURL(file_to_play)
+					file_to_play	= URL.createObjectURL(@result)
+					player			= AV.Player.fromURL(file_to_play)
 					# Change channel type to play in background
-					player.on('ready', ->
-						setTimeout (=>
-							cover	= player.asset.metadata.coverArt?.toBlobURL() || '/web-components/cs-music-player/img/bg.jpg'
-							@device.device.node.context.mozAudioChannelType						= 'content'
-							element.style.backgroundImage										= "url(#{cover}"
-							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= "url(#{cover}"
+					update_cover									= (cover) ->
+						element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= if cover then "url(#{cover})" else 'none'
+						cover_bg															= cover || '/web-components/cs-music-player/img/bg.jpg'
+						element.style.backgroundImage										= "url(#{cover_bg}"
+						if cover
 							new Blur(
 								el			: element
 								path		: cover
 								radius		: 10
 							)
-						), 0
+						setTimeout (->
+							URL.revokeObjectURL(cover)
+						), 500
+					if data.name.substr(-4) == '.mp3'
+						parseAudioMetadata(
+							@result
+							(metadata) =>
+								cover	= metadata.picture
+								if cover
+									cover	= URL.createObjectURL(cover)
+								update_cover(cover)
+							tags	:
+								['picture']
+						)
+					player.on('ready', ->
+						@device.device.node.context.mozAudioChannelType	= 'content'
+						if data.name.substr(-4) != '.mp3'
+							setTimeout (->
+								update_cover(player.asset.metadata.coverArt?.toBlobURL())
+							), 0
 					)
 					# Next track after end of current
 					player.on('end', ->

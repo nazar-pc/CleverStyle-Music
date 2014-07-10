@@ -10,7 +10,7 @@
 
 
 (function() {
-  var music_library, music_playlist, music_storage, player;
+  var file_to_play, music_library, music_playlist, music_storage, player;
 
   music_storage = navigator.getDeviceStorage('music');
 
@@ -20,16 +20,12 @@
 
   player = null;
 
+  file_to_play = null;
+
   Polymer('cs-music-player', {
     title: 'Unknown',
     artist: 'Unknown',
-    ready: function() {
-      return new Blur({
-        el: this,
-        path: '/web-components/cs-music-player/img/bg.jpg',
-        radius: 10
-      });
-    },
+    ready: function() {},
     rescan: function() {
       return music_library.rescan(function() {
         music_playlist.refresh();
@@ -53,24 +49,52 @@
       } else if (id) {
         return music_library.get(id, function(data) {
           return music_storage.get(data.name).onsuccess = function() {
+            var update_cover,
+              _this = this;
             if (player != null) {
               player.stop();
             }
-            player = AV.Player.fromURL(window.URL.createObjectURL(this.result));
-            player.on('ready', function() {
-              var _this = this;
-              return setTimeout((function() {
-                var cover, _ref;
-                cover = ((_ref = player.asset.metadata.coverArt) != null ? _ref.toBlobURL() : void 0) || '/web-components/cs-music-player/img/bg.jpg';
-                _this.device.device.node.context.mozAudioChannelType = 'content';
-                element.style.backgroundImage = "url(" + cover;
-                element.shadowRoot.querySelector('cs-cover').style.backgroundImage = "url(" + cover;
-                return new Blur({
+            if (file_to_play) {
+              URL.revokeObjectURL(file_to_play);
+            }
+            file_to_play = URL.createObjectURL(this.result);
+            player = AV.Player.fromURL(file_to_play);
+            update_cover = function(cover) {
+              var cover_bg;
+              element.shadowRoot.querySelector('cs-cover').style.backgroundImage = cover ? "url(" + cover + ")" : 'none';
+              cover_bg = cover || '/web-components/cs-music-player/img/bg.jpg';
+              element.style.backgroundImage = "url(" + cover_bg;
+              if (cover) {
+                new Blur({
                   el: element,
                   path: cover,
                   radius: 10
                 });
-              }), 0);
+              }
+              return setTimeout((function() {
+                return URL.revokeObjectURL(cover);
+              }), 500);
+            };
+            if (data.name.substr(-4) === '.mp3') {
+              parseAudioMetadata(this.result, function(metadata) {
+                var cover;
+                cover = metadata.picture;
+                if (cover) {
+                  cover = URL.createObjectURL(cover);
+                }
+                return update_cover(cover);
+              }, {
+                tags: ['picture']
+              });
+            }
+            player.on('ready', function() {
+              this.device.device.node.context.mozAudioChannelType = 'content';
+              if (data.name.substr(-4) !== '.mp3') {
+                return setTimeout((function() {
+                  var _ref;
+                  return update_cover((_ref = player.asset.metadata.coverArt) != null ? _ref.toBlobURL() : void 0);
+                }), 0);
+              }
             });
             player.on('end', function() {
               return element.next();

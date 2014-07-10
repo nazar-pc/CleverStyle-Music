@@ -15,19 +15,19 @@
 
 cs-artist, cs-title {
   display: block;
-  height: 1.2rem;
-  line-height: 1.2rem;
+  height: 1.3rem;
+  line-height: 1.3rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
 
 cs-title {
   font-size: 1.3rem;
-  height: 1.8rem;
-  line-height: 1.8rem; }
+  height: 1.7rem;
+  line-height: 1.7rem; }
 
 cs-cover {
-  background: url(../img/bg.jpg) no-repeat center center/contain;
+  background: transparent no-repeat center center / contain;
   height: calc(100vh - 8rem);
   left: 2rem;
   position: absolute;

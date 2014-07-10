@@ -49,7 +49,8 @@
 				MozBackgroundSize    : 'cover',
 				OBackgroundSize      : 'cover',
 				backgroundSize       : 'cover'
-			}
+			},
+			callback   : function () {}
 		};
 
 		this.stackBlurCanvasRGBA = function (callback) {
@@ -541,7 +542,7 @@
 			}
 		};
 		this.remove = function (el) {
-			c = document.getElementById(el);
+			var c = document.getElementById(el);
 			c.parentNode.removeChild(c);
 		};
 		this.swap = function (base) {
@@ -558,15 +559,15 @@
 			this.defaults[key] = options[key];
 		}
 		if (this.defaults.fullscreen) {
-			for (var key in this.defaults.styles) {
+			for (key in this.defaults.styles) {
 				this.defaults.el.style[key] = this.defaults.styles[key];
 			}
 		}
 
 		var self = this,
 			radius = this.defaults.radius,
-			img = document.createElement('img');
-
+			img = document.createElement('img'),
+			callback = this.defaults.callback;
 		img.src = options.path;
 		img.onload = function (e) {
 			var canvas = document.createElement('canvas');
@@ -594,11 +595,13 @@
 			if (options.path.match(/\w.\S+png/)) {
 				self.stackBlurCanvasRGBA(function () {
 					self.swap(canvas.toDataURL('image/png'));
+					callback();
 				});
 			}
 			else {
 				self.stackBlurCanvasRGB(function () {
 					self.swap(canvas.toDataURL('image/jpg'));
+					callback();
 				});
 			}
 		};
