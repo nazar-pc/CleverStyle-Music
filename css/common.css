@@ -1,0 +1,15 @@
+/**
+ * @package     CleverStyle Music
+ * @category    app
+ * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
+ * @license     MIT License, see license.txt
+ */
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; }
+
+body {
+  background: url(img/bg.jpg) no-repeat center center/cover fixed;
+  color: #fff;
+  overflow: hidden; }
