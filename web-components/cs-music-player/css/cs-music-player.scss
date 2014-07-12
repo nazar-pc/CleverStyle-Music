@@ -10,12 +10,7 @@
 	display    : block;
 	height     : 100vh;
 	position   : relative;
-	transition : margin 200ms;
 	width      : 100vw;
-
-	&[menu=open] {
-		margin-right : -100vw;
-	}
 }
 
 audio {

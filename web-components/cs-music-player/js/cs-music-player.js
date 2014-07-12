@@ -44,24 +44,12 @@
           return _this.next();
         });
         player_element.addEventListener('timeupdate', function() {
-          var current_time, duration, time_format;
+          var current_time, duration;
           current_time = player_element.currentTime;
           duration = player_element.duration;
-          time_format = function(time) {
-            var min, sec;
-            min = Math.floor(time / 60);
-            sec = Math.floor(time % 60);
-            if (min < 10) {
-              min = "0" + min;
-            }
-            if (sec < 10) {
-              sec = "0" + sec;
-            }
-            return min + ':' + sec;
-          };
           seeking_bar.current_time = time_format(current_time);
           seeking_bar.duration = duration ? time_format(duration) : '00:00';
-          return seeking_bar.progress_percentage = duration ? Math.floor(current_time / duration * 10000) / 100 : 0;
+          return seeking_bar.progress_percentage = duration ? current_time / duration * 100 : 0;
         });
         return {
           open_new_file: function(blob) {
@@ -131,7 +119,7 @@
                   new Blur({
                     el: body,
                     path: cover,
-                    radius: 10
+                    radius: 20
                   });
                 }
                 return setTimeout((function() {
@@ -190,12 +178,7 @@
       });
     },
     menu: function() {
-      $(this).css({
-        marginLeft: '100vw'
-      });
-      return $('cs-menu').css({
-        marginLeft: 0
-      });
+      return $(body).addClass('menu');
     }
   });
 

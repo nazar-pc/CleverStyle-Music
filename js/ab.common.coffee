@@ -16,3 +16,11 @@ Array::shuffle = ->
 		j = Math.floor(Math.random() * (i + 1))
 		[@[i], @[j]] = [@[j], @[i]]
 	@
+window.time_format = (time) ->
+	min	= Math.floor(time / 60)
+	sec	= Math.floor(time % 60)
+	if min < 10
+		min = "0#{min}"
+	if sec < 10
+		sec = "0#{sec}"
+	min + ':' + sec

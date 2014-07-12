@@ -37,17 +37,9 @@ Polymer(
 			player_element.addEventListener('timeupdate', =>
 				current_time	= player_element.currentTime
 				duration		= player_element.duration
-				time_format		= (time) ->
-					min	= Math.floor(time / 60)
-					sec	= Math.floor(time % 60)
-					if min < 10
-						min = "0#{min}"
-					if sec < 10
-						sec = "0#{sec}"
-					min + ':' + sec
 				seeking_bar.current_time		= time_format(current_time)
 				seeking_bar.duration			= if duration then time_format(duration) else '00:00'
-				seeking_bar.progress_percentage	= if duration then Math.floor(current_time / duration* 10000) / 100 else 0
+				seeking_bar.progress_percentage	= if duration then current_time / duration * 100 else 0
 			)
 			return {
 				open_new_file	: (blob) ->
@@ -105,7 +97,7 @@ Polymer(
 								new Blur(
 									el			: body
 									path		: cover
-									radius		: 10
+									radius		: 20
 								)
 							setTimeout (->
 								URL.revokeObjectURL(cover)
@@ -160,10 +152,5 @@ Polymer(
 		music_playlist.next (id) =>
 			@play(id)
 	menu	: ->
-		$(@).css(
-			marginLeft	: '100vw'
-		)
-		$('cs-menu').css(
-			marginLeft	: 0
-		)
+		$(body).addClass('menu')
 )

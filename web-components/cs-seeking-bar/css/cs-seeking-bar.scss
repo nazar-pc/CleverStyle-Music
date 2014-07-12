@@ -46,5 +46,19 @@
 	.progress {
 		background : rgba(255, 255, 255, .7);
 		height     : .1rem;
+		position   : relative;
+
+		&:after {
+			background    : #fff;
+			border-radius : 50%;
+			box-shadow    : .1rem 0 .1rem #242424;
+			content       : '';
+			display       : block;
+			height        : .4rem;
+			position      : absolute;
+			right         : -.2rem;
+			top           : -.15rem;
+			width         : .4rem;
+		}
 	}
 }

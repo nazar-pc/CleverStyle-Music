@@ -12,4 +12,7 @@
 body {
   background: url(../img/bg.jpg) no-repeat center center/cover fixed;
   color: #fff;
-  overflow: hidden; }
+  overflow: hidden;
+  transition: margin 200ms; }
+  body.menu {
+    margin-left: 100vw; }
