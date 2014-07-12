@@ -1,0 +1,19 @@
+/**
+ * @package     CleverStyle Music
+ * @category    Web Components
+ * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
+ * @license     MIT License, see license.txt
+ */
+:host {
+  display: block;
+  height: 3rem;
+  overflow: hidden;
+  position: absolute;
+  top: calc(100vh - 3rem);
+  width: 100%; }
+  :host cs-control {
+    cursor: pointer;
+    font-size: 1.5rem;
+    text-align: center;
+    text-shadow: 0 0 .1rem #000; }

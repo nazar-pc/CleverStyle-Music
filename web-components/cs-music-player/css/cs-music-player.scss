@@ -7,12 +7,15 @@
  */
 
 :host {
-	background : url(../img/bg.jpg) no-repeat center center / cover fixed;
-	color      : #fff;
 	display    : block;
 	height     : 100vh;
 	position   : relative;
+	transition : margin 200ms;
 	width      : 100vw;
+
+	&[menu=open] {
+		margin-right : -100vw;
+	}
 }
 
 audio {
@@ -43,24 +46,4 @@ cs-cover {
 	position   : absolute;
 	top        : 4rem;
 	width      : calc(100vw - 4rem);
-}
-
-cs-controls {
-	display  : block;
-	height   : 3rem;
-	overflow : hidden;
-	position : absolute;
-	top      : calc(100vh - 3rem);
-	width    : 100%;
-
-	cs-control {
-		cursor      : pointer;
-		font-size   : 1.5rem;
-		text-align  : center;
-		text-shadow : 0 0 .1rem #000;
-	}
-}
-
-button {
-	color : #000;
 }

@@ -10,13 +10,15 @@
 
 
 (function() {
-  var music_library, music_playlist, music_storage, player;
+  var body, music_library, music_playlist, music_storage, player;
 
   music_storage = navigator.getDeviceStorage('music');
 
   music_library = cs.music_library;
 
   music_playlist = cs.music_playlist;
+
+  body = document.querySelector('body');
 
   player = (function() {
     var object_url, player_element;
@@ -60,13 +62,6 @@
   Polymer('cs-music-player', {
     title: 'Unknown',
     artist: 'Unknown',
-    ready: function() {},
-    rescan: function() {
-      return music_library.rescan(function() {
-        music_playlist.refresh();
-        return alert('Rescanned successfully, playlist refreshed');
-      });
-    },
     play: function(id) {
       var element, play_button,
         _this = this;
@@ -93,10 +88,10 @@
                 var cover_bg;
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = cover ? "url(" + cover + ")" : 'none';
                 cover_bg = cover || '/web-components/cs-music-player/img/bg.jpg';
-                element.style.backgroundImage = "url(" + cover_bg + ")";
+                body.style.backgroundImage = "url(" + cover_bg + ")";
                 if (cover) {
                   new Blur({
-                    el: element,
+                    el: body,
                     path: cover,
                     radius: 10
                   });
@@ -107,7 +102,7 @@
               };
               update_cover_timeout = setTimeout((function() {
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = 'none';
-                return element.style.backgroundImage = "url(/web-components/cs-music-player/img/bg.jpg)";
+                return body.backgroundImage = "url(/web-components/cs-music-player/img/bg.jpg)";
               }), 500);
               return parseAudioMetadata(blob, function(metadata) {
                 var cover;
@@ -150,6 +145,14 @@
       var _this = this;
       return music_playlist.next(function(id) {
         return _this.play(id);
+      });
+    },
+    menu: function() {
+      $(this).css({
+        marginLeft: '100vw'
+      });
+      return $('cs-menu').css({
+        marginLeft: 0
       });
     }
   });

@@ -9,6 +9,7 @@
 music_storage	= navigator.getDeviceStorage('music')
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
+body			= document.querySelector('body')
 player			= do ->
 	player_element						= document.createElement('audio')
 	# Change channel type to play in background
@@ -44,19 +45,9 @@ player			= do ->
 #file_to_play	= null
 
 Polymer(
-	'cs-music-player',
+	'cs-music-player'
 	title	: 'Unknown'
 	artist	: 'Unknown'
-	ready	: ->
-#		new Blur(
-#			el			: @
-#			path		: '/web-components/cs-music-player/img/bg.jpg'
-#			radius		: 10
-#		)
-	rescan	: ->
-		music_library.rescan ->
-			music_playlist.refresh()
-			alert 'Rescanned successfully, playlist refreshed'
 	play	: (id) ->
 		id			= if !isNaN(parseInt(id)) then id else undefined
 		element		= @
@@ -80,10 +71,10 @@ Polymer(
 						update_cover									= (cover) ->
 							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= if cover then "url(#{cover})" else 'none'
 							cover_bg															= cover || '/web-components/cs-music-player/img/bg.jpg'
-							element.style.backgroundImage										= "url(#{cover_bg})"
+							body.style.backgroundImage											= "url(#{cover_bg})"
 							if cover
 								new Blur(
-									el			: element
+									el			: body
 									path		: cover
 									radius		: 10
 								)
@@ -92,7 +83,7 @@ Polymer(
 							), 500
 						update_cover_timeout = setTimeout (->
 							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= 'none'
-							element.style.backgroundImage										= "url(/web-components/cs-music-player/img/bg.jpg)"
+							body.backgroundImage												= "url(/web-components/cs-music-player/img/bg.jpg)"
 						), 500
 						parseAudioMetadata(
 							blob
@@ -136,4 +127,11 @@ Polymer(
 	next	: ->
 		music_playlist.next (id) =>
 			@play(id)
+	menu	: ->
+		$(@).css(
+			marginLeft	: '100vw'
+		)
+		$('cs-menu').css(
+			marginLeft	: 0
+		)
 )
