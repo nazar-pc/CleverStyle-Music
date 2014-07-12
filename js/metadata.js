@@ -29,6 +29,9 @@
 // metadataCallback, or invoke the errorCallback with an error message.
 function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 	var filename = blob.name;
+	errorCallback	= errorCallback || function(e){
+		console.warn(e);
+	};
 
 	// If blob.name exists, it should be an audio file from system
 	// otherwise it should be an audio blob that probably from network/process
@@ -190,6 +193,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 				if (checkMP4Type(header, MP4Types)) {
 					// It is a type of MP4 file that we support
 					parseMP4Metadata(header);
+					return;
 				}
 				else {
 					// The MP4 file might be a video or it might be some
@@ -228,31 +232,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 				});
 			} else {
 				// This is some kind of file that we don't know about.
-				// Let's see if we can play it.
-				var player = new Audio();
-				player.mozAudioChannelType = 'content';
-				var canplay = blob.type && player.canPlayType(blob.type);
-				if (canplay === 'probably') {
-					metadataCallback(metadata);
-				}
-				else {
-					var url = URL.createObjectURL(blob);
-					player.src = url;
-
-					player.onerror = function () {
-						URL.revokeObjectURL(url);
-						player.removeAttribute('src');
-						player.load();
-						errorCallback('Unplayable music file');
-					};
-
-					player.oncanplay = function () {
-						URL.revokeObjectURL(url);
-						player.removeAttribute('src');
-						player.load();
-						metadataCallback(metadata);
-					};
-				}
+				errorCallback('Unplayable music file');
 			}
 		}
 		catch (e) {
@@ -678,7 +658,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 					atom.getMore(offset, size, function (moov) {
 						try {
 							parseMoovAtom(moov, size);
-							return;
+							metadataCallback(metadata);
 						}
 						catch (e) {
 							errorCallback(e);
@@ -730,7 +710,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 						if (minf) {
 							var vmhd = searchChildAtom(minf, 'vmhd');
 							if (vmhd) {
-								throw 'Found video track in MP4 container';
+								//throw 'Found video track in MP4 container';
 							}
 							var smhd = searchChildAtom(minf, 'smhd');
 							if (smhd) {
@@ -808,7 +788,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 			// Have to skip flag bytes before reading children atoms
 			data.advance(4);
 
-			// Find the ilst atom within the meta atom
+			// Find the list atom within the meta atom
 			while (data.index < end) {
 				var size = data.readUnsignedInt();
 				var type = data.readASCIIText(4);
@@ -824,7 +804,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 		}
 
 		function parseIlstAtom (data, end) {
-			// Now read all child atoms of ilst, looking for metadata
+			// Now read all child atoms of list, looking for metadata
 			// we care about
 			while (data.index < end) {
 				var size = data.readUnsignedInt();
@@ -873,24 +853,25 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 					case 1: // utf8 text
 						return data.readUTF8Text(datasize);
 					case 13: // jpeg
-						return {
-							start : data.sliceOffset + data.viewOffset + data.index,
-							end   : data.sliceOffset + data.viewOffset + data.index + datasize,
-							type  : 'image/jpeg'
-						};
+						// Now return blob image
+						return blob.slice(
+							data.sliceOffset + data.viewOffset + data.index,
+							data.sliceOffset + data.viewOffset + data.index + datasize,
+							'image/jpeg'
+						);
 					case 14: // png
-						return {
-							start : data.sliceOffset + data.viewOffset + data.index,
-							end   : data.sliceOffset + data.viewOffset + data.index + datasize,
-							type  : 'image/png'
-						};
+						// Now return blob image
+						return blob.slice(
+							data.sliceOffset + data.viewOffset + data.index,
+							data.sliceOffset + data.viewOffset + data.index + datasize,
+							'image/png'
+						);
 					default:
 						throw Error('unexpected type in data atom');
 				}
 			}
 			throw Error('no data atom found');
 		}
-		metadataCallback(metadata);
 	}
 
 	function handleLockedFile (locked) {

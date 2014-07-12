@@ -15,12 +15,17 @@
 	width      : 100vw;
 }
 
+audio {
+	display : none;
+}
+
 cs-artist {
 	display       : block;
 	height        : 1.3rem;
 	line-height   : 1.3rem;
 	overflow      : hidden;
 	text-overflow : ellipsis;
+	text-shadow   : 0 0 .1rem #000;
 	white-space   : nowrap;
 }
 
@@ -41,22 +46,18 @@ cs-cover {
 }
 
 cs-controls {
-	background : rgba(0, 0, 0, 0.3);
-	display    : block;
-	height     : 3rem;
-	overflow   : hidden;
-	position   : absolute;
-	top        : calc(100vh - 3rem);
-	width      : 100%;
+	display  : block;
+	height   : 3rem;
+	overflow : hidden;
+	position : absolute;
+	top      : calc(100vh - 3rem);
+	width    : 100%;
 
 	cs-control {
-		cursor     : pointer;
-		font-size  : 1.5rem;
-		text-align : center;
-
-		&:hover {
-			text-shadow : 0 0 2px #fff;
-		}
+		cursor      : pointer;
+		font-size   : 1.5rem;
+		text-align  : center;
+		text-shadow : 0 0 .1rem #000;
 	}
 }
 

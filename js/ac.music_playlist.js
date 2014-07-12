@@ -78,17 +78,19 @@
         callback = (callback || function() {}).bind(this);
         music_library.get_all(function(all) {
           var playlist;
-          playlist = [];
-          all.forEach(function(data) {
-            return playlist.push(data.id);
-          });
-          playlist.shuffle();
-          if (playlist.length) {
+          if (all.length) {
+            playlist = [];
+            all.forEach(function(data) {
+              return playlist.push(data.id);
+            });
+            playlist.shuffle();
             localStorage.setItem('playlist', JSON.stringify(playlist));
+            localStorage.removeItem('position');
+            return callback(playlist);
+          } else {
+            return alert('Library is empty');
           }
-          return callback(playlist);
         });
-        localStorage.removeItem('position');
       }
     };
   })();

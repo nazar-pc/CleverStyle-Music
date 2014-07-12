@@ -72,7 +72,7 @@ do ->
 									music_storage.get(data.name).onsuccess = ->
 										if @result
 											store	= (metadata) ->
-												db
+												store_object = db
 													.transaction(['meta'], 'readwrite')
 														.objectStore('meta')
 															.put(
@@ -83,26 +83,25 @@ do ->
 																genre	: metadata.genre || ''
 																year	: metadata.year || metadata.recordingTime || ''
 															)
-															.onsuccess = ->
-																callback()
-											if data.name.substr(-4) == '.mp3'
-												parseAudioMetadata(
-													@result
-													->
-														store(ID3.getAllTags(file))
-														ID3.clearTags(file)
-													tags	:
-														['title', 'artist', 'album', 'genre', 'year']
-												)
-											else
-												url		= URL.createObjectURL(@result)
-												asset	= AV.Asset.fromURL(url)
-												asset.get('metadata', (metadata) ->
-													URL.revokeObjectURL(url)
-													if !metadata
-														return
+												store_object.onsuccess = ->
+													callback()
+												store_object.onerror = ->
+													callback()
+											parseAudioMetadata(
+												@result
+												(metadata) ->
 													store(metadata)
-												)
+												=>
+													# If unable to get metadata with previous parser - try another one
+													url		= URL.createObjectURL(@result)
+													asset	= AV.Asset.fromURL(url)
+													asset.get('metadata', (metadata) ->
+														URL.revokeObjectURL(url)
+														if !metadata
+															return
+														store(metadata)
+													)
+											)
 		get				: (id, callback) ->
 			callback	= (callback || ->).bind(@)
 			@onready ->
@@ -206,6 +205,7 @@ do ->
 							remove_old_files()
 					cursor.onerror = ->
 						console.error(@error.name)
+				return
 		onready			: (callback) ->
 			callback	= (callback || ->).bind(@)
 			if db

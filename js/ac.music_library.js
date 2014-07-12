@@ -79,29 +79,31 @@
           if (this.result) {
             data = this.result;
             return music_storage.get(data.name).onsuccess = function() {
-              var asset, store, url;
+              var store,
+                _this = this;
               if (this.result) {
                 store = function(metadata) {
-                  return db.transaction(['meta'], 'readwrite').objectStore('meta').put({
+                  var store_object;
+                  store_object = db.transaction(['meta'], 'readwrite').objectStore('meta').put({
                     id: data.id,
                     title: metadata.title || '',
                     artist: metadata.artist || '',
                     album: metadata.album || '',
                     genre: metadata.genre || '',
                     year: metadata.year || metadata.recordingTime || ''
-                  }).onsuccess = function() {
+                  });
+                  store_object.onsuccess = function() {
+                    return callback();
+                  };
+                  return store_object.onerror = function() {
                     return callback();
                   };
                 };
-                if (data.name.substr(-4) === '.mp3') {
-                  return parseAudioMetadata(this.result, function() {
-                    store(ID3.getAllTags(file));
-                    return ID3.clearTags(file);
-                  }, {
-                    tags: ['title', 'artist', 'album', 'genre', 'year']
-                  });
-                } else {
-                  url = URL.createObjectURL(this.result);
+                return parseAudioMetadata(this.result, function(metadata) {
+                  return store(metadata);
+                }, function() {
+                  var asset, url;
+                  url = URL.createObjectURL(_this.result);
                   asset = AV.Asset.fromURL(url);
                   return asset.get('metadata', function(metadata) {
                     URL.revokeObjectURL(url);
@@ -110,7 +112,7 @@
                     }
                     return store(metadata);
                   });
-                }
+                });
               }
             };
           }
@@ -214,7 +216,7 @@
               return done_callback();
             });
           };
-          return (function() {
+          (function() {
             var cursor;
             music_storage = navigator.getDeviceStorage('music');
             cursor = music_storage.enumerate();

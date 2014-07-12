@@ -52,14 +52,16 @@ do ->
 					callback(id)
 			return
 		refresh		: (callback) ->
-			callback			= (callback || ->).bind(@)
+			callback	= (callback || ->).bind(@)
 			music_library.get_all (all) ->
-				playlist	= []
-				all.forEach (data) ->
-					playlist.push(data.id)
-				playlist.shuffle()
-				if playlist.length
+				if all.length
+					playlist	= []
+					all.forEach (data) ->
+						playlist.push(data.id)
+					playlist.shuffle()
 					localStorage.setItem('playlist', JSON.stringify(playlist))
-				callback(playlist)
-			localStorage.removeItem('position')
+					localStorage.removeItem('position')
+					callback(playlist)
+				else
+					alert('Library is empty')
 			return
