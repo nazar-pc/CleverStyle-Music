@@ -1,0 +1,50 @@
+/**
+ * @package     CleverStyle Music
+ * @category    Web Components
+ * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
+ * @license     MIT License, see license.txt
+ */
+
+:host {
+	align-items         : center;
+	-webkit-align-items : center;
+	display             : flex;
+	display             : -webkit-flex;
+	height              : 1rem;
+	left                : 0;
+	margin              : 0 auto;
+	position            : absolute;
+	right               : 0;
+	top                 : calc(100vh - 4rem);
+	width               : calc(75% + 4rem);
+}
+
+.time {
+	display     : inline-block;
+	text-align  : center;
+	text-shadow : 0 0 .1rem #000;
+	width       : 4rem;
+}
+
+.progress-container {
+	display      : inline-block;
+	flex         : 1;
+	-webkit-flex : 1;
+	width        : calc(100% - 12rem);
+
+	&:before {
+		background    : rgba(36, 36, 36, .7);
+		box-shadow    : 0 0 .1rem #242424;
+		content       : '';
+		display       : block;
+		height        : .1rem;
+		margin-bottom : -.1rem;
+		width         : 100%;
+	}
+
+	.progress {
+		background : rgba(255, 255, 255, .7);
+		height     : .1rem;
+	}
+}

@@ -10,7 +10,7 @@
 
 
 (function() {
-  var body, music_library, music_playlist, music_storage, player;
+  var body, music_library, music_playlist, music_storage, seeking_bar;
 
   music_storage = navigator.getDeviceStorage('music');
 
@@ -20,74 +20,112 @@
 
   body = document.querySelector('body');
 
-  player = (function() {
-    var object_url, player_element;
-    player_element = document.createElement('audio');
-    player_element.mozAudioChannelType = 'content';
-    object_url = null;
-    player_element.addEventListener('loadeddata', function() {
-      URL.revokeObjectURL(object_url);
-      return object_url = null;
-    });
-    player_element.addEventListener('error', function() {
-      return player.pause();
-    });
-    window.player_element = player_element;
-    return {
-      open_new_file: function(blob) {
-        if (this.playing) {
-          this.pause();
-        }
-        if (object_url) {
-          URL.revokeObjectURL(object_url);
-        }
-        object_url = URL.createObjectURL(blob);
-        player_element.src = object_url;
-        player_element.load();
-        this.file_loaded = true;
-        player_element.play();
-        return this.playing = true;
-      },
-      play: function() {
-        player_element.play();
-        return this.playing = true;
-      },
-      pause: function() {
-        player_element.pause();
-        return this.playing = false;
-      }
-    };
-  })();
+  seeking_bar = null;
 
   Polymer('cs-music-player', {
-    title: 'Unknown',
-    artist: 'Unknown',
-    play: function(id) {
+    title: '',
+    artist: '',
+    ready: function() {
+      var _this = this;
+      seeking_bar = this.shadowRoot.querySelector('cs-seeking-bar');
+      this.player = (function() {
+        var object_url, player_element;
+        player_element = document.createElement('audio');
+        player_element.mozAudioChannelType = 'content';
+        object_url = null;
+        player_element.addEventListener('loadeddata', function() {
+          URL.revokeObjectURL(object_url);
+          return object_url = null;
+        });
+        player_element.addEventListener('error', function() {
+          return _this.player.pause();
+        });
+        player_element.addEventListener('ended', function() {
+          return _this.next();
+        });
+        player_element.addEventListener('timeupdate', function() {
+          var current_time, duration, time_format;
+          current_time = player_element.currentTime;
+          duration = player_element.duration;
+          time_format = function(time) {
+            var min, sec;
+            min = Math.floor(time / 60);
+            sec = Math.floor(time % 60);
+            if (min < 10) {
+              min = "0" + min;
+            }
+            if (sec < 10) {
+              sec = "0" + sec;
+            }
+            return min + ':' + sec;
+          };
+          seeking_bar.current_time = time_format(current_time);
+          seeking_bar.duration = duration ? time_format(duration) : '00:00';
+          return seeking_bar.progress_percentage = duration ? Math.floor(current_time / duration * 10000) / 100 : 0;
+        });
+        return {
+          open_new_file: function(blob) {
+            if (this.playing) {
+              this.pause();
+            }
+            if (object_url) {
+              URL.revokeObjectURL(object_url);
+            }
+            object_url = URL.createObjectURL(blob);
+            player_element.src = object_url;
+            player_element.load();
+            this.file_loaded = true;
+            player_element.play();
+            return this.playing = true;
+          },
+          play: function() {
+            player_element.play();
+            return this.playing = true;
+          },
+          pause: function() {
+            player_element.pause();
+            return this.playing = false;
+          }
+        };
+      })();
+      return this.play(null, function() {
+        _this.play();
+        return _this.player.currentTime = 0;
+      });
+    },
+    play: function(id, callback) {
       var element, play_button,
         _this = this;
       id = !isNaN(parseInt(id)) ? id : void 0;
+      if (typeof callback !== 'function') {
+        callback = function() {};
+      } else {
+        callback.bind(this);
+      }
       element = this;
       play_button = element.shadowRoot.querySelector('[icon=play]');
-      if (player.file_loaded && !id) {
-        if (player.playing) {
-          player.pause();
+      if (this.player.file_loaded && !id) {
+        if (this.player.playing) {
+          this.player.pause();
           return play_button.icon = 'play';
         } else {
-          player.play();
+          this.player.play();
           return play_button.icon = 'pause';
         }
       } else if (id) {
         return music_library.get(id, function(data) {
-          return music_storage.get(data.name).onsuccess = function() {
+          var get_file;
+          get_file = music_storage.get(data.name);
+          get_file.onsuccess = function() {
             var blob;
             blob = this.result;
-            player.open_new_file(blob);
+            element.player.open_new_file(blob);
             (function() {
               var update_cover, update_cover_timeout;
               update_cover = function(cover) {
                 var cover_bg;
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = cover ? "url(" + cover + ")" : 'none';
-                cover_bg = cover || '/web-components/cs-music-player/img/bg.jpg';
+                cover_bg = cover || 'img/bg.jpg';
                 body.style.backgroundImage = "url(" + cover_bg + ")";
                 if (cover) {
                   new Blur({
@@ -102,7 +140,7 @@
               };
               update_cover_timeout = setTimeout((function() {
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = 'none';
-                return body.backgroundImage = "url(/web-components/cs-music-player/img/bg.jpg)";
+                return body.backgroundImage = "url(img/bg.jpg)";
               }), 500);
               return parseAudioMetadata(blob, function(metadata) {
                 var cover;
@@ -115,7 +153,7 @@
               });
             })();
             play_button.icon = 'pause';
-            return music_library.get_meta(id, function(data) {
+            music_library.get_meta(id, function(data) {
               if (data) {
                 element.title = data.title || 'Unknown';
                 element.artist = data.artist || 'Unknown';
@@ -127,11 +165,15 @@
                 return element.artist = 'Unknown';
               }
             });
+            return callback();
+          };
+          return get_file.onerror = function(e) {
+            return alert("Can't play this file: " + e.target.error.name);
           };
         });
       } else {
         return music_playlist.current(function(id) {
-          return _this.play(id);
+          return _this.play(id, callback);
         });
       }
     },

@@ -1,0 +1,10 @@
+<polymer-element name="cs-seeking-bar" attributes="progress_percentage current_time duration" noscript>
+	<template>
+		<link rel="stylesheet" href="css/cs-seeking-bar.css">
+		<div class="time">{{current_time}}</div>
+		<div class="progress-container">
+			<div class="progress" style="width: {{progress_percentage}}%;"></div>
+		</div>
+		<div class="time">{{duration}}</div>
+	</template>
+</polymer-element>
