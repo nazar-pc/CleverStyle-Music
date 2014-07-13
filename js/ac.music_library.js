@@ -138,6 +138,10 @@
             result = this.result;
             if (result) {
               return callback(result);
+            } else {
+              return callback({
+                id: id
+              });
             }
           };
         });

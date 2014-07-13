@@ -1,0 +1,28 @@
+/**
+ * @package     CleverStyle Music
+ * @category    Web Components
+ * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
+ * @license     MIT License, see license.txt
+ */
+
+:host {
+	background : rgba(0, 0, 0, 0.5);
+	display    : block;
+	height     : 100vh;
+	overflow-y : auto;
+	position   : relative;
+	width      : 100vw;
+}
+
+cs-playlist-item {
+	cursor  : pointer;
+	display : block;
+	padding : .5rem;
+	width   : 100%;
+
+	&:hover,
+	&[playing=yes] {
+		background : rgba(0, 0, 0, .3);
+	}
+}

@@ -8,6 +8,16 @@
 do ->
 	music_library		= cs.music_library
 	cs.music_playlist	=
+		get_all		: (callback) ->
+			callback	= (callback || ->).bind(@)
+			playlist	= localStorage.getItem('playlist')
+			if playlist
+				playlist	= JSON.parse(playlist)
+				if playlist?.length
+					callback(playlist)
+					return
+			@refresh ->
+				@get_all(callback)
 		current		: (callback) ->
 			callback	= (callback || ->).bind(@)
 			playlist	= localStorage.getItem('playlist')
@@ -20,9 +30,10 @@ do ->
 						callback(playlist[position])
 						return
 			@refresh ->
-				@next (id) ->
-					callback(id)
+				@next(callback)
 			return
+		set_current	: (position) ->
+			localStorage.setItem('position', position)
 		prev		: (callback) ->
 			callback	= (callback || ->).bind(@)
 			playlist	= localStorage.getItem('playlist')
@@ -48,8 +59,7 @@ do ->
 						callback(playlist[position])
 						return
 			@refresh ->
-				@next (id) ->
-					callback(id)
+				@next(callback)
 			return
 		refresh		: (callback) ->
 			callback	= (callback || ->).bind(@)

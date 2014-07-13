@@ -14,9 +14,13 @@ body {
 	background : url(../img/bg.jpg) no-repeat center center / cover fixed;
 	color      : #fff;
 	overflow   : hidden;
-	transition : margin 200ms;
+	transition : margin 200ms, transform 500ms;
 
 	&.menu {
 		margin-left : 100vw;
+	}
+
+	&.playlist {
+		margin-top : -100vh;
 	}
 }

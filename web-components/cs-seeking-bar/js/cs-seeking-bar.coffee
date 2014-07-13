@@ -8,8 +8,9 @@
 
 Polymer(
 	'cs-seeking-bar'
-	ready	: ->
-		window.x = @
+	current_time	: '00:00'
+	duration		: '00:00'
+	ready			: ->
 		@addEventListener('click', (e) ->
 			progress_container	= @.shadowRoot.querySelector('.progress-container')
 			percents			= (e.pageX - progress_container.offsetLeft - @offsetLeft) / progress_container.clientWidth * 100

@@ -16,6 +16,15 @@ Polymer(
 		music_library.rescan ->
 			music_playlist.refresh()
 			alert 'Rescanned successfully, playlist refreshed'
+	playlist	: ->
+		$body	= $(body)
+		$body.removeClass('menu')
+		setTimeout (->
+			$body.addClass('playlist')
+			setTimeout (->
+				document.querySelector('cs-music-playlist').refresh()
+			), 200
+		), 200
 	back	: ->
 		$(body).removeClass('menu')
 )

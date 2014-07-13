@@ -12,8 +12,9 @@
 (function() {
 
   Polymer('cs-seeking-bar', {
+    current_time: '00:00',
+    duration: '00:00',
     ready: function() {
-      window.x = this;
       return this.addEventListener('click', function(e) {
         var percents, progress_container;
         progress_container = this.shadowRoot.querySelector('.progress-container');

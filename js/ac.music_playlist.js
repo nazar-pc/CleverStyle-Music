@@ -15,6 +15,21 @@
     var music_library;
     music_library = cs.music_library;
     return cs.music_playlist = {
+      get_all: function(callback) {
+        var playlist;
+        callback = (callback || function() {}).bind(this);
+        playlist = localStorage.getItem('playlist');
+        if (playlist) {
+          playlist = JSON.parse(playlist);
+          if (playlist != null ? playlist.length : void 0) {
+            callback(playlist);
+            return;
+          }
+        }
+        return this.refresh(function() {
+          return this.get_all(callback);
+        });
+      },
       current: function(callback) {
         var playlist, position;
         callback = (callback || function() {}).bind(this);
@@ -31,10 +46,11 @@
           }
         }
         this.refresh(function() {
-          return this.next(function(id) {
-            return callback(id);
-          });
+          return this.next(callback);
         });
+      },
+      set_current: function(position) {
+        return localStorage.setItem('position', position);
       },
       prev: function(callback) {
         var playlist, position;
@@ -69,9 +85,7 @@
           }
         }
         this.refresh(function() {
-          return this.next(function(id) {
-            return callback(id);
-          });
+          return this.next(callback);
         });
       },
       refresh: function(callback) {

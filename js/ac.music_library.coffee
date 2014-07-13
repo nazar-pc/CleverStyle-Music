@@ -122,6 +122,10 @@ do ->
 								result = @result
 								if result
 									callback(result)
+								else
+									callback(
+										id	: id
+									)
 		get_all			: (callback, filter) ->
 			callback	= (callback || ->).bind(@)
 			filter		= filter || -> true

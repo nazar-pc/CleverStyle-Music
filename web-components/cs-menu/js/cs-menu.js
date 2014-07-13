@@ -25,6 +25,17 @@
         return alert('Rescanned successfully, playlist refreshed');
       });
     },
+    playlist: function() {
+      var $body;
+      $body = $(body);
+      $body.removeClass('menu');
+      return setTimeout((function() {
+        $body.addClass('playlist');
+        return setTimeout((function() {
+          return document.querySelector('cs-music-playlist').refresh();
+        }), 200);
+      }), 200);
+    },
     back: function() {
       return $(body).removeClass('menu');
     }

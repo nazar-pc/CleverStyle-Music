@@ -1,0 +1,14 @@
+<polymer-element name="cs-music-playlist">
+	<template vertical center layout>
+		<link rel="stylesheet" href="css/cs-music-playlist.css">
+		<template repeat="{{item, index in list}}">
+			<cs-playlist-item data-index="{{index}}" on-click="{{play}}" playing="{{item.playing}}">
+				<template if="{{item.playing == 'yes'}}">
+					<i class="fa fa-play"></i>
+				</template>
+				{{item.artist}} — {{item.title}}
+			</cs-playlist-item>
+		</template>
+	</template>
+	<script src="js/cs-music-playlist.js"></script>
+</polymer-element>
