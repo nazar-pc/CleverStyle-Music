@@ -185,9 +185,8 @@ do ->
 							return
 						done_callback()
 				do =>
-					music_storage	= navigator.getDeviceStorage('music')
-					cursor			= music_storage.enumerate()
-					cursor.onsuccess = =>
+					cursor				= music_storage.enumerate()
+					cursor.onsuccess	= =>
 						if cursor.result
 							file = cursor.result
 							db

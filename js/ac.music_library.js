@@ -222,7 +222,6 @@
           };
           (function() {
             var cursor;
-            music_storage = navigator.getDeviceStorage('music');
             cursor = music_storage.enumerate();
             cursor.onsuccess = function() {
               var file;
