@@ -14,7 +14,7 @@ body {
 	background : url(../img/bg.jpg) no-repeat center center / cover fixed;
 	color      : #fff;
 	overflow   : hidden;
-	transition : margin 200ms, transform 500ms;
+	transition : margin 200ms ease-out 0s;
 
 	&.menu {
 		margin-left : 100vw;
