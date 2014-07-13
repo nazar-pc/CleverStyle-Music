@@ -19,6 +19,9 @@ Polymer(
 	artist				: ''
 	ready	: ->
 		seeking_bar	= @shadowRoot.querySelector('cs-seeking-bar')
+		$(seeking_bar).on('seeking-update', (e, data) =>
+			@seeking(data.percents)
+		)
 		@player		= do =>
 			player_element						= document.createElement('audio')
 			# Change channel type to play in background
@@ -59,6 +62,10 @@ Polymer(
 				pause			: ->
 					player_element.pause()
 					this.playing	= false
+				seeking			: (percents) ->
+					player_element.pause()
+					player_element.currentTime	= player_element.duration * percents / 100
+					player_element.play()
 			}
 		@play(null, =>
 			@play()
@@ -153,4 +160,6 @@ Polymer(
 			@play(id)
 	menu	: ->
 		$(body).addClass('menu')
+	seeking	: (percents) ->
+		@player.seeking(percents)
 )

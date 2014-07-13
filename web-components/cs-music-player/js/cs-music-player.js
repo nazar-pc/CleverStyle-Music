@@ -28,6 +28,9 @@
     ready: function() {
       var _this = this;
       seeking_bar = this.shadowRoot.querySelector('cs-seeking-bar');
+      $(seeking_bar).on('seeking-update', function(e, data) {
+        return _this.seeking(data.percents);
+      });
       this.player = (function() {
         var object_url, player_element;
         player_element = document.createElement('audio');
@@ -73,6 +76,11 @@
           pause: function() {
             player_element.pause();
             return this.playing = false;
+          },
+          seeking: function(percents) {
+            player_element.pause();
+            player_element.currentTime = player_element.duration * percents / 100;
+            return player_element.play();
           }
         };
       })();
@@ -179,6 +187,9 @@
     },
     menu: function() {
       return $(body).addClass('menu');
+    },
+    seeking: function(percents) {
+      return this.player.seeking(percents);
     }
   });
 

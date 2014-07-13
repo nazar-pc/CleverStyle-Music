@@ -9,6 +9,7 @@
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
 body			= document.querySelector('body')
+
 Polymer(
 	'cs-menu'
 	rescan	: ->
