@@ -30,7 +30,8 @@
         if (!subscribers[event_name]) {
           subscribers[event_name] = [];
         }
-        return subscribers[event_name].push(callback);
+        subscribers[event_name].push(callback);
+        return cs.bus;
       },
       trigger: function(event_name, data) {
         if (subscribers[event_name]) {

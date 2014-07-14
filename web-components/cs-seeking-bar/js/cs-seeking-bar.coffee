@@ -21,4 +21,20 @@ Polymer(
 				percents	: percents
 			)
 		)
+		cs.bus
+			.on(
+				'player/pause'
+				=>
+					@setAttribute('blinking', '')
+			)
+			.on(
+				'player/play'
+				=>
+					@removeAttribute('blinking')
+			)
+			.on(
+				'player/resume'
+				=>
+					@removeAttribute('blinking')
+			)
 )

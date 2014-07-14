@@ -19,6 +19,7 @@ cs.bus	= do ->
 			if !subscribers[event_name]
 				subscribers[event_name]	= []
 			subscribers[event_name].push(callback)
+			cs.bus
 		trigger	: (event_name, data) ->
 			if subscribers[event_name]
 				subscribers[event_name].forEach (callback) ->

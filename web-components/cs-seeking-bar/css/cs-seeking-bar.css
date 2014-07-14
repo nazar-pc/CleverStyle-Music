@@ -17,7 +17,28 @@
   right: 0;
   top: calc(100vh - 4.5rem);
   width: calc(75% + 4rem); }
+  :host[blinking] .time:first-of-type {
+    animation: blinking ease-out 1s infinite;
+    -webkit-animation: blinking ease-out 1s infinite; }
 
+@keyframes blinking {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
+@-webkit-keyframes blinking {
+  0% {
+    opacity: 1; }
+
+  50% {
+    opacity: 0; }
+
+  100% {
+    opacity: 1; } }
 .time {
   display: inline-block;
   text-align: center;

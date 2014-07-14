@@ -15,7 +15,8 @@
     current_time: '00:00',
     duration: '00:00',
     ready: function() {
-      return this.addEventListener('click', function(e) {
+      var _this = this;
+      this.addEventListener('click', function(e) {
         var percents, progress_container;
         progress_container = this.shadowRoot.querySelector('.progress-container');
         percents = (e.pageX - progress_container.offsetLeft - this.offsetLeft) / progress_container.clientWidth * 100;
@@ -25,6 +26,13 @@
         return $(this).trigger('seeking-update', {
           percents: percents
         });
+      });
+      return cs.bus.on('player/pause', function() {
+        return _this.setAttribute('blinking', '');
+      }).on('player/play', function() {
+        return _this.removeAttribute('blinking');
+      }).on('player/resume', function() {
+        return _this.removeAttribute('blinking');
       });
     }
   });
