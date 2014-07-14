@@ -1,10 +1,12 @@
 {
 	"name"        : "CleverStyle Music",
-	"version"     : "0.25.0+build-28",
+	"version"     : "0.26.0+build-29",
 	"launch_path" : "/index.html",
 	"description" : "CleverStyle Music",
 	"icons"       : {
-		"128" : "/img/logo-120.png"
+		"60" : "/img/logo-128.png",
+		"128" : "/img/logo-128.png",
+		"256" : "/img/logo-128.png"
 	},
 	"developer"   : {
 		"name" : "Nazar Mokrynskyi",
@@ -22,5 +24,5 @@
 			"description" : "Play sound in background"
 		}
 	},
-	"type"        : "certified"
+	"type"        : "privileged"
 }
