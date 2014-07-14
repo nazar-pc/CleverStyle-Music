@@ -22,7 +22,7 @@ Polymer(
 		setTimeout (->
 			$body.addClass('playlist')
 			setTimeout (->
-				document.querySelector('cs-music-playlist').refresh()
+				document.querySelector('cs-music-playlist').open()
 			), 200
 		), 200
 	back	: ->

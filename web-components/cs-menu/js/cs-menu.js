@@ -32,7 +32,7 @@
       return setTimeout((function() {
         $body.addClass('playlist');
         return setTimeout((function() {
-          return document.querySelector('cs-music-playlist').refresh();
+          return document.querySelector('cs-music-playlist').open();
         }), 200);
       }), 200);
     },

@@ -103,10 +103,14 @@
       if (this.player.file_loaded && !id) {
         if (this.player.playing) {
           this.player.pause();
-          return play_button.icon = 'play';
+          play_button.icon = 'play';
+          cs.bus.trigger('player/pause');
+          return cs.bus.state.player = 'paused';
         } else {
           this.player.play();
-          return play_button.icon = 'pause';
+          play_button.icon = 'pause';
+          cs.bus.trigger('player/resume');
+          return cs.bus.state.player = 'playing';
         }
       } else if (id) {
         return music_library.get(id, function(data) {
@@ -149,6 +153,8 @@
               });
             })();
             play_button.icon = 'pause';
+            cs.bus.trigger('player/play', id);
+            cs.bus.state.player = 'playing';
             music_library.get_meta(id, function(data) {
               if (data) {
                 element.title = data.title || 'Unknown';

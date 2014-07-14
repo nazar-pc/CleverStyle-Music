@@ -10,19 +10,24 @@
 	background : rgba(0, 0, 0, 0.5);
 	display    : block;
 	height     : 100vh;
-	overflow-y : auto;
 	position   : relative;
 	width      : 100vw;
 }
 
-cs-playlist-item {
-	cursor  : pointer;
-	display : block;
-	padding : .5rem;
-	width   : 100%;
+cs-playlist-items {
+	height     : calc(100vh - 3rem);
+	overflow-y : auto;
+	position   : absolute;
 
-	&:hover,
-	&[playing=yes] {
-		background : rgba(0, 0, 0, .3);
+	cs-playlist-item {
+		cursor  : pointer;
+		display : block;
+		padding : .5rem;
+		width   : 100%;
+
+		&:hover,
+		&[playing=yes] {
+			background : rgba(0, 0, 0, .3);
+		}
 	}
 }

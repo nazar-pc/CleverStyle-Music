@@ -1,14 +1,24 @@
 <polymer-element name="cs-music-playlist">
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/cs-music-playlist.css">
-		<template repeat="{{item, index in list}}">
-			<cs-playlist-item data-index="{{index}}" on-click="{{play}}" playing="{{item.playing}}">
-				<template if="{{item.playing == 'yes'}}">
-					<i class="fa fa-play"></i>
+		<template if="{{list.length}}">
+			<cs-playlist-items>
+				<template repeat="{{item, index in list}}">
+					<cs-playlist-item data-index="{{index}}" on-click="{{play}}" playing="{{item.playing}}">
+						<template if="{{item.playing == 'yes'}}">
+							<i class="fa fa-{{item.icon}}"></i>
+						</template>
+						{{item.artist}} — {{item.title}}
+					</cs-playlist-item>
 				</template>
-				{{item.artist}} — {{item.title}}
-			</cs-playlist-item>
+			</cs-playlist-items>
 		</template>
+		<template if="{{!list.length}}">
+			<cs-loading></cs-loading>
+		</template>
+		<cs-controls horizontal center layout>
+			<cs-control flex icon="chevron-up" on-click="{{back}}"></cs-control>
+		</cs-controls>
 	</template>
 	<script src="js/cs-music-playlist.js"></script>
 </polymer-element>

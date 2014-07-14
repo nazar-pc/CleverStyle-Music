@@ -9,14 +9,17 @@
   background: rgba(0, 0, 0, 0.5);
   display: block;
   height: 100vh;
-  overflow-y: auto;
   position: relative;
   width: 100vw; }
 
-cs-playlist-item {
-  cursor: pointer;
-  display: block;
-  padding: .5rem;
-  width: 100%; }
-  cs-playlist-item:hover, cs-playlist-item[playing=yes] {
-    background: rgba(0, 0, 0, 0.3); }
+cs-playlist-items {
+  height: calc(100vh - 3rem);
+  overflow-y: auto;
+  position: absolute; }
+  cs-playlist-items cs-playlist-item {
+    cursor: pointer;
+    display: block;
+    padding: .5rem;
+    width: 100%; }
+    cs-playlist-items cs-playlist-item:hover, cs-playlist-items cs-playlist-item[playing=yes] {
+      background: rgba(0, 0, 0, 0.3); }
