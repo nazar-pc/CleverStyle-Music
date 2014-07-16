@@ -63,9 +63,10 @@ Polymer(
 					player_element.pause()
 					this.playing	= false
 				seeking			: (percents) ->
-					player_element.pause()
-					player_element.currentTime	= player_element.duration * percents / 100
-					player_element.play()
+					if player_element.duration
+						player_element.pause()
+						player_element.currentTime	= player_element.duration * percents / 100
+						player_element.play()
 			}
 		@play(null, =>
 			@play()
@@ -158,12 +159,12 @@ Polymer(
 		else
 			music_playlist.current (id) =>
 				@play(id, callback)
-	prev	: ->
+	prev	: (callback) ->
 		music_playlist.prev (id) =>
-			@play(id)
-	next	: ->
+			@play(id, callback)
+	next	: (callback) ->
 		music_playlist.next (id) =>
-			@play(id)
+			@play(id, callback)
 	menu	: ->
 		$(body).addClass('menu')
 	seeking	: (percents) ->

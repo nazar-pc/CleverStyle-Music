@@ -406,7 +406,7 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 							break;
 						case 'POPM':
 						case 'POP':
-							tagvalue = readText(id3, tagsize, 3);
+							tagvalue = readText(id3, tagsize, 0);
 							if (isNaN(parseInt(tagvalue))) {
 								tagvalue = id3.readUnsignedByte();
 							}

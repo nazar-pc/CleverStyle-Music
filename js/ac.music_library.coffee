@@ -53,13 +53,14 @@ do ->
 		add				: (name, callback) ->
 			callback	= (callback || ->).bind(@)
 			@onready ->
-				db
+				put_transaction	= db
 					.transaction(['music'], 'readwrite')
 						.objectStore('music')
 							.put(
 								name	: name
 							)
-							.onsuccess = callback
+				put_transaction.onsuccess	= callback
+				put_transaction.onerror		= callback
 		parse_metadata	: (name, callback) ->
 			callback	= (callback || ->).bind(@)
 			db
@@ -98,8 +99,12 @@ do ->
 													asset.get('metadata', (metadata) ->
 														URL.revokeObjectURL(url)
 														if !metadata
+															callback()
 															return
 														store(metadata)
+													)
+													asset.on('error', ->
+														callback()
 													)
 											)
 		get				: (id, callback) ->
@@ -175,6 +180,7 @@ do ->
 									callback(calculated_size)
 		rescan			: (done_callback) ->
 			done_callback	= (done_callback || ->).bind(@)
+			found_files		= 0
 			@onready ->
 				new_files		= []
 				remove_old_files	= =>
@@ -198,11 +204,15 @@ do ->
 													@add(file.name, ->
 														@parse_metadata(file.name, ->
 															new_files.push(file.name)
+															++found_files
+															cs.bus.trigger('library/rescan/found', found_files)
 															cursor.continue()
 														)
 													)
 												else
 													new_files.push(file.name)
+													++found_files
+													cs.bus.trigger('library/rescan/found', found_files)
 													cursor.continue()
 						else
 							remove_old_files()

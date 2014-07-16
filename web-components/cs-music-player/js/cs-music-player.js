@@ -78,9 +78,11 @@
             return this.playing = false;
           },
           seeking: function(percents) {
-            player_element.pause();
-            player_element.currentTime = player_element.duration * percents / 100;
-            return player_element.play();
+            if (player_element.duration) {
+              player_element.pause();
+              player_element.currentTime = player_element.duration * percents / 100;
+              return player_element.play();
+            }
           }
         };
       })();
@@ -179,16 +181,16 @@
         });
       }
     },
-    prev: function() {
+    prev: function(callback) {
       var _this = this;
       return music_playlist.prev(function(id) {
-        return _this.play(id);
+        return _this.play(id, callback);
       });
     },
-    next: function() {
+    next: function(callback) {
       var _this = this;
       return music_playlist.next(function(id) {
-        return _this.play(id);
+        return _this.play(id, callback);
       });
     },
     menu: function() {

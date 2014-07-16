@@ -67,9 +67,12 @@
       add: function(name, callback) {
         callback = (callback || function() {}).bind(this);
         return this.onready(function() {
-          return db.transaction(['music'], 'readwrite').objectStore('music').put({
+          var put_transaction;
+          put_transaction = db.transaction(['music'], 'readwrite').objectStore('music').put({
             name: name
-          }).onsuccess = callback;
+          });
+          put_transaction.onsuccess = callback;
+          return put_transaction.onerror = callback;
         });
       },
       parse_metadata: function(name, callback) {
@@ -105,12 +108,16 @@
                   var asset, url;
                   url = URL.createObjectURL(_this.result);
                   asset = AV.Asset.fromURL(url);
-                  return asset.get('metadata', function(metadata) {
+                  asset.get('metadata', function(metadata) {
                     URL.revokeObjectURL(url);
                     if (!metadata) {
+                      callback();
                       return;
                     }
                     return store(metadata);
+                  });
+                  return asset.on('error', function() {
+                    return callback();
                   });
                 });
               }
@@ -204,7 +211,9 @@
         });
       },
       rescan: function(done_callback) {
+        var found_files;
         done_callback = (done_callback || function() {}).bind(this);
+        found_files = 0;
         return this.onready(function() {
           var new_files, remove_old_files,
             _this = this;
@@ -232,11 +241,15 @@
                     return _this.add(file.name, function() {
                       return this.parse_metadata(file.name, function() {
                         new_files.push(file.name);
+                        ++found_files;
+                        cs.bus.trigger('library/rescan/found', found_files);
                         return cursor["continue"]();
                       });
                     });
                   } else {
                     new_files.push(file.name);
+                    ++found_files;
+                    cs.bus.trigger('library/rescan/found', found_files);
                     return cursor["continue"]();
                   }
                 };

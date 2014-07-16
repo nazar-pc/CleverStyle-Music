@@ -73,5 +73,7 @@ do ->
 					localStorage.removeItem('position')
 					callback(playlist)
 				else
-					alert('Library is empty')
+					if confirm('Music library is empty. Do you want to update your library?')
+						$(document.body).addClass('library-rescan')
+						document.querySelector('cs-music-library-rescan').open()
 			return

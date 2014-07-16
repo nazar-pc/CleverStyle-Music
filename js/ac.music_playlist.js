@@ -102,7 +102,10 @@
             localStorage.removeItem('position');
             return callback(playlist);
           } else {
-            return alert('Library is empty');
+            if (confirm('Music library is empty. Do you want to update your library?')) {
+              $(document.body).addClass('library-rescan');
+              return document.querySelector('cs-music-library-rescan').open();
+            }
           }
         });
       }

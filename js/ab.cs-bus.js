@@ -33,6 +33,18 @@
         subscribers[event_name].push(callback);
         return cs.bus;
       },
+      'off': function(event_name, callback) {
+        if (!subscribers[event_name]) {
+          return cs.bus;
+        }
+        subscribers[event_name].forEach(function(func, index) {
+          if (func === callback) {
+            delete subscriberssubscribers[event_name][index];
+            return false;
+          }
+        });
+        return cs.bus;
+      },
       trigger: function(event_name, data) {
         if (subscribers[event_name]) {
           return subscribers[event_name].forEach(function(callback) {

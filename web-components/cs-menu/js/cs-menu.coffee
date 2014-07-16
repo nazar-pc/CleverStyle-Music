@@ -8,16 +8,16 @@
 
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
-body			= document.querySelector('body')
+$body			= $(document.querySelector('body'))
 
 Polymer(
 	'cs-menu'
 	rescan	: ->
-		music_library.rescan ->
-			music_playlist.refresh()
-			alert 'Rescanned successfully, playlist refreshed'
+		$body.addClass('library-rescan')
+		setTimeout (->
+			document.querySelector('cs-music-library-rescan').open()
+		), 200
 	playlist	: ->
-		$body	= $(body)
 		$body.removeClass('menu')
 		setTimeout (->
 			$body.addClass('playlist')
@@ -26,5 +26,5 @@ Polymer(
 			), 200
 		), 200
 	back	: ->
-		$(body).removeClass('menu')
+		$body.removeClass('menu')
 )

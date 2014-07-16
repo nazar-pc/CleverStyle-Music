@@ -10,24 +10,22 @@
 
 
 (function() {
-  var body, music_library, music_playlist;
+  var $body, music_library, music_playlist;
 
   music_library = cs.music_library;
 
   music_playlist = cs.music_playlist;
 
-  body = document.querySelector('body');
+  $body = $(document.querySelector('body'));
 
   Polymer('cs-menu', {
     rescan: function() {
-      return music_library.rescan(function() {
-        music_playlist.refresh();
-        return alert('Rescanned successfully, playlist refreshed');
-      });
+      $body.addClass('library-rescan');
+      return setTimeout((function() {
+        return document.querySelector('cs-music-library-rescan').open();
+      }), 200);
     },
     playlist: function() {
-      var $body;
-      $body = $(body);
       $body.removeClass('menu');
       return setTimeout((function() {
         $body.addClass('playlist');
@@ -37,7 +35,7 @@
       }), 200);
     },
     back: function() {
-      return $(body).removeClass('menu');
+      return $body.removeClass('menu');
     }
   });
 

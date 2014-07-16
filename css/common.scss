@@ -23,4 +23,9 @@ body {
 	&.playlist {
 		margin-top : -100vh;
 	}
+
+	&.library-rescan {
+		margin-left : 100vw;
+		margin-top  : 100vh;
+	}
 }
