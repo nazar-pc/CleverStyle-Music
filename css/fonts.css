@@ -19,8 +19,3 @@
 	font-weight : 400;
 	src         : local('Open Sans'), local('OpenSans'), url(../fonts/OpenSans.woff) format("woff");
 }
-
-html {
-	font-family : 'Open Sans', sans-serif;
-	font-size   : 12pt;
-}
