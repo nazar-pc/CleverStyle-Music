@@ -45,6 +45,14 @@
               return music_library.get_meta(all[index], function(data) {
                 data.playing = data.id === current_id ? 'yes' : 'no';
                 data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
+                data.artist_title = [];
+                if (data.artist) {
+                  data.artist_title.push(data.artist);
+                }
+                if (data.title) {
+                  data.artist_title.push(data.title);
+                }
+                data.artist_title = data.artist_title.join(' — ') || 'Unknown';
                 list.push(data);
                 ++index;
                 return get_next_item();

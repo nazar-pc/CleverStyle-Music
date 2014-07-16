@@ -160,13 +160,13 @@
             music_library.get_meta(id, function(data) {
               if (data) {
                 element.title = data.title || 'Unknown';
-                element.artist = data.artist || 'Unknown';
-                if (data.album) {
+                element.artist = data.artist;
+                if (data.artist && data.album) {
                   return element.artist += ": " + data.album;
                 }
               } else {
                 element.title = 'Unknown';
-                return element.artist = 'Unknown';
+                return element.artist = '';
               }
             });
             return callback();

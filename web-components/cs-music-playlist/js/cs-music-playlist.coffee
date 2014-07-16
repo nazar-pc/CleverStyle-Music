@@ -29,8 +29,14 @@ Polymer(
 				get_next_item	= =>
 					if index < count
 						music_library.get_meta(all[index], (data) =>
-							data.playing	= if data.id == current_id then 'yes' else 'no'
-							data.icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
+							data.playing		= if data.id == current_id then 'yes' else 'no'
+							data.icon			= if cs.bus.state.player == 'playing' then 'play' else 'pause'
+							data.artist_title	= []
+							if data.artist
+								data.artist_title.push(data.artist)
+							if data.title
+								data.artist_title.push(data.title)
+							data.artist_title	= data.artist_title.join(' — ') || 'Unknown'
 							list.push(data)
 							++index
 							get_next_item()

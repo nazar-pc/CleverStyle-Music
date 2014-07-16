@@ -32,7 +32,8 @@
       var _this = this;
       if (!this.found) {
         return cs.music_library.rescan(function() {
-          alert('Library updated');
+          music_playlist.refresh();
+          alert('Library updated, playlist updated');
           _this.back();
           return setTimeout((function() {
             this.found = 0;

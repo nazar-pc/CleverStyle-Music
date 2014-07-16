@@ -21,7 +21,8 @@ Polymer(
 	open	: ->
 		if !@found
 			cs.music_library.rescan(=>
-				alert 'Library updated'
+				music_playlist.refresh()
+				alert 'Library updated, playlist updated'
 				@back()
 				setTimeout (->
 					@found	= 0

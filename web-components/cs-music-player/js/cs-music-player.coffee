@@ -145,12 +145,12 @@ Polymer(
 					music_library.get_meta(id, (data) ->
 						if data
 							element.title	= data.title || 'Unknown'
-							element.artist	= data.artist || 'Unknown'
-							if data.album
+							element.artist	= data.artist
+							if data.artist && data.album
 								element.artist += ": #{data.album}"
 						else
 							element.title	= 'Unknown'
-							element.artist	= 'Unknown'
+							element.artist	= ''
 					)
 					callback()
 				get_file.onerror = (e) ->

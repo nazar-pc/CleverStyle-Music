@@ -104,7 +104,32 @@ do ->
 														store(metadata)
 													)
 													asset.on('error', ->
-														callback()
+														# Get filename
+														metadata	= data.name.split('/').pop()
+														# remove extension
+														metadata	= metadata.split('.')
+														metadata.pop()
+														metadata.join('.')
+														# Try to split filename on artist and title
+														metadata	= metadata.split('–', 2)
+														if metadata.length == 2
+															store(
+																artist	: $.trim(metadata[0])
+																title	: $.trim(metadata[1])
+															)
+															return
+														# Second trial
+														metadata	= metadata[0].split(' - ', 2)
+														if metadata.length == 2
+															store(
+																artist	: $.trim(metadata[0])
+																title	: $.trim(metadata[1])
+															)
+															return
+														# Assume that filename is title
+														store(
+															title	: $.trim(metadata[0])
+														)
 													)
 											)
 		get				: (id, callback) ->
@@ -179,8 +204,26 @@ do ->
 										library_size = calculated_size
 									callback(calculated_size)
 		rescan			: (done_callback) ->
-			done_callback	= (done_callback || ->).bind(@)
-			found_files		= 0
+			known_extensions	= [
+				'mp3',
+
+				'm4a',
+				'm4b',
+				'm4p',
+				'm4r',
+				'3gp',
+				'mp4',
+				'aac',
+
+				'ogg',
+				'oga',
+				'opus',
+				'flac',
+
+				'alac'
+			]
+			done_callback		= (done_callback || ->).bind(@)
+			found_files			= 0
 			@onready ->
 				new_files		= []
 				remove_old_files	= =>
@@ -195,25 +238,28 @@ do ->
 					cursor.onsuccess	= =>
 						if cursor.result
 							file = cursor.result
-							db
-								.transaction(['music'])
-									.objectStore('music')
-										.index('name')
-											.get(file.name).onsuccess	= (e) =>
-												if !e.target.result
-													@add(file.name, ->
-														@parse_metadata(file.name, ->
-															new_files.push(file.name)
-															++found_files
-															cs.bus.trigger('library/rescan/found', found_files)
-															cursor.continue()
+							if known_extensions.indexOf(file.name.split('.').pop()) != -1
+								db
+									.transaction(['music'])
+										.objectStore('music')
+											.index('name')
+												.get(file.name).onsuccess	= (e) =>
+													if !e.target.result
+														@add(file.name, ->
+															@parse_metadata(file.name, ->
+																new_files.push(file.name)
+																++found_files
+																cs.bus.trigger('library/rescan/found', found_files)
+																cursor.continue()
+															)
 														)
-													)
-												else
-													new_files.push(file.name)
-													++found_files
-													cs.bus.trigger('library/rescan/found', found_files)
-													cursor.continue()
+													else
+														new_files.push(file.name)
+														++found_files
+														cs.bus.trigger('library/rescan/found', found_files)
+														cursor.continue()
+							else
+								cursor.continue()
 						else
 							remove_old_files()
 					cursor.onerror = ->
