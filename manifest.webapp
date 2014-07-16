@@ -1,6 +1,6 @@
 {
 	"name"        : "CleverStyle Music",
-	"version"     : "0.27.0+build-30",
+	"version"     : "0.27.1+build-31",
 	"launch_path" : "/index.html",
 	"description" : "CleverStyle Music",
 	"icons"       : {

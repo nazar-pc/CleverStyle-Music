@@ -15,15 +15,17 @@
 }
 
 cs-playlist-items {
-	height     : calc(100vh - 3rem);
-	overflow-y : auto;
-	position   : absolute;
+	height       : calc(100vh - 3rem);
+	margin-right : -10vw; //Hack for hiding scroll bar in Firefox
+	overflow-x   : hidden; //Hack for hiding scroll bar in Firefox
+	overflow-y   : auto;
+	position     : absolute;
 
 	cs-playlist-item {
-		cursor  : pointer;
-		display : block;
-		padding : .5rem;
-		width   : 100%;
+		cursor        : pointer;
+		display       : block;
+		padding       : .5rem 10vw .5rem .5rem; //Hack for hiding scroll bar in Firefox
+		width         : 100%;
 
 		&:hover,
 		&[playing=yes] {

@@ -9,6 +9,7 @@
 :host {
 	align-items         : center;
 	-webkit-align-items : center;
+	cursor              : pointer;
 	display             : flex;
 	display             : -webkit-flex;
 	height              : 1rem;
@@ -50,6 +51,7 @@
 }
 
 .time {
+	cursor      : default;
 	display     : inline-block;
 	text-align  : center;
 	text-shadow : 0 0 .1rem #000;

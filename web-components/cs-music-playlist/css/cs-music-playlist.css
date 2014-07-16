@@ -14,12 +14,14 @@
 
 cs-playlist-items {
   height: calc(100vh - 3rem);
+  margin-right: -10vw;
+  overflow-x: hidden;
   overflow-y: auto;
   position: absolute; }
   cs-playlist-items cs-playlist-item {
     cursor: pointer;
     display: block;
-    padding: .5rem;
+    padding: .5rem 10vw .5rem .5rem;
     width: 100%; }
     cs-playlist-items cs-playlist-item:hover, cs-playlist-items cs-playlist-item[playing=yes] {
       background: rgba(0, 0, 0, 0.3); }
