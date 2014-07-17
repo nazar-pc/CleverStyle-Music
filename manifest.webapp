@@ -1,12 +1,12 @@
 {
 	"name"        : "CleverStyle Music",
-	"version"     : "0.31.0+build-35",
+	"version"     : "0.31.1+build-36",
 	"launch_path" : "/index.html",
 	"description" : "CleverStyle Music",
 	"icons"       : {
-		"60" : "/img/logo-128.png",
+		"60" : "/img/logo-60.png",
 		"128" : "/img/logo-128.png",
-		"256" : "/img/logo-128.png"
+		"256" : "/img/logo-256.png"
 	},
 	"developer"   : {
 		"name" : "Nazar Mokrynskyi",
