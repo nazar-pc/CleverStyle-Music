@@ -1,0 +1,7 @@
+library-empty-want-to-rescan		= Music library is empty. Do you want to update your library?
+rescan-library						= Re-scan library
+playlist							= Playlist
+searching-for-music					= Searching for music...
+files-found							= files found
+library-rescanned-playlist-updated	= Library re-scanned, playlist updated
+cant-play-this-file					= Can't play this file: {{error}}

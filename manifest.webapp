@@ -1,18 +1,18 @@
 {
-	"name"        : "CleverStyle Music",
-	"version"     : "0.32.0+build-37",
-	"launch_path" : "/index.html",
-	"description" : "CleverStyle Music",
-	"icons"       : {
-		"60" : "/img/logo-60.png",
+	"name"           : "CleverStyle Music",
+	"description"    : "Simple and nice music player that supports mp3, mp4, flac and alac music files formats",
+	"version"        : "0.33.0+build-38",
+	"launch_path"    : "/index.html",
+	"icons"          : {
+		"60"  : "/img/logo-60.png",
 		"128" : "/img/logo-128.png",
 		"256" : "/img/logo-256.png"
 	},
-	"developer"   : {
+	"developer"      : {
 		"name" : "Nazar Mokrynskyi",
 		"url"  : "http://cleverstyle.org"
 	},
-	"permissions" : {
+	"permissions"    : {
 		"device-storage:music"  : {
 			"description" : "Music storage access",
 			"access"      : "readonly"
@@ -24,5 +24,16 @@
 			"description" : "Play sound in background"
 		}
 	},
-	"type"        : "privileged"
+	"type"           : "privileged",
+	"default_locale" : "en",
+	"locales"        : {
+		"ru" : {
+			"name"        : "CleverStyle Музыка",
+			"description" : "Простой и красивый музыкальный плеер, который поддерживает воспроизведение музыкальних файлов форматов mp3, mp4, flac и alac"
+		},
+		"uk" : {
+			"name"        : "CleverStyle Музика",
+			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac"
+		}
+	}
 }

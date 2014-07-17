@@ -1,0 +1,7 @@
+library-empty-want-to-rescan		= Музична бібліотека пуста. Ви хочете оновити свою бібліотеку?
+rescan-library						= Пересканувати бібліотеку
+playlist							= Список відтворення
+searching-for-music					= Пошук музики...
+files-found							= файлів знайдено
+library-rescanned-playlist-updated	= Бібліотеку перескановано, список відтворення оновлено
+cant-play-this-file					= Не можу відтворити цей файл: {{error}}

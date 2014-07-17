@@ -19,6 +19,8 @@
   $body = $(document.querySelector('body'));
 
   Polymer('cs-menu', {
+    rescan_library_text: _('rescan-library'),
+    playlist_text: _('playlist'),
     rescan: function() {
       $body.addClass('library-rescan');
       return setTimeout((function() {

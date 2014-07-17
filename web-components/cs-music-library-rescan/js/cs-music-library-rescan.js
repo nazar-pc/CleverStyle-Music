@@ -21,6 +21,8 @@
   player = document.querySelector('cs-music-player');
 
   Polymer('cs-music-library-rescan', {
+    searching_for_music_text: _('searching-for-music'),
+    files_found: _('files-found'),
     created: function() {
       var _this = this;
       return cs.bus.on('library/rescan/found', function(found) {
@@ -33,7 +35,7 @@
       if (!this.found) {
         return cs.music_library.rescan(function() {
           music_playlist.refresh();
-          alert('Library updated, playlist updated');
+          alert(_('library-rescanned-playlist-updated'));
           _this.back();
           return setTimeout((function() {
             this.found = 0;

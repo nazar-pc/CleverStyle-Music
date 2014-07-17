@@ -218,7 +218,9 @@
             return callback();
           };
           return get_file.onerror = function(e) {
-            return alert("Can't play this file: " + e.target.error.name);
+            return alert(_('cant-play-this-file', {
+              error: e.target.error.name
+            }));
           };
         });
       } else {

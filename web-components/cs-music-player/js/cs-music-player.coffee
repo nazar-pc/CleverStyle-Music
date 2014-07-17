@@ -178,7 +178,10 @@ Polymer(
 					)
 					callback()
 				get_file.onerror = (e) ->
-					alert "Can't play this file: #{e.target.error.name}"
+					alert _(
+						'cant-play-this-file'
+						error	: e.target.error.name
+					)
 			)
 		else
 			music_playlist.current (id) =>

@@ -12,12 +12,14 @@ $body			= $(document.querySelector('body'))
 
 Polymer(
 	'cs-menu'
-	rescan	: ->
+	rescan_library_text	: _('rescan-library')
+	playlist_text		: _('playlist')
+	rescan				: ->
 		$body.addClass('library-rescan')
 		setTimeout (->
 			document.querySelector('cs-music-library-rescan').open()
 		), 200
-	playlist	: ->
+	playlist			: ->
 		$body.removeClass('menu')
 		setTimeout (->
 			$body.addClass('playlist')
@@ -25,6 +27,6 @@ Polymer(
 				document.querySelector('cs-music-playlist').open()
 			), 200
 		), 200
-	back	: ->
+	back				: ->
 		$body.removeClass('menu')
 )

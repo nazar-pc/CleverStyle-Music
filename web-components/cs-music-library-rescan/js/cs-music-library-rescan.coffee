@@ -13,16 +13,18 @@ player			= document.querySelector('cs-music-player')
 
 Polymer(
 	'cs-music-library-rescan'
-	created	: ->
+	searching_for_music_text	: _('searching-for-music')
+	files_found					: _('files-found')
+	created						: ->
 		cs.bus.on('library/rescan/found', (found) =>
 			@found	= found
 		)
-	found	: 0
-	open	: ->
+	found						: 0
+	open						: ->
 		if !@found
 			cs.music_library.rescan(=>
 				music_playlist.refresh()
-				alert 'Library updated, playlist updated'
+				alert _('library-rescanned-playlist-updated')
 				@back()
 				setTimeout (->
 					@found	= 0
@@ -30,7 +32,7 @@ Polymer(
 						player.play()
 				), 400
 			)
-	back	: ->
+	back						: ->
 		$body.removeClass('library-rescan')
 		setTimeout (->
 			$body.removeClass('menu')
