@@ -145,7 +145,8 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 		'mp4a' : true, // MPEG-4 audio
 		'samr' : true, // AMR narrow-band speech
 		'sawb' : true, // AMR wide-band speech
-		'sawp' : true  // Extended AMR wide-band audio
+		'sawp' : true,  // Extended AMR wide-band audio
+		'alac' : true
 	};
 
 	// Start off with some default metadata
@@ -298,19 +299,8 @@ function parseAudioMetadata (blob, metadataCallback, errorCallback) {
 
 		var id3revision = header.readUnsignedByte();
 		var id3flags = header.readUnsignedByte();
-		var needs_unsynchronization = ((id3flags & 0x80) !== 0);
 		var has_extended_header = ((id3flags & 0x40) !== 0);
 		var length = header.readID3Uint28BE();
-
-		// XXX
-		// For now, we just punt if unsynchronization is required.
-		// That's what the old metadata parser did, too.
-		// I don't think it is very common in mp3 files today.
-		if (needs_unsynchronization) {
-			console.warn('mp3 file uses unsynchronization. Can\'t read metadata');
-			metadataCallback(metadata);
-			return;
-		}
 
 		// Get the entire ID3 data block and pass it to parseID3()
 		// May be async, or sync, depending on whether we read enough

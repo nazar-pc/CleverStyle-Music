@@ -32,8 +32,10 @@
         return _this.seeking(data.percents);
       });
       this.player = (function() {
-        var object_url, player_element;
+        var aurora_player, object_url, play_with_aurora, player_element, playing_started;
         player_element = document.createElement('audio');
+        aurora_player = null;
+        playing_started = 0;
         player_element.mozAudioChannelType = 'content';
         object_url = null;
         player_element.addEventListener('loadeddata', function() {
@@ -41,7 +43,11 @@
           return object_url = null;
         });
         player_element.addEventListener('error', function() {
-          return _this.player.pause();
+          if (new Date - playing_started > 1000) {
+            return _this.player.pause();
+          } else {
+            return play_with_aurora();
+          }
         });
         player_element.addEventListener('ended', function() {
           return _this.next();
@@ -54,31 +60,71 @@
           seeking_bar.duration = duration ? time_format(duration) : '00:00';
           return seeking_bar.progress_percentage = duration ? current_time / duration * 100 : 0;
         });
+        play_with_aurora = function() {
+          aurora_player = AV.Player.fromURL(object_url);
+          aurora_player.on('ready', function() {
+            return this.device.device.node.context.mozAudioChannelType = 'content';
+          });
+          aurora_player.on('end', function() {
+            return _this.next();
+          });
+          aurora_player.on('duration', function(duration) {
+            duration /= 1000;
+            return aurora_player.on('progress', function() {
+              var current_time;
+              current_time = aurora_player.currentTime / 1000;
+              seeking_bar.current_time = time_format(current_time);
+              seeking_bar.duration = duration ? time_format(duration) : '00:00';
+              return seeking_bar.progress_percentage = duration ? current_time / duration * 100 : 0;
+            });
+          });
+          return aurora_player.play();
+        };
         return {
-          open_new_file: function(blob) {
+          open_new_file: function(blob, filename) {
+            playing_started = new Date;
             if (this.playing) {
               this.pause();
+            }
+            if (aurora_player) {
+              aurora_player.stop();
+              aurora_player = null;
             }
             if (object_url) {
               URL.revokeObjectURL(object_url);
             }
             object_url = URL.createObjectURL(blob);
-            player_element.src = object_url;
-            player_element.load();
-            this.file_loaded = true;
-            player_element.play();
-            return this.playing = true;
+            if (filename.substr(0, -4) === 'alac') {
+              return play_with_aurora();
+            } else {
+              player_element.src = object_url;
+              player_element.load();
+              this.file_loaded = true;
+              player_element.play();
+              return this.playing = true;
+            }
           },
           play: function() {
-            player_element.play();
+            playing_started = new Date;
+            if (aurora_player) {
+              aurora_player.play();
+            } else {
+              player_element.play();
+            }
             return this.playing = true;
           },
           pause: function() {
-            player_element.pause();
+            if (aurora_player) {
+              aurora_player.pause();
+            } else {
+              player_element.pause();
+            }
             return this.playing = false;
           },
           seeking: function(percents) {
-            if (player_element.duration) {
+            if (aurora_player) {
+              return aurora_player.seek(aurora_player.duration * percents / 100);
+            } else if (player_element.duration) {
               player_element.pause();
               player_element.currentTime = player_element.duration * percents / 100;
               return player_element.play();
@@ -121,7 +167,7 @@
           get_file.onsuccess = function() {
             var blob;
             blob = this.result;
-            element.player.open_new_file(blob);
+            element.player.open_new_file(blob, data.name);
             (function() {
               var update_cover, update_cover_timeout;
               update_cover = function(cover) {

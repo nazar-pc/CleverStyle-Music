@@ -24,6 +24,8 @@ Polymer(
 		)
 		@player		= do =>
 			player_element						= document.createElement('audio')
+			aurora_player						= null
+			playing_started						= 0
 			# Change channel type to play in background
 			player_element.mozAudioChannelType	= 'content'
 			object_url							= null
@@ -32,38 +34,75 @@ Polymer(
 				object_url	= null
 			)
 			player_element.addEventListener('error', =>
-				@player.pause()
+				if new Date - playing_started > 1000
+					@player.pause()
+				else
+					play_with_aurora()
 			)
 			player_element.addEventListener('ended', =>
 				@next()
 			)
 			player_element.addEventListener('timeupdate', =>
-				current_time	= player_element.currentTime
-				duration		= player_element.duration
+				current_time					= player_element.currentTime
+				duration						= player_element.duration
 				seeking_bar.current_time		= time_format(current_time)
 				seeking_bar.duration			= if duration then time_format(duration) else '00:00'
 				seeking_bar.progress_percentage	= if duration then current_time / duration * 100 else 0
 			)
+			play_with_aurora	= =>
+				aurora_player	= AV.Player.fromURL(object_url)
+				aurora_player.on('ready', ->
+					@device.device.node.context.mozAudioChannelType	= 'content'
+				)
+				aurora_player.on('end', =>
+					@next()
+				)
+				aurora_player.on('duration', (duration) ->
+					duration	/= 1000
+					aurora_player.on('progress', ->
+						current_time					= aurora_player.currentTime / 1000
+						seeking_bar.current_time		= time_format(current_time)
+						seeking_bar.duration			= if duration then time_format(duration) else '00:00'
+						seeking_bar.progress_percentage	= if duration then current_time / duration * 100 else 0
+					)
+				)
+				aurora_player.play()
 			return {
-				open_new_file	: (blob) ->
-					if this.playing
+				open_new_file	: (blob, filename) ->
+					playing_started	= new Date
+					if @playing
 						@pause()
+					if aurora_player
+						aurora_player.stop()
+						aurora_player	= null
 					if object_url
 						URL.revokeObjectURL(object_url)
 					object_url			= URL.createObjectURL(blob)
-					player_element.src	= object_url
-					player_element.load()
-					this.file_loaded	= true
-					player_element.play()
-					this.playing	= true
+					if filename.substr(0, -4) == 'alac'
+						play_with_aurora()
+					else
+						player_element.src	= object_url
+						player_element.load()
+						this.file_loaded	= true
+						player_element.play()
+						@playing		= true
 				play			: ->
-					player_element.play()
-					this.playing	= true
+					playing_started	= new Date
+					if	aurora_player
+						aurora_player.play()
+					else
+						player_element.play()
+					@playing	= true
 				pause			: ->
-					player_element.pause()
-					this.playing	= false
+					if aurora_player
+						aurora_player.pause()
+					else
+						player_element.pause()
+					@playing	= false
 				seeking			: (percents) ->
-					if player_element.duration
+					if aurora_player
+						aurora_player.seek(aurora_player.duration * percents / 100)
+					else if player_element.duration
 						player_element.pause()
 						player_element.currentTime	= player_element.duration * percents / 100
 						player_element.play()
@@ -96,10 +135,7 @@ Polymer(
 				get_file	= music_storage.get(data.name)
 				get_file.onsuccess = ->
 					blob			= @result
-#					file_to_play	= URL.createObjectURL(@result)
-					element.player.open_new_file(blob)
-					#player			= AV.Player.fromURL(file_to_play)
-					# Change channel type to play in background
+					element.player.open_new_file(blob, data.name)
 					do ->
 						update_cover									= (cover) ->
 							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= if cover then "url(#{cover})" else 'none'
@@ -127,18 +163,6 @@ Polymer(
 									cover	= URL.createObjectURL(cover)
 								update_cover(cover)
 						)
-#					player.on('ready', ->
-#						@device.device.node.context.mozAudioChannelType	= 'content'
-#						if data.name.substr(-4) != '.mp3'
-#							setTimeout (->
-#								update_cover(player.asset.metadata.coverArt?.toBlobURL())
-#							), 0
-#					)
-#					# Next track after end of current
-#					player.on('end', ->
-#						element.next()
-#					)
-#					player.play()
 					play_button.icon = 'pause'
 					cs.bus.trigger('player/play', id)
 					cs.bus.state.player	= 'playing'
