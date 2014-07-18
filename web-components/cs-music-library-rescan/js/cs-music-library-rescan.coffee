@@ -14,7 +14,7 @@ player			= document.querySelector('cs-music-player')
 Polymer(
 	'cs-music-library-rescan'
 	searching_for_music_text	: _('searching-for-music')
-	files_found					: _('files-found')
+	files_found_text			: _('files-found')
 	created						: ->
 		cs.bus.on('library/rescan/found', (found) =>
 			@found	= found

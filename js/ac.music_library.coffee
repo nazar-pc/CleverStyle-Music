@@ -172,7 +172,7 @@ do ->
 									result.continue()
 								else
 									callback(all)
-		del				: (id) ->
+		del				: (id, callback) ->
 			@onready ->
 				db
 					.transaction(['music'], 'readwrite')
@@ -183,6 +183,8 @@ do ->
 									.transaction(['meta'], 'readwrite')
 										.objectStore('meta')
 											.delete(id)
+											.onsuccess	= ->
+												callback()
 		size			: (callback, filter) ->
 			callback	= (callback || ->).bind(@)
 			filter		= filter || -> true
@@ -228,11 +230,19 @@ do ->
 				new_files		= []
 				remove_old_files	= =>
 					@get_all (all) =>
+						id_to_remove	= []
 						all.forEach (file) =>
 							if file.name not in new_files
-								@del(file.id)
+								id_to_remove.push(file.id)
 							return
-						done_callback()
+						remove	= (index) =>
+							if id_to_remove[index]
+								@del(id_to_remove[index], ->
+									remove(index + 1)
+								)
+							else
+								done_callback()
+						remove(0)
 				do =>
 					cursor				= music_storage.enumerate()
 					cursor.onsuccess	= =>

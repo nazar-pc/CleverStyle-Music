@@ -198,10 +198,12 @@
           };
         });
       },
-      del: function(id) {
+      del: function(id, callback) {
         return this.onready(function() {
           return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id).onsuccess = function() {
-            return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id);
+            return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id).onsuccess = function() {
+              return callback();
+            };
           };
         });
       },
@@ -244,13 +246,24 @@
           new_files = [];
           remove_old_files = function() {
             return _this.get_all(function(all) {
+              var id_to_remove, remove;
+              id_to_remove = [];
               all.forEach(function(file) {
                 var _ref;
                 if (_ref = file.name, __indexOf.call(new_files, _ref) < 0) {
-                  _this.del(file.id);
+                  id_to_remove.push(file.id);
                 }
               });
-              return done_callback();
+              remove = function(index) {
+                if (id_to_remove[index]) {
+                  return _this.del(id_to_remove[index], function() {
+                    return remove(index + 1);
+                  });
+                } else {
+                  return done_callback();
+                }
+              };
+              return remove(0);
             });
           };
           (function() {

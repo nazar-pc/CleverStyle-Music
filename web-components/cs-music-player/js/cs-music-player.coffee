@@ -11,7 +11,6 @@ music_library	= cs.music_library
 music_playlist	= cs.music_playlist
 body			= document.querySelector('body')
 seeking_bar		= null
-#file_to_play	= null
 
 Polymer(
 	'cs-music-player'
@@ -139,17 +138,21 @@ Polymer(
 					do ->
 						update_cover									= (cover) ->
 							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= if cover then "url(#{cover})" else 'none'
-							cover_bg															= cover || 'img/bg.jpg'
-							body.style.backgroundImage											= "url(#{cover_bg})"
 							if cover
+								el							= document.createElement('div')
+								el.style.backgroundImage	= "url(#{cover})"
 								new Blur(
-									el			: body
+									el			: el
 									path		: cover
 									radius		: 20
+									callback	: ->
+										body.style.backgroundImage	= el.style.backgroundImage
+										setTimeout (->
+											URL.revokeObjectURL(cover)
+										), 500
 								)
-							setTimeout (->
-								URL.revokeObjectURL(cover)
-							), 500
+							else
+								body.style.backgroundImage	= 'url(img/bg.jpg)'
 						update_cover_timeout = setTimeout (->
 							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= 'none'
 							body.backgroundImage												= "url(img/bg.jpg)"

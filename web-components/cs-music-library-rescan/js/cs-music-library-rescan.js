@@ -22,7 +22,7 @@
 
   Polymer('cs-music-library-rescan', {
     searching_for_music_text: _('searching-for-music'),
-    files_found: _('files-found'),
+    files_found_text: _('files-found'),
     created: function() {
       var _this = this;
       return cs.bus.on('library/rescan/found', function(found) {

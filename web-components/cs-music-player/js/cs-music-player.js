@@ -171,20 +171,25 @@
             (function() {
               var update_cover, update_cover_timeout;
               update_cover = function(cover) {
-                var cover_bg;
+                var el;
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = cover ? "url(" + cover + ")" : 'none';
-                cover_bg = cover || 'img/bg.jpg';
-                body.style.backgroundImage = "url(" + cover_bg + ")";
                 if (cover) {
-                  new Blur({
-                    el: body,
+                  el = document.createElement('div');
+                  el.style.backgroundImage = "url(" + cover + ")";
+                  return new Blur({
+                    el: el,
                     path: cover,
-                    radius: 20
+                    radius: 20,
+                    callback: function() {
+                      body.style.backgroundImage = el.style.backgroundImage;
+                      return setTimeout((function() {
+                        return URL.revokeObjectURL(cover);
+                      }), 500);
+                    }
                   });
+                } else {
+                  return body.style.backgroundImage = 'url(img/bg.jpg)';
                 }
-                return setTimeout((function() {
-                  return URL.revokeObjectURL(cover);
-                }), 500);
               };
               update_cover_timeout = setTimeout((function() {
                 element.shadowRoot.querySelector('cs-cover').style.backgroundImage = 'none';
