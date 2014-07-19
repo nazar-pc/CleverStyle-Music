@@ -16,11 +16,15 @@ html {
 }
 
 @media (min-resolution : 2dppx), (-webkit-min-device-pixel-ratio: 2) {
-	font-size   : 16pt;
+	html {
+		font-size : 16pt;
+	}
 }
 
 @media (min-resolution : 3dppx), (-webkit-min-device-pixel-ratio: 3) {
-	font-size   : 22pt;
+	html {
+		font-size : 22pt;
+	}
 }
 
 body {
