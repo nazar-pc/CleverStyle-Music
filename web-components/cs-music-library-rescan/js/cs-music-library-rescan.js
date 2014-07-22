@@ -10,48 +10,46 @@
 
 
 (function() {
-  var $body, music_library, music_playlist, player;
 
-  music_library = cs.music_library;
-
-  music_playlist = cs.music_playlist;
-
-  $body = $(document.querySelector('body'));
-
-  player = document.querySelector('cs-music-player');
-
-  Polymer('cs-music-library-rescan', {
-    searching_for_music_text: _('searching-for-music'),
-    files_found_text: _('files-found'),
-    created: function() {
-      var _this = this;
-      return cs.bus.on('library/rescan/found', function(found) {
-        return _this.found = found;
-      });
-    },
-    found: 0,
-    open: function() {
-      var _this = this;
-      if (!this.found) {
-        return cs.music_library.rescan(function() {
-          music_playlist.refresh();
-          alert(_('library-rescanned-playlist-updated'));
-          _this.back();
-          return setTimeout((function() {
-            this.found = 0;
-            return player.next(function() {
-              return player.play();
-            });
-          }), 400);
+  document.webL10n.ready(function() {
+    var $body, music_library, music_playlist, player;
+    music_library = cs.music_library;
+    music_playlist = cs.music_playlist;
+    $body = $(document.querySelector('body'));
+    player = document.querySelector('cs-music-player');
+    return Polymer('cs-music-library-rescan', {
+      searching_for_music_text: _('searching-for-music'),
+      files_found_text: _('files-found'),
+      created: function() {
+        var _this = this;
+        return cs.bus.on('library/rescan/found', function(found) {
+          return _this.found = found;
         });
+      },
+      found: 0,
+      open: function() {
+        var _this = this;
+        if (!this.found) {
+          return cs.music_library.rescan(function() {
+            music_playlist.refresh();
+            alert(_('library-rescanned-playlist-updated'));
+            _this.back();
+            return setTimeout((function() {
+              this.found = 0;
+              return player.next(function() {
+                return player.play();
+              });
+            }), 400);
+          });
+        }
+      },
+      back: function() {
+        $body.removeClass('library-rescan');
+        return setTimeout((function() {
+          return $body.removeClass('menu');
+        }), 200);
       }
-    },
-    back: function() {
-      $body.removeClass('library-rescan');
-      return setTimeout((function() {
-        return $body.removeClass('menu');
-      }), 200);
-    }
+    });
   });
 
 }).call(this);

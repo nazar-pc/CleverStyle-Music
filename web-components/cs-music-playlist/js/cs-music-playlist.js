@@ -10,109 +10,106 @@
 
 
 (function() {
-  var body, music_library, music_playlist, player, scroll_interval;
 
-  music_library = cs.music_library;
-
-  music_playlist = cs.music_playlist;
-
-  body = document.querySelector('body');
-
-  player = document.querySelector('cs-music-player');
-
-  scroll_interval = 0;
-
-  Polymer('cs-music-playlist', {
-    created: function() {
-      var _this = this;
-      return cs.bus.on('player/play', function(id) {
-        if (_this.list.length) {
-          return _this.update(id);
-        }
-      });
-    },
-    list: [],
-    open: function() {
-      var _this = this;
-      return music_playlist.current(function(current_id) {
-        return music_playlist.get_all(function(all) {
-          var count, get_next_item, index, list;
-          index = 0;
-          list = [];
-          count = all.length;
-          get_next_item = function() {
-            if (index < count) {
-              return music_library.get_meta(all[index], function(data) {
-                data.playing = data.id === current_id ? 'yes' : 'no';
-                data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-                data.artist_title = [];
-                if (data.artist) {
-                  data.artist_title.push(data.artist);
-                }
-                if (data.title) {
-                  data.artist_title.push(data.title);
-                }
-                data.artist_title = data.artist_title.join(' — ') || 'Unknown';
-                list.push(data);
-                ++index;
-                return get_next_item();
-              });
-            } else {
-              _this.list = list;
-              return scroll_interval = setInterval((function() {
-                var item, items_container;
-                items_container = _this.shadowRoot.querySelector('cs-playlist-items');
-                if (items_container) {
-                  item = items_container.querySelector('cs-playlist-item[playing=yes]');
-                  clearInterval(scroll_interval);
-                  scroll_interval = 0;
-                  return items_container.scrollTop = item.offsetTop;
-                }
-              }), 100);
-            }
-          };
-          return get_next_item();
-        });
-      });
-    },
-    play: function(e) {
-      var _this = this;
-      return music_playlist.current(function(old_id) {
-        music_playlist.set_current(e.impl.target.dataset.index);
-        return music_playlist.current(function(id) {
-          if (id !== old_id) {
-            player.play(id);
-            return _this.update(id);
-          } else {
-            player.play();
+  document.webL10n.ready(function() {
+    var body, music_library, music_playlist, player, scroll_interval;
+    music_library = cs.music_library;
+    music_playlist = cs.music_playlist;
+    body = document.querySelector('body');
+    player = document.querySelector('cs-music-player');
+    scroll_interval = 0;
+    return Polymer('cs-music-playlist', {
+      created: function() {
+        var _this = this;
+        return cs.bus.on('player/play', function(id) {
+          if (_this.list.length) {
             return _this.update(id);
           }
         });
-      });
-    },
-    update: function(new_id) {
-      var _this = this;
-      return this.list.forEach(function(data, index) {
-        if (data.id === new_id) {
-          _this.list[index].playing = 'yes';
-          return _this.list[index].icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-        } else {
-          _this.list[index].playing = 'no';
-          return delete _this.list[index].icon;
-        }
-      });
-    },
-    back: function() {
-      var _this = this;
-      $(body).removeClass('playlist');
-      return setTimeout((function() {
-        _this.list = [];
-        if (scroll_interval) {
-          clearInterval(scroll_interval);
-          return scroll_interval = 0;
-        }
-      }), 500);
-    }
+      },
+      list: [],
+      open: function() {
+        var _this = this;
+        return music_playlist.current(function(current_id) {
+          return music_playlist.get_all(function(all) {
+            var count, get_next_item, index, list;
+            index = 0;
+            list = [];
+            count = all.length;
+            get_next_item = function() {
+              if (index < count) {
+                return music_library.get_meta(all[index], function(data) {
+                  data.playing = data.id === current_id ? 'yes' : 'no';
+                  data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
+                  data.artist_title = [];
+                  if (data.artist) {
+                    data.artist_title.push(data.artist);
+                  }
+                  if (data.title) {
+                    data.artist_title.push(data.title);
+                  }
+                  data.artist_title = data.artist_title.join(' — ') || 'Unknown';
+                  list.push(data);
+                  ++index;
+                  return get_next_item();
+                });
+              } else {
+                _this.list = list;
+                return scroll_interval = setInterval((function() {
+                  var item, items_container;
+                  items_container = _this.shadowRoot.querySelector('cs-playlist-items');
+                  if (items_container) {
+                    item = items_container.querySelector('cs-playlist-item[playing=yes]');
+                    clearInterval(scroll_interval);
+                    scroll_interval = 0;
+                    return items_container.scrollTop = item.offsetTop;
+                  }
+                }), 100);
+              }
+            };
+            return get_next_item();
+          });
+        });
+      },
+      play: function(e) {
+        var _this = this;
+        return music_playlist.current(function(old_id) {
+          music_playlist.set_current(e.impl.target.dataset.index);
+          return music_playlist.current(function(id) {
+            if (id !== old_id) {
+              player.play(id);
+              return _this.update(id);
+            } else {
+              player.play();
+              return _this.update(id);
+            }
+          });
+        });
+      },
+      update: function(new_id) {
+        var _this = this;
+        return this.list.forEach(function(data, index) {
+          if (data.id === new_id) {
+            _this.list[index].playing = 'yes';
+            return _this.list[index].icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
+          } else {
+            _this.list[index].playing = 'no';
+            return delete _this.list[index].icon;
+          }
+        });
+      },
+      back: function() {
+        var _this = this;
+        $(body).removeClass('playlist');
+        return setTimeout((function() {
+          _this.list = [];
+          if (scroll_interval) {
+            clearInterval(scroll_interval);
+            return scroll_interval = 0;
+          }
+        }), 500);
+      }
+    });
   });
 
 }).call(this);

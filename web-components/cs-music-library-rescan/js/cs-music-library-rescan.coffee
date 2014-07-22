@@ -6,35 +6,36 @@
  * @license     MIT License, see license.txt
 ###
 
-music_library	= cs.music_library
-music_playlist	= cs.music_playlist
-$body			= $(document.querySelector('body'))
-player			= document.querySelector('cs-music-player')
+document.webL10n.ready ->
+	music_library	= cs.music_library
+	music_playlist	= cs.music_playlist
+	$body			= $(document.querySelector('body'))
+	player			= document.querySelector('cs-music-player')
 
-Polymer(
-	'cs-music-library-rescan'
-	searching_for_music_text	: _('searching-for-music')
-	files_found_text			: _('files-found')
-	created						: ->
-		cs.bus.on('library/rescan/found', (found) =>
-			@found	= found
-		)
-	found						: 0
-	open						: ->
-		if !@found
-			cs.music_library.rescan(=>
-				music_playlist.refresh()
-				alert _('library-rescanned-playlist-updated')
-				@back()
-				setTimeout (->
-					@found	= 0
-					player.next ->
-						player.play()
-				), 400
+	Polymer(
+		'cs-music-library-rescan'
+		searching_for_music_text	: _('searching-for-music')
+		files_found_text			: _('files-found')
+		created						: ->
+			cs.bus.on('library/rescan/found', (found) =>
+				@found	= found
 			)
-	back						: ->
-		$body.removeClass('library-rescan')
-		setTimeout (->
-			$body.removeClass('menu')
-		), 200
-)
+		found						: 0
+		open						: ->
+			if !@found
+				cs.music_library.rescan(=>
+					music_playlist.refresh()
+					alert _('library-rescanned-playlist-updated')
+					@back()
+					setTimeout (->
+						@found	= 0
+						player.next ->
+							player.play()
+					), 400
+				)
+		back						: ->
+			$body.removeClass('library-rescan')
+			setTimeout (->
+				$body.removeClass('menu')
+			), 200
+	)

@@ -10,35 +10,34 @@
 
 
 (function() {
-  var $body, music_library, music_playlist;
 
-  music_library = cs.music_library;
-
-  music_playlist = cs.music_playlist;
-
-  $body = $(document.querySelector('body'));
-
-  Polymer('cs-menu', {
-    rescan_library_text: _('rescan-library'),
-    playlist_text: _('playlist'),
-    rescan: function() {
-      $body.addClass('library-rescan');
-      return setTimeout((function() {
-        return document.querySelector('cs-music-library-rescan').open();
-      }), 200);
-    },
-    playlist: function() {
-      $body.removeClass('menu');
-      return setTimeout((function() {
-        $body.addClass('playlist');
+  document.webL10n.ready(function() {
+    var $body, music_library, music_playlist;
+    music_library = cs.music_library;
+    music_playlist = cs.music_playlist;
+    $body = $(document.querySelector('body'));
+    return Polymer('cs-menu', {
+      rescan_library_text: _('rescan-library'),
+      playlist_text: _('playlist'),
+      rescan: function() {
+        $body.addClass('library-rescan');
         return setTimeout((function() {
-          return document.querySelector('cs-music-playlist').open();
+          return document.querySelector('cs-music-library-rescan').open();
         }), 200);
-      }), 200);
-    },
-    back: function() {
-      return $body.removeClass('menu');
-    }
+      },
+      playlist: function() {
+        $body.removeClass('menu');
+        return setTimeout((function() {
+          $body.addClass('playlist');
+          return setTimeout((function() {
+            return document.querySelector('cs-music-playlist').open();
+          }), 200);
+        }), 200);
+      },
+      back: function() {
+        return $body.removeClass('menu');
+      }
+    });
   });
 
 }).call(this);
