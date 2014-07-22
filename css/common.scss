@@ -15,34 +15,50 @@ html {
 	font-size   : 12pt;
 }
 
-@media (min-resolution : 2dppx), (-webkit-min-device-pixel-ratio: 2) {
+@media (min-resolution : 2dppx), (-webkit-min-device-pixel-ratio : 2) {
 	html {
 		font-size : 16pt;
 	}
 }
 
-@media (min-resolution : 3dppx), (-webkit-min-device-pixel-ratio: 3) {
+@media (min-resolution : 3dppx), (-webkit-min-device-pixel-ratio : 3) {
 	html {
 		font-size : 22pt;
 	}
 }
 
 body {
-	background : url(../img/bg.jpg) no-repeat center center / cover fixed;
-	color      : #fff;
-	overflow   : hidden;
-	transition : margin 200ms ease-out 0s;
+	background        : url(../img/bg.jpg) no-repeat center center / cover fixed;
+	color             : #fff;
+	display           : flex;
+	display           : -webkit-flex;
+	flex-wrap         : wrap;
+	-webkit-flex-wrap : wrap;
+	height            : 300vh;
+	margin            : -100vh 0 0 -100vw;
+	overflow          : hidden;
+	transition        : margin 200ms ease-out 0s;
+	width             : 300vw;
+
+	&[unresolved] {
+		transition : none;
+	}
 
 	&.menu {
-		margin-left : 100vw;
+		margin-left : 0;
 	}
 
 	&.playlist {
-		margin-top : -100vh;
+		margin-top : -200vh;
 	}
 
 	&.library-rescan {
-		margin-left : 100vw;
-		margin-top  : 100vh;
+		margin-left : 0;
+		margin-top  : 0;
+	}
+
+	> * {
+		height : 100vh;
+		width  : 100vw;
 	}
 }

@@ -8,10 +8,7 @@
 :host {
   background: rgba(0, 0, 0, 0.5);
   display: block;
-  height: 100vh;
-  margin: -300vh 0px 0px -100vw;
-  position: relative;
-  width: 100vw; }
+  position: relative; }
 
 cs-scanning-progress {
   padding: .5rem; }
