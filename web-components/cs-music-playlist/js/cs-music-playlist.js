@@ -12,13 +12,14 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var body, music_library, music_playlist, music_settings, player, scroll_interval;
+    var body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     music_settings = cs.music_settings;
     body = document.querySelector('body');
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
+    stop = false;
     return Polymer('cs-music-playlist', {
       list: [],
       created: function() {
@@ -43,6 +44,7 @@
       },
       open: function() {
         var _this = this;
+        stop = false;
         return music_playlist.current(function(current_id) {
           return music_playlist.get_all(function(all) {
             var count, get_next_item, index, list;
@@ -66,7 +68,7 @@
                   ++index;
                   return get_next_item();
                 });
-              } else {
+              } else if (!stop) {
                 _this.list = list;
                 return scroll_interval = setInterval((function() {
                   var item, items_container;
@@ -114,6 +116,7 @@
       back: function() {
         var _this = this;
         $(body).removeClass('playlist');
+        stop = true;
         return setTimeout((function() {
           _this.list = [];
           if (scroll_interval) {
