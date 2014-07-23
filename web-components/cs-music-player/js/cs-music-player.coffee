@@ -9,6 +9,7 @@
 music_storage	= navigator.getDeviceStorage('music')
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
+music_settings	= cs.music_settings
 body			= document.querySelector('body')
 seeking_bar		= null
 
@@ -39,7 +40,14 @@ Polymer(
 					play_with_aurora()
 			)
 			player_element.addEventListener('ended', =>
-				@next()
+				switch music_settings.repeat
+					when 'one'
+						music_playlist.current (id) =>
+							@play(id)
+					when 'all'
+						@next()
+					else
+						@play()
 			)
 			player_element.addEventListener('timeupdate', =>
 				current_time					= player_element.currentTime
@@ -54,7 +62,14 @@ Polymer(
 					@device.device.node.context.mozAudioChannelType	= 'content'
 				)
 				aurora_player.on('end', =>
-					@next()
+					switch music_settings.repeat
+						when 'one'
+							music_playlist.current (id) =>
+								@play(id)
+						when 'all'
+							@next()
+						else
+							@play()
 				)
 				aurora_player.on('duration', (duration) ->
 					duration	/= 1000

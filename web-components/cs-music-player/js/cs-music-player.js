@@ -10,13 +10,15 @@
 
 
 (function() {
-  var body, music_library, music_playlist, music_storage, seeking_bar;
+  var body, music_library, music_playlist, music_settings, music_storage, seeking_bar;
 
   music_storage = navigator.getDeviceStorage('music');
 
   music_library = cs.music_library;
 
   music_playlist = cs.music_playlist;
+
+  music_settings = cs.music_settings;
 
   body = document.querySelector('body');
 
@@ -50,7 +52,16 @@
           }
         });
         player_element.addEventListener('ended', function() {
-          return _this.next();
+          switch (music_settings.repeat) {
+            case 'one':
+              return music_playlist.current(function(id) {
+                return _this.play(id);
+              });
+            case 'all':
+              return _this.next();
+            default:
+              return _this.play();
+          }
         });
         player_element.addEventListener('timeupdate', function() {
           var current_time, duration;
@@ -66,7 +77,16 @@
             return this.device.device.node.context.mozAudioChannelType = 'content';
           });
           aurora_player.on('end', function() {
-            return _this.next();
+            switch (music_settings.repeat) {
+              case 'one':
+                return music_playlist.current(function(id) {
+                  return _this.play(id);
+                });
+              case 'all':
+                return _this.next();
+              default:
+                return _this.play();
+            }
           });
           aurora_player.on('duration', function(duration) {
             duration /= 1000;

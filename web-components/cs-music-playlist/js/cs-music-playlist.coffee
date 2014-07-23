@@ -9,18 +9,27 @@
 document.webL10n.ready ->
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
+	music_settings	= cs.music_settings
 	body			= document.querySelector('body')
 	player			= document.querySelector('cs-music-player')
 	scroll_interval	= 0
 
 	Polymer(
 		'cs-music-playlist'
+		list	: []
 		created	: ->
 			cs.bus.on('player/play', (id) =>
 				if @list.length
 					@update(id)
 			)
-		list	: []
+		ready	: ->
+			switch music_settings.repeat
+				when 'none'
+					@.shadowRoot.querySelector('[icon=repeat]').setAttribute('disabled', '')
+				when 'one'
+					@.shadowRoot.querySelector('[icon=repeat]').innerHTML	= 1
+			if !music_settings.shuffle
+				@.shadowRoot.querySelector('[icon=random]').setAttribute('disabled', '')
 		open	: ->
 			music_playlist.current (current_id) =>
 				music_playlist.get_all (all) =>
@@ -56,7 +65,7 @@ document.webL10n.ready ->
 		play	: (e) ->
 			music_playlist.current (old_id) =>
 				music_playlist.set_current(
-					e.impl.target.dataset.index
+					e.target.dataset.index
 				)
 				music_playlist.current (id) =>
 					if id != old_id
@@ -81,4 +90,28 @@ document.webL10n.ready ->
 					clearInterval(scroll_interval)
 					scroll_interval	= 0
 			), 500
+		repeat	: (e) ->
+			control					= e.target
+			music_settings.repeat	=
+				switch music_settings.repeat
+					when 'none' then 'all'
+					when 'all' then 'one'
+					when 'one' then 'none'
+			if music_settings.repeat == 'none'
+				control.setAttribute('disabled', '')
+			else
+				control.removeAttribute('disabled')
+			control.innerHTML	= if music_settings.repeat == 'one' then 1 else ''
+		shuffle	: (e) ->
+			control					= e.target
+			music_settings.shuffle	= !music_settings.shuffle
+			if !music_settings.shuffle
+				control.setAttribute('disabled', '')
+			else
+				control.removeAttribute('disabled')
+			@list	= []
+			music_playlist.current (id) =>
+				music_playlist.refresh =>
+					music_playlist.set_current_id(id)
+					@open()
 	)

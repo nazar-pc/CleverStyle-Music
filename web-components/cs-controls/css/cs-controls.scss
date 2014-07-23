@@ -19,5 +19,14 @@
 		font-size   : 1.5rem;
 		text-align  : center;
 		text-shadow : 0 0 .1rem #000;
+
+		&[disabled] {
+			opacity : .3;
+		}
+
+		> div {
+			display   : inline-block;
+			font-size : .5em;
+		}
 	}
 }

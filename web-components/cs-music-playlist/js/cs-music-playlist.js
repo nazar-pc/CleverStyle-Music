@@ -12,13 +12,15 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var body, music_library, music_playlist, player, scroll_interval;
+    var body, music_library, music_playlist, music_settings, player, scroll_interval;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
+    music_settings = cs.music_settings;
     body = document.querySelector('body');
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
     return Polymer('cs-music-playlist', {
+      list: [],
       created: function() {
         var _this = this;
         return cs.bus.on('player/play', function(id) {
@@ -27,7 +29,18 @@
           }
         });
       },
-      list: [],
+      ready: function() {
+        switch (music_settings.repeat) {
+          case 'none':
+            this.shadowRoot.querySelector('[icon=repeat]').setAttribute('disabled', '');
+            break;
+          case 'one':
+            this.shadowRoot.querySelector('[icon=repeat]').innerHTML = 1;
+        }
+        if (!music_settings.shuffle) {
+          return this.shadowRoot.querySelector('[icon=random]').setAttribute('disabled', '');
+        }
+      },
       open: function() {
         var _this = this;
         return music_playlist.current(function(current_id) {
@@ -74,7 +87,7 @@
       play: function(e) {
         var _this = this;
         return music_playlist.current(function(old_id) {
-          music_playlist.set_current(e.impl.target.dataset.index);
+          music_playlist.set_current(e.target.dataset.index);
           return music_playlist.current(function(id) {
             if (id !== old_id) {
               player.play(id);
@@ -108,6 +121,44 @@
             return scroll_interval = 0;
           }
         }), 500);
+      },
+      repeat: function(e) {
+        var control;
+        control = e.target;
+        music_settings.repeat = (function() {
+          switch (music_settings.repeat) {
+            case 'none':
+              return 'all';
+            case 'all':
+              return 'one';
+            case 'one':
+              return 'none';
+          }
+        })();
+        if (music_settings.repeat === 'none') {
+          control.setAttribute('disabled', '');
+        } else {
+          control.removeAttribute('disabled');
+        }
+        return control.innerHTML = music_settings.repeat === 'one' ? 1 : '';
+      },
+      shuffle: function(e) {
+        var control,
+          _this = this;
+        control = e.target;
+        music_settings.shuffle = !music_settings.shuffle;
+        if (!music_settings.shuffle) {
+          control.setAttribute('disabled', '');
+        } else {
+          control.removeAttribute('disabled');
+        }
+        this.list = [];
+        return music_playlist.current(function(id) {
+          return music_playlist.refresh(function() {
+            music_playlist.set_current_id(id);
+            return _this.open();
+          });
+        });
       }
     });
   });
