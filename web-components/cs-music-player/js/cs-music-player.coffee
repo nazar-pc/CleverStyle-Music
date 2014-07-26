@@ -40,14 +40,14 @@ Polymer(
 					play_with_aurora()
 			)
 			player_element.addEventListener('ended', =>
+				# Pause
+				@play()
 				switch music_settings.repeat
 					when 'one'
 						music_playlist.current (id) =>
 							@play(id)
-					when 'all'
-						@next()
 					else
-						@play()
+						@next()
 			)
 			player_element.addEventListener('timeupdate', =>
 				current_time					= player_element.currentTime
@@ -62,14 +62,14 @@ Polymer(
 					@device.device.node.context.mozAudioChannelType	= 'content'
 				)
 				aurora_player.on('end', =>
+					# Pause
+					@play()
 					switch music_settings.repeat
 						when 'one'
 							music_playlist.current (id) =>
 								@play(id)
-						when 'all'
-							@next()
 						else
-							@play()
+							@next()
 				)
 				aurora_player.on('duration', (duration) ->
 					duration	/= 1000
@@ -113,13 +113,16 @@ Polymer(
 					else
 						player_element.pause()
 					@playing	= false
-				seeking			: (percents) ->
+				seeking			: (percents) =>
 					if aurora_player
 						aurora_player.seek(aurora_player.duration * percents / 100)
 					else if player_element.duration
 						player_element.pause()
 						player_element.currentTime	= player_element.duration * percents / 100
-						player_element.play()
+						if cs.bus.state.player == 'playing'
+							player_element.play()
+						else
+							@play()
 			}
 		@play(null, =>
 			@play()

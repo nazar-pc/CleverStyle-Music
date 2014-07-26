@@ -52,15 +52,14 @@
           }
         });
         player_element.addEventListener('ended', function() {
+          _this.play();
           switch (music_settings.repeat) {
             case 'one':
               return music_playlist.current(function(id) {
                 return _this.play(id);
               });
-            case 'all':
-              return _this.next();
             default:
-              return _this.play();
+              return _this.next();
           }
         });
         player_element.addEventListener('timeupdate', function() {
@@ -77,15 +76,14 @@
             return this.device.device.node.context.mozAudioChannelType = 'content';
           });
           aurora_player.on('end', function() {
+            _this.play();
             switch (music_settings.repeat) {
               case 'one':
                 return music_playlist.current(function(id) {
                   return _this.play(id);
                 });
-              case 'all':
-                return _this.next();
               default:
-                return _this.play();
+                return _this.next();
             }
           });
           aurora_player.on('duration', function(duration) {
@@ -147,7 +145,11 @@
             } else if (player_element.duration) {
               player_element.pause();
               player_element.currentTime = player_element.duration * percents / 100;
-              return player_element.play();
+              if (cs.bus.state.player === 'playing') {
+                return player_element.play();
+              } else {
+                return _this.play();
+              }
             }
           }
         };

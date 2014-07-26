@@ -61,7 +61,7 @@ cs.music_playlist	=
 					localStorage.position	= position
 					callback(playlist[position])
 					return
-				else if music_settings.repeat != 'all'
+				else if cs.music_settings.repeat == 'none'
 					return
 		@refresh ->
 			@next(callback)
