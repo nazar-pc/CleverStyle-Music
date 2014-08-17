@@ -109,7 +109,7 @@ do ->
 														# remove extension
 														metadata	= metadata.split('.')
 														metadata.pop()
-														metadata.join('.')
+														metadata	= metadata.join('.')
 														# Try to split filename on artist and title
 														metadata	= metadata.split('–', 2)
 														if metadata.length == 2

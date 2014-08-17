@@ -121,7 +121,7 @@
                     metadata = data.name.split('/').pop();
                     metadata = metadata.split('.');
                     metadata.pop();
-                    metadata.join('.');
+                    metadata = metadata.join('.');
                     metadata = metadata.split('–', 2);
                     if (metadata.length === 2) {
                       store({
