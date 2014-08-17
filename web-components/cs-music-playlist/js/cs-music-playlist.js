@@ -114,16 +114,21 @@
         });
       },
       back: function() {
-        var _this = this;
+        var items_container,
+          _this = this;
         $(body).removeClass('playlist');
         stop = true;
+        items_container = this.shadowRoot.querySelector('cs-playlist-items');
+        if (items_container) {
+          items_container.innerHTML = '';
+        }
         return setTimeout((function() {
           _this.list = [];
           if (scroll_interval) {
             clearInterval(scroll_interval);
             return scroll_interval = 0;
           }
-        }), 500);
+        }), 300);
       },
       repeat: function(e) {
         var control;

@@ -95,28 +95,50 @@
         return this.next(callback);
       });
     },
+    set: function(all, callback) {
+      localStorage.original_playlist = JSON.stringify(all);
+      delete localStorage.playlist;
+      return this.refresh(callback);
+    },
+    append: function(new_items) {
+      var original_playlist, playlist;
+      original_playlist = JSON.parse(localStorage.original_playlist);
+      original_playlist = original_playlist.concat(new_items).unique();
+      localStorage.original_playlist = JSON.stringify(original_playlist);
+      if (cs.music_settings.shuffle) {
+        new_items.shuffle();
+      }
+      playlist = JSON.parse(localStorage.playlist);
+      playlist = playlist.concat(new_items).unique();
+      return localStorage.playlist = JSON.stringify(playlist);
+    },
     refresh: function(callback) {
+      var playlist,
+        _this = this;
       callback = (callback || function() {}).bind(this);
-      music_library.get_all(function(all) {
-        var playlist;
-        if (all.length) {
-          playlist = [];
-          all.forEach(function(data) {
-            return playlist.push(data.id);
-          });
-          if (cs.music_settings.shuffle) {
-            playlist.shuffle();
-          }
-          localStorage.playlist = JSON.stringify(playlist);
-          localStorage.position = 0;
-          return callback(playlist);
-        } else {
-          if (confirm(_('library-empty-want-to-rescan'))) {
+      playlist = JSON.parse(localStorage.original_playlist || '[]');
+      if (playlist.length) {
+        if (cs.music_settings.shuffle) {
+          playlist.shuffle();
+        }
+        localStorage.playlist = JSON.stringify(playlist);
+        delete localStorage.position;
+        callback(playlist);
+      } else {
+        music_library.get_all(function(all) {
+          var i, value, _i, _len;
+          if (all.length) {
+            for (i = _i = 0, _len = all.length; _i < _len; i = ++_i) {
+              value = all[i];
+              all[i] = value.id;
+            }
+            return _this.set(all, callback);
+          } else if (confirm(_('library-empty-want-to-rescan'))) {
             $(document.body).addClass('library-rescan');
             return document.querySelector('cs-music-library-rescan').open();
           }
-        }
-      });
+        });
+      }
     }
   };
 

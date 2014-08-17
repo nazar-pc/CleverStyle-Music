@@ -27,7 +27,7 @@
       library: function() {
         $body.addClass('library');
         return setTimeout((function() {
-          return document.querySelector('cs-library').open();
+          return document.querySelector('cs-music-library').open();
         }), 200);
       },
       rescan: function() {

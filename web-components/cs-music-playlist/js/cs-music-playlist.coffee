@@ -86,13 +86,16 @@ document.webL10n.ready ->
 					delete @list[index].icon
 		back	: ->
 			$(body).removeClass('playlist')
-			stop	= true
+			stop			= true
+			items_container	= @shadowRoot.querySelector('cs-playlist-items')
+			if items_container
+				items_container.innerHTML = ''
 			setTimeout (=>
 				@list = []
 				if scroll_interval
 					clearInterval(scroll_interval)
 					scroll_interval	= 0
-			), 500
+			), 300
 		repeat	: (e) ->
 			control					= e.target
 			music_settings.repeat	=

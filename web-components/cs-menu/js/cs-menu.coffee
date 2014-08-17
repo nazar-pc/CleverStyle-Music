@@ -22,7 +22,7 @@ document.webL10n.ready ->
 		library				: ->
 			$body.addClass('library')
 			setTimeout (->
-				document.querySelector('cs-library').open()
+				document.querySelector('cs-music-library').open()
 			), 200
 		rescan				: ->
 			$body.addClass('library-rescan')

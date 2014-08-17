@@ -5,18 +5,7 @@
  * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
  * @license     MIT License, see license.txt
  */
-
 :host {
-	cursor  : pointer;
-	display : block;
-	padding : 1rem .5rem;
-	width   : 100%;
-
-	&:hover {
-		background : rgba(0, 0, 0, .3);
-	}
-
-	i {
-		margin-right : .5rem;
-	}
-}
+  background: rgba(0, 0, 0, 0.5);
+  display: block;
+  position: relative; }

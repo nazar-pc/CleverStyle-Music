@@ -12,3 +12,5 @@
   width: 100%; }
   :host:hover {
     background: rgba(0, 0, 0, 0.3); }
+  :host i {
+    margin-right: .5rem; }

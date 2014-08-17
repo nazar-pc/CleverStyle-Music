@@ -9,17 +9,17 @@
 */
 
 
-/**
- * Randomize array element order in-place.
- * Using Fisher-Yates shuffle algorithm.
-*/
-
-
 (function() {
 
   if (!window.cs) {
     window.cs = {};
   }
+
+  /**
+   * Randomize array element order in-place.
+   * Using Fisher-Yates shuffle algorithm.
+  */
+
 
   Array.prototype.shuffle = function() {
     var i, j, _i, _ref, _ref1;
@@ -28,6 +28,28 @@
       _ref1 = [this[j], this[i]], this[i] = _ref1[0], this[j] = _ref1[1];
     }
     return this;
+  };
+
+  /**
+   * Remove duplicates
+  */
+
+
+  Array.prototype.unique = function() {
+    var array, first_val, i, j, second_val, _i, _j, _len, _len1;
+    array = this.concat();
+    for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
+      first_val = array[i];
+      for (j = _j = 0, _len1 = array.length; _j < _len1; j = ++_j) {
+        second_val = array[j];
+        if (j >= i + 1) {
+          if (first_val === second_val) {
+            array.splice(j--, 1);
+          }
+        }
+      }
+    }
+    return array;
   };
 
   window.time_format = function(time) {

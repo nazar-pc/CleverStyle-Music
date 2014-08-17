@@ -66,20 +66,35 @@ cs.music_playlist	=
 		@refresh ->
 			@next(callback)
 		return
+	set				: (all, callback) ->
+		localStorage.original_playlist	= JSON.stringify(all)
+		delete localStorage.playlist
+		@refresh(callback)
+	append			: (new_items) ->
+		original_playlist				= JSON.parse(localStorage.original_playlist)
+		original_playlist				= original_playlist.concat(new_items).unique()
+		localStorage.original_playlist	= JSON.stringify(original_playlist)
+		if cs.music_settings.shuffle
+			new_items.shuffle()
+		playlist				= JSON.parse(localStorage.playlist)
+		playlist				= playlist.concat(new_items).unique()
+		localStorage.playlist	= JSON.stringify(playlist)
 	refresh			: (callback) ->
 		callback	= (callback || ->).bind(@)
-		music_library.get_all (all) ->
-			if all.length
-				playlist	= []
-				all.forEach (data) ->
-					playlist.push(data.id)
-				if cs.music_settings.shuffle
-					playlist.shuffle()
-				localStorage.playlist	= JSON.stringify(playlist)
-				localStorage.position	= 0
-				callback(playlist)
-			else
-				if confirm(_('library-empty-want-to-rescan'))
+		playlist	= JSON.parse(localStorage.original_playlist || '[]')
+		if playlist.length
+			if cs.music_settings.shuffle
+				playlist.shuffle()
+			localStorage.playlist	= JSON.stringify(playlist)
+			delete localStorage.position
+			callback(playlist)
+		else
+			music_library.get_all (all) =>
+				if all.length
+					for value, i in all
+						all[i] = value.id
+					@set(all, callback)
+				else if confirm(_('library-empty-want-to-rescan'))
 					$(document.body).addClass('library-rescan')
 					document.querySelector('cs-music-library-rescan').open()
 		return
