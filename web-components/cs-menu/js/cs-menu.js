@@ -13,7 +13,7 @@
 
   document.webL10n.ready(function() {
     var $body;
-    $body = $(document.querySelector('body'));
+    $body = $('body');
     return Polymer('cs-menu', {
       playlist_text: _('playlist'),
       library_text: _('library'),

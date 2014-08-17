@@ -14,7 +14,7 @@
   document.webL10n.ready(function() {
     var $body, music_playlist, player;
     music_playlist = cs.music_playlist;
-    $body = $(document.querySelector('body'));
+    $body = $('body');
     player = document.querySelector('cs-music-player');
     return Polymer('cs-music-library-rescan', {
       searching_for_music_text: _('searching-for-music'),

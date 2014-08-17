@@ -7,11 +7,10 @@
 ###
 
 document.webL10n.ready ->
-	$body			= $(document.querySelector('body'))
+	$body			= $('body')
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	music_settings	= cs.music_settings
-	body			= document.querySelector('body')
 	player			= document.querySelector('cs-music-player')
 	scroll_interval	= 0
 	stop			= false
@@ -93,7 +92,7 @@ document.webL10n.ready ->
 					@list[index].playing = 'no'
 					delete @list[index].icon
 		back			: ->
-			$(body).removeClass('library')
+			$body.removeClass('library')
 #			stop	= true
 #			setTimeout (=>
 #				@list = []

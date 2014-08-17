@@ -8,7 +8,7 @@
 
 document.webL10n.ready ->
 	music_playlist	= cs.music_playlist
-	$body			= $(document.querySelector('body'))
+	$body			= $('body')
 	player			= document.querySelector('cs-music-player')
 
 	Polymer(

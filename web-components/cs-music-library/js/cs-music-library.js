@@ -12,12 +12,11 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
-    $body = $(document.querySelector('body'));
+    var $body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
+    $body = $('body');
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     music_settings = cs.music_settings;
-    body = document.querySelector('body');
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
     stop = false;
@@ -85,7 +84,7 @@
         });
       },
       back: function() {
-        return $(body).removeClass('library');
+        return $body.removeClass('library');
       }
     });
   });

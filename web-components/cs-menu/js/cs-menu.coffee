@@ -7,7 +7,7 @@
 ###
 
 document.webL10n.ready ->
-	$body			= $(document.querySelector('body'))
+	$body			= $('body')
 
 	Polymer(
 		'cs-menu'
