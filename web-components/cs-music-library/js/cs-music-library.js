@@ -25,7 +25,9 @@
       genres_text: _('genres'),
       years_text: _('years'),
       ratings_text: _('ratings'),
+      loading: false,
       open: function() {
+        this.loading = false;
         return $body.addClass('library');
       },
       group: function(e) {
@@ -46,16 +48,11 @@
             case 'rating':
               return music_library_grouped.open(group_field, all);
             default:
-              return music_library.get_all(function(all) {
-                var _j, _len1;
-                for (i = _j = 0, _len1 = all.length; _j < _len1; i = ++_j) {
-                  value = all[i];
-                  all[i] = value.id;
-                }
-                return music_playlist.set(all, function() {
-                  return player.next(function() {
-                    return $body.removeClass('library menu');
-                  });
+              _this.loading = true;
+              return music_playlist.set(all, function() {
+                return player.next(function() {
+                  $body.removeClass('library menu');
+                  return this.loading = false;
                 });
               });
           }

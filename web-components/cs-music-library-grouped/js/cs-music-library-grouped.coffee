@@ -33,6 +33,7 @@ document.webL10n.ready ->
 							list[property]	= [data.id]
 						else
 							list[property].push(data.id)
+						data	= null
 						++index
 						get_next_item()
 					)
@@ -54,6 +55,12 @@ document.webL10n.ready ->
 							items	: unknown.join(',')
 							count	: unknown.length
 						)
+					final_list.sort (a, b) ->
+						a	= a.value
+						b	= b.value
+						if a == b then 0
+						else if a < b then -1
+						else 1
 					@list			= final_list
 			get_next_item()
 		back			: ->

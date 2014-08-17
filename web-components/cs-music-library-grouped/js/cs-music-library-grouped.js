@@ -43,6 +43,7 @@
               } else {
                 list[property].push(data.id);
               }
+              data = null;
               ++index;
               return get_next_item();
             });
@@ -67,6 +68,17 @@
                 count: unknown.length
               });
             }
+            final_list.sort(function(a, b) {
+              a = a.value;
+              b = b.value;
+              if (a === b) {
+                return 0;
+              } else if (a < b) {
+                return -1;
+              } else {
+                return 1;
+              }
+            });
             return _this.list = final_list;
           }
         };

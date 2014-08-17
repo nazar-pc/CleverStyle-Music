@@ -67,18 +67,28 @@ cs.music_playlist	=
 			@next(callback)
 		return
 	set				: (all, callback) ->
-		localStorage.original_playlist	= JSON.stringify(all)
-		delete localStorage.playlist
-		@refresh(callback)
+		@sort(all, (sorted) =>
+			localStorage.original_playlist	= JSON.stringify(sorted)
+			delete localStorage.playlist
+			@refresh(callback)
+		)
 	append			: (new_items) ->
 		original_playlist				= JSON.parse(localStorage.original_playlist)
 		original_playlist				= original_playlist.concat(new_items).unique()
-		localStorage.original_playlist	= JSON.stringify(original_playlist)
+		@sort(original_playlist, (sorted) ->
+			localStorage.original_playlist	= JSON.stringify(sorted)
+		)
+		playlist				= JSON.parse(localStorage.playlist)
+		callback	= (list) ->
+			playlist				= playlist.concat(list).unique()
+			localStorage.playlist	= JSON.stringify(playlist)
 		if cs.music_settings.shuffle
 			new_items.shuffle()
-		playlist				= JSON.parse(localStorage.playlist)
-		playlist				= playlist.concat(new_items).unique()
-		localStorage.playlist	= JSON.stringify(playlist)
+			callback(new_items)
+		else
+			@sort(new_items, (sorted) ->
+				callback(sorted)
+			)
 	refresh			: (callback) ->
 		callback	= (callback || ->).bind(@)
 		playlist	= JSON.parse(localStorage.original_playlist || '[]')
@@ -98,3 +108,37 @@ cs.music_playlist	=
 					$(document.body).addClass('library-rescan')
 					document.querySelector('cs-music-library-rescan').open()
 		return
+	sort			: (all, callback) ->
+		index			= 0
+		list			= []
+		count			= all.length
+		get_next_item	= =>
+			if index < count
+				music_library.get_meta(all[index], (data) =>
+					artist_title	= []
+					if data.artist
+						artist_title.push(data.artist)
+					if data.title
+						artist_title.push(data.title)
+					artist_title	= artist_title.join(' — ') || _('unknown')
+					list.push(
+						id		: data.id
+						value	: artist_title
+					)
+					data			= null
+					artist_title	= null
+					++index
+					get_next_item()
+				)
+			else
+				list.sort (a, b) ->
+					a	= a.value
+					b	= b.value
+					if a == b then 0
+					else if a < b then -1
+					else 1
+				for value, i in list
+					list[i] = value.id
+				callback(list)
+		get_next_item()
+

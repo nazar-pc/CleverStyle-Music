@@ -96,21 +96,33 @@
       });
     },
     set: function(all, callback) {
-      localStorage.original_playlist = JSON.stringify(all);
-      delete localStorage.playlist;
-      return this.refresh(callback);
+      var _this = this;
+      return this.sort(all, function(sorted) {
+        localStorage.original_playlist = JSON.stringify(sorted);
+        delete localStorage.playlist;
+        return _this.refresh(callback);
+      });
     },
     append: function(new_items) {
-      var original_playlist, playlist;
+      var callback, original_playlist, playlist;
       original_playlist = JSON.parse(localStorage.original_playlist);
       original_playlist = original_playlist.concat(new_items).unique();
-      localStorage.original_playlist = JSON.stringify(original_playlist);
+      this.sort(original_playlist, function(sorted) {
+        return localStorage.original_playlist = JSON.stringify(sorted);
+      });
+      playlist = JSON.parse(localStorage.playlist);
+      callback = function(list) {
+        playlist = playlist.concat(list).unique();
+        return localStorage.playlist = JSON.stringify(playlist);
+      };
       if (cs.music_settings.shuffle) {
         new_items.shuffle();
+        return callback(new_items);
+      } else {
+        return this.sort(new_items, function(sorted) {
+          return callback(sorted);
+        });
       }
-      playlist = JSON.parse(localStorage.playlist);
-      playlist = playlist.concat(new_items).unique();
-      return localStorage.playlist = JSON.stringify(playlist);
     },
     refresh: function(callback) {
       var playlist,
@@ -139,6 +151,55 @@
           }
         });
       }
+    },
+    sort: function(all, callback) {
+      var count, get_next_item, index, list,
+        _this = this;
+      index = 0;
+      list = [];
+      count = all.length;
+      get_next_item = function() {
+        var i, value, _i, _len;
+        if (index < count) {
+          return music_library.get_meta(all[index], function(data) {
+            var artist_title;
+            artist_title = [];
+            if (data.artist) {
+              artist_title.push(data.artist);
+            }
+            if (data.title) {
+              artist_title.push(data.title);
+            }
+            artist_title = artist_title.join(' — ') || _('unknown');
+            list.push({
+              id: data.id,
+              value: artist_title
+            });
+            data = null;
+            artist_title = null;
+            ++index;
+            return get_next_item();
+          });
+        } else {
+          list.sort(function(a, b) {
+            a = a.value;
+            b = b.value;
+            if (a === b) {
+              return 0;
+            } else if (a < b) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+          for (i = _i = 0, _len = list.length; _i < _len; i = ++_i) {
+            value = list[i];
+            list[i] = value.id;
+          }
+          return callback(list);
+        }
+      };
+      return get_next_item();
     }
   };
 

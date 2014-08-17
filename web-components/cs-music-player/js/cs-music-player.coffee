@@ -189,12 +189,12 @@ Polymer(
 					cs.bus.state.player	= 'playing'
 					music_library.get_meta(id, (data) ->
 						if data
-							element.title	= data.title || 'Unknown'
+							element.title	= data.title || _('unknown')
 							element.artist	= data.artist
 							if data.artist && data.album
 								element.artist += ": #{data.album}"
 						else
-							element.title	= 'Unknown'
+							element.title	= _('unknown')
 							element.artist	= ''
 					)
 					callback()

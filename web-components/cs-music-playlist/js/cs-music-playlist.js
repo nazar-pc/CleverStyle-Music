@@ -64,8 +64,9 @@
                   if (data.title) {
                     data.artist_title.push(data.title);
                   }
-                  data.artist_title = data.artist_title.join(' — ') || 'Unknown';
+                  data.artist_title = data.artist_title.join(' — ') || _('unknown');
                   list.push(data);
+                  data = null;
                   ++index;
                   return get_next_item();
                 });

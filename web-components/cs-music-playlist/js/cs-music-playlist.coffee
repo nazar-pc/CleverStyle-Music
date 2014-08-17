@@ -49,8 +49,9 @@ document.webL10n.ready ->
 									data.artist_title.push(data.artist)
 								if data.title
 									data.artist_title.push(data.title)
-								data.artist_title	= data.artist_title.join(' — ') || 'Unknown'
+								data.artist_title	= data.artist_title.join(' — ') || _('unknown')
 								list.push(data)
+								data	= null
 								++index
 								get_next_item()
 							)

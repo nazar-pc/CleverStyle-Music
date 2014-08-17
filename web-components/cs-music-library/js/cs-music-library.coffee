@@ -21,7 +21,9 @@ document.webL10n.ready ->
 		genres_text		: _('genres')
 		years_text		: _('years')
 		ratings_text	: _('ratings')
+		loading			: false
 		open			: ->
+			@loading	= false
 			$body.addClass('library')
 		group			: (e) ->
 			group_field		= $(e.originalTarget).data('group-field')
@@ -32,13 +34,12 @@ document.webL10n.ready ->
 					when 'artist', 'album', 'genre', 'year', 'rating'
 						music_library_grouped.open(group_field, all)
 					else
-						music_library.get_all (all) ->
-							for value, i in all
-								all[i] = value.id
-							music_playlist.set(all, ->
-								player.next ->
-									$body.removeClass('library menu')
-							)
+						@loading	= true
+						music_playlist.set(all, =>
+							player.next ->
+								$body.removeClass('library menu')
+								@loading	= false
+						)
 		back			: ->
 			$body.removeClass('library')
 	)
