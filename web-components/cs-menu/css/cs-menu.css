@@ -9,11 +9,3 @@
   background: rgba(0, 0, 0, 0.5);
   display: block;
   position: relative; }
-
-cs-menu-item {
-  cursor: pointer;
-  display: block;
-  padding: 1rem .5rem;
-  width: 100%; }
-  cs-menu-item:hover {
-    background: rgba(0, 0, 0, 0.3); }

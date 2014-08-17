@@ -5,9 +5,10 @@
  * @copyright   Copyright (c) 2014, Nazar Mokrynskyi
  * @license     MIT License, see license.txt
  */
-
 :host {
-	background : rgba(0, 0, 0, 0.5);
-	display    : block;
-	position   : relative;
-}
+  cursor: pointer;
+  display: block;
+  padding: 1rem .5rem;
+  width: 100%; }
+  :host:hover {
+    background: rgba(0, 0, 0, 0.3); }
