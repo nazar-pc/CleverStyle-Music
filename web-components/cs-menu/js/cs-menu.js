@@ -19,22 +19,13 @@
       library_text: _('library'),
       rescan_library_text: _('rescan-library'),
       playlist: function() {
-        $body.addClass('playlist');
-        return setTimeout((function() {
-          return document.querySelector('cs-music-playlist').open();
-        }), 200);
+        return document.querySelector('cs-music-playlist').open();
       },
       library: function() {
-        $body.addClass('library');
-        return setTimeout((function() {
-          return document.querySelector('cs-music-library').open();
-        }), 200);
+        return document.querySelector('cs-music-library').open();
       },
       rescan: function() {
-        $body.addClass('library-rescan');
-        return setTimeout((function() {
-          return document.querySelector('cs-music-library-rescan').open();
-        }), 200);
+        return document.querySelector('cs-music-library-rescan').open();
       },
       back: function() {
         return $body.removeClass('menu');

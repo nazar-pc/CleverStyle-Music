@@ -12,14 +12,12 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
+    var $body, music_library, music_library_grouped, music_playlist, player;
     $body = $('body');
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
-    music_settings = cs.music_settings;
     player = document.querySelector('cs-music-player');
-    scroll_interval = 0;
-    stop = false;
+    music_library_grouped = document.querySelector('cs-music-library-grouped');
     return Polymer('cs-music-library', {
       all_text: _('all-songs'),
       artists_text: _('artists'),
@@ -27,59 +25,39 @@
       genres_text: _('genres'),
       years_text: _('years'),
       ratings_text: _('ratings'),
-      list: [],
       open: function() {
-        return this.list = [];
+        return $body.addClass('library');
       },
       group: function(e) {
-        var group_field;
+        var group_field,
+          _this = this;
         group_field = $(e.originalTarget).data('group-field');
-        switch (group_field) {
-          case 'artist':
-          case 'album':
-          case 'genre':
-          case 'year':
-          case 'rating':
-            break;
-          default:
-            return music_library.get_all(function(all) {
-              var i, value, _i, _len;
-              for (i = _i = 0, _len = all.length; _i < _len; i = ++_i) {
-                value = all[i];
-                all[i] = value.id;
-              }
-              return music_playlist.set(all, function() {
-                return player.next(function() {
-                  return $body.removeClass('library menu');
+        return music_library.get_all(function(all) {
+          var i, value, _i, _len;
+          for (i = _i = 0, _len = all.length; _i < _len; i = ++_i) {
+            value = all[i];
+            all[i] = value.id;
+          }
+          switch (group_field) {
+            case 'artist':
+            case 'album':
+            case 'genre':
+            case 'year':
+            case 'rating':
+              return music_library_grouped.open(group_field, all);
+            default:
+              return music_library.get_all(function(all) {
+                var _j, _len1;
+                for (i = _j = 0, _len1 = all.length; _j < _len1; i = ++_j) {
+                  value = all[i];
+                  all[i] = value.id;
+                }
+                return music_playlist.set(all, function() {
+                  return player.next(function() {
+                    return $body.removeClass('library menu');
+                  });
                 });
               });
-            });
-        }
-      },
-      play: function(e) {
-        var _this = this;
-        return music_playlist.current(function(old_id) {
-          music_playlist.set_current(e.target.dataset.index);
-          return music_playlist.current(function(id) {
-            if (id !== old_id) {
-              player.play(id);
-              return _this.update(id);
-            } else {
-              player.play();
-              return _this.update(id);
-            }
-          });
-        });
-      },
-      update: function(new_id) {
-        var _this = this;
-        return this.list.forEach(function(data, index) {
-          if (data.id === new_id) {
-            _this.list[index].playing = 'yes';
-            return _this.list[index].icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-          } else {
-            _this.list[index].playing = 'no';
-            return delete _this.list[index].icon;
           }
         });
       },

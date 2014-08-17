@@ -13,5 +13,6 @@
   margin: auto;
   position: absolute;
   text-align: center;
+  text-shadow: 0 0 .1rem #000;
   top: 0px;
   width: 100%; }

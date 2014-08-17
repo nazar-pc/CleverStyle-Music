@@ -13,21 +13,22 @@
 
   document.webL10n.ready(function() {
     var $body, music_playlist, player;
-    music_playlist = cs.music_playlist;
     $body = $('body');
+    music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
     return Polymer('cs-music-library-rescan', {
       searching_for_music_text: _('searching-for-music'),
       files_found_text: _('files-found'),
+      found: 0,
       created: function() {
         var _this = this;
         return cs.bus.on('library/rescan/found', function(found) {
           return _this.found = found;
         });
       },
-      found: 0,
       open: function() {
         var _this = this;
+        $body.addClass('library-rescan');
         if (!this.found) {
           return cs.music_library.rescan(function() {
             music_playlist.refresh();

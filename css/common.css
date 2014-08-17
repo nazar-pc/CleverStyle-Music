@@ -41,6 +41,9 @@ body {
   body.library {
     margin-left: -200vw;
     margin-top: -100vh; }
+  body.library-grouped {
+    margin-left: -200vw;
+    margin-top: 0; }
   body.library-rescan {
     margin-left: -100vw;
     margin-top: -200vh; }

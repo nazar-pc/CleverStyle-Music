@@ -15,20 +15,11 @@ document.webL10n.ready ->
 		library_text		: _('library')
 		rescan_library_text	: _('rescan-library')
 		playlist			: ->
-			$body.addClass('playlist')
-			setTimeout (->
-				document.querySelector('cs-music-playlist').open()
-			), 200
+			document.querySelector('cs-music-playlist').open()
 		library				: ->
-			$body.addClass('library')
-			setTimeout (->
-				document.querySelector('cs-music-library').open()
-			), 200
+			document.querySelector('cs-music-library').open()
 		rescan				: ->
-			$body.addClass('library-rescan')
-			setTimeout (->
-				document.querySelector('cs-music-library-rescan').open()
-			), 200
+			document.querySelector('cs-music-library-rescan').open()
 		back				: ->
 			$body.removeClass('menu')
 	)

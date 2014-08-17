@@ -7,10 +7,10 @@
 ###
 
 document.webL10n.ready ->
+	$body			= $('body')
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	music_settings	= cs.music_settings
-	body			= document.querySelector('body')
 	player			= document.querySelector('cs-music-player')
 	scroll_interval	= 0
 	stop			= false
@@ -32,6 +32,7 @@ document.webL10n.ready ->
 			if !music_settings.shuffle
 				@.shadowRoot.querySelector('[icon=random]').setAttribute('disabled', '')
 		open	: ->
+			$body.addClass('playlist')
 			stop	= false
 			music_playlist.current (current_id) =>
 				music_playlist.get_all (all) =>
@@ -56,9 +57,9 @@ document.webL10n.ready ->
 						else if !stop
 							@list			= list
 							scroll_interval	= setInterval (=>
-								items_container	= @shadowRoot.querySelector('cs-playlist-items')
+								items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 								if items_container
-									item			= items_container.querySelector('cs-playlist-item[playing=yes]')
+									item			= items_container.querySelector('cs-music-playlist-item[playing=yes]')
 									clearInterval(scroll_interval)
 									scroll_interval				= 0
 									items_container.scrollTop	= item.offsetTop
@@ -85,9 +86,9 @@ document.webL10n.ready ->
 					@list[index].playing = 'no'
 					delete @list[index].icon
 		back	: ->
-			$(body).removeClass('playlist')
+			$body.removeClass('playlist')
 			stop			= true
-			items_container	= @shadowRoot.querySelector('cs-playlist-items')
+			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 			if items_container
 				items_container.innerHTML = ''
 			setTimeout (=>

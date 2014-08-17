@@ -2,16 +2,16 @@
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/cs-music-playlist.css">
 		<template if="{{list.length}}">
-			<cs-playlist-items>
+			<cs-music-playlist-items>
 				<template repeat="{{item, index in list}}">
-					<cs-playlist-item data-index="{{index}}" on-click="{{play}}" playing="{{item.playing}}">
+					<cs-music-playlist-item data-index="{{index}}" on-click="{{play}}" playing="{{item.playing}}">
 						<template if="{{item.playing == 'yes'}}">
 							<i class="fa fa-{{item.icon}}"></i>
 						</template>
 						{{item.artist_title}}
-					</cs-playlist-item>
+					</cs-music-playlist-item>
 				</template>
-			</cs-playlist-items>
+			</cs-music-playlist-items>
 		</template>
 		<template if="{{!list.length}}">
 			<cs-loading></cs-loading>

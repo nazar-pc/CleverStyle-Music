@@ -12,11 +12,11 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
+    var $body, music_library, music_playlist, music_settings, player, scroll_interval, stop;
+    $body = $('body');
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     music_settings = cs.music_settings;
-    body = document.querySelector('body');
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
     stop = false;
@@ -44,6 +44,7 @@
       },
       open: function() {
         var _this = this;
+        $body.addClass('playlist');
         stop = false;
         return music_playlist.current(function(current_id) {
           return music_playlist.get_all(function(all) {
@@ -72,9 +73,9 @@
                 _this.list = list;
                 return scroll_interval = setInterval((function() {
                   var item, items_container;
-                  items_container = _this.shadowRoot.querySelector('cs-playlist-items');
+                  items_container = _this.shadowRoot.querySelector('cs-music-playlist-items');
                   if (items_container) {
-                    item = items_container.querySelector('cs-playlist-item[playing=yes]');
+                    item = items_container.querySelector('cs-music-playlist-item[playing=yes]');
                     clearInterval(scroll_interval);
                     scroll_interval = 0;
                     return items_container.scrollTop = item.offsetTop;
@@ -116,9 +117,9 @@
       back: function() {
         var items_container,
           _this = this;
-        $(body).removeClass('playlist');
+        $body.removeClass('playlist');
         stop = true;
-        items_container = this.shadowRoot.querySelector('cs-playlist-items');
+        items_container = this.shadowRoot.querySelector('cs-music-playlist-items');
         if (items_container) {
           items_container.innerHTML = '';
         }

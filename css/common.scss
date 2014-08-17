@@ -58,6 +58,11 @@ body {
 		margin-top  : -100vh;
 	}
 
+	&.library-grouped {
+		margin-left : -200vw;
+		margin-top  : 0;
+	}
+
 	&.library-rescan {
 		margin-left : -100vw;
 		margin-top  : -200vh;
