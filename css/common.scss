@@ -35,7 +35,7 @@ body {
 	flex-wrap         : wrap;
 	-webkit-flex-wrap : wrap;
 	height            : 300vh;
-	margin            : -100vh 0 0 -100vw;
+	margin            : 0 0 0 -100vw;
 	overflow          : hidden;
 	transition        : margin 200ms ease-out 0s;
 	width             : 300vw;
@@ -45,16 +45,22 @@ body {
 	}
 
 	&.menu {
-		margin-left : 0;
+		margin-top : -100vh;
 	}
 
 	&.playlist {
-		margin-top : -200vh;
+		margin-left : 0;
+		margin-top  : -100vh;
+	}
+
+	&.library {
+		margin-left : -200vw;
+		margin-top  : -100vh;
 	}
 
 	&.library-rescan {
-		margin-left : 0;
-		margin-top  : 0;
+		margin-left : -100vw;
+		margin-top  : -200vh;
 	}
 
 	> * {

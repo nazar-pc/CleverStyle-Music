@@ -7,26 +7,27 @@
 ###
 
 document.webL10n.ready ->
-	music_library	= cs.music_library
-	music_playlist	= cs.music_playlist
 	$body			= $(document.querySelector('body'))
 
 	Polymer(
 		'cs-menu'
-		rescan_library_text	: _('rescan-library')
 		playlist_text		: _('playlist')
+		library_text		: _('library')
+		rescan_library_text	: _('rescan-library')
+		playlist			: ->
+			$body.addClass('playlist')
+			setTimeout (->
+				document.querySelector('cs-music-playlist').open()
+			), 200
+		library				: ->
+			$body.addClass('library')
+			setTimeout (->
+				document.querySelector('cs-library').open()
+			), 200
 		rescan				: ->
 			$body.addClass('library-rescan')
 			setTimeout (->
 				document.querySelector('cs-music-library-rescan').open()
-			), 200
-		playlist			: ->
-			$body.removeClass('menu')
-			setTimeout (->
-				$body.addClass('playlist')
-				setTimeout (->
-					document.querySelector('cs-music-playlist').open()
-				), 200
 			), 200
 		back				: ->
 			$body.removeClass('menu')

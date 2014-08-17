@@ -7,7 +7,6 @@
 ###
 
 document.webL10n.ready ->
-	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	$body			= $(document.querySelector('body'))
 	player			= document.querySelector('cs-music-player')
@@ -26,16 +25,13 @@ document.webL10n.ready ->
 				cs.music_library.rescan(=>
 					music_playlist.refresh()
 					alert _('library-rescanned-playlist-updated')
-					@back()
-					setTimeout (->
+					$body.removeClass('library-rescan menu')
+					setTimeout (=>
 						@found	= 0
 						player.next ->
 							player.play()
-					), 400
+					), 200
 				)
 		back						: ->
 			$body.removeClass('library-rescan')
-			setTimeout (->
-				$body.removeClass('menu')
-			), 200
 	)

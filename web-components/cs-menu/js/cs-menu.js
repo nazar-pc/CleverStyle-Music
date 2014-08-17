@@ -12,26 +12,28 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, music_library, music_playlist;
-    music_library = cs.music_library;
-    music_playlist = cs.music_playlist;
+    var $body;
     $body = $(document.querySelector('body'));
     return Polymer('cs-menu', {
-      rescan_library_text: _('rescan-library'),
       playlist_text: _('playlist'),
+      library_text: _('library'),
+      rescan_library_text: _('rescan-library'),
+      playlist: function() {
+        $body.addClass('playlist');
+        return setTimeout((function() {
+          return document.querySelector('cs-music-playlist').open();
+        }), 200);
+      },
+      library: function() {
+        $body.addClass('library');
+        return setTimeout((function() {
+          return document.querySelector('cs-library').open();
+        }), 200);
+      },
       rescan: function() {
         $body.addClass('library-rescan');
         return setTimeout((function() {
           return document.querySelector('cs-music-library-rescan').open();
-        }), 200);
-      },
-      playlist: function() {
-        $body.removeClass('menu');
-        return setTimeout((function() {
-          $body.addClass('playlist');
-          return setTimeout((function() {
-            return document.querySelector('cs-music-playlist').open();
-          }), 200);
         }), 200);
       },
       back: function() {
