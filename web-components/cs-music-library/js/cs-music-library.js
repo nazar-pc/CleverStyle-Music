@@ -45,7 +45,7 @@
             case 'album':
             case 'genre':
             case 'year':
-            case 'rating':
+            case 'rated':
               return music_library_grouped.open(group_field, all);
             default:
               _this.loading = true;

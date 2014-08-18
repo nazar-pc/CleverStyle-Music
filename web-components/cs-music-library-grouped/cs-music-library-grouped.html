@@ -4,7 +4,7 @@
 		<template if="{{list.length}}">
 			<cs-music-library-grouped-items>
 				<template repeat="{{item in list}}">
-					<cs-music-library-grouped-item on-click="{{play}}" data-items="{{item.items}}">
+					<cs-music-library-grouped-item on-click="{{choose_action}}" data-items="{{item.items}}">
 						{{item.value}} <span>({{item.count}})</span>
 					</cs-music-library-grouped-item>
 				</template>

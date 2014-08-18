@@ -93,7 +93,8 @@
                     artist: metadata.artist || '',
                     album: metadata.album || '',
                     genre: metadata.genre || '',
-                    year: metadata.year || metadata.recordingTime || ''
+                    year: metadata.year || metadata.recordingTime || '',
+                    rated: metadata.rated || 0
                   });
                   store_object.onsuccess = function() {
                     return callback();

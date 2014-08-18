@@ -13,3 +13,5 @@ genres								= Genres
 years								= Years
 ratings								= Ratings
 unknown								= Unknown
+create-playlist						= Create playlist
+add-to-playlist						= Add to playlist

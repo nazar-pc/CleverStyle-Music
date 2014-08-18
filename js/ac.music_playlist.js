@@ -103,24 +103,24 @@
         return _this.refresh(callback);
       });
     },
-    append: function(new_items) {
-      var callback, original_playlist, playlist;
+    append: function(new_items, callback) {
+      var original_playlist, playlist, save_playlist;
       original_playlist = JSON.parse(localStorage.original_playlist);
       original_playlist = original_playlist.concat(new_items).unique();
       this.sort(original_playlist, function(sorted) {
         return localStorage.original_playlist = JSON.stringify(sorted);
       });
       playlist = JSON.parse(localStorage.playlist);
-      callback = function(list) {
+      save_playlist = function(list) {
         playlist = playlist.concat(list).unique();
-        return localStorage.playlist = JSON.stringify(playlist);
+        localStorage.playlist = JSON.stringify(playlist);
+        return callback();
       };
       if (cs.music_settings.shuffle) {
-        new_items.shuffle();
-        return callback(new_items);
+        return save_playlist(new_items);
       } else {
         return this.sort(new_items, function(sorted) {
-          return callback(sorted);
+          return save_playlist(sorted);
         });
       }
     },
@@ -130,9 +130,6 @@
       callback = (callback || function() {}).bind(this);
       playlist = JSON.parse(localStorage.original_playlist || '[]');
       if (playlist.length) {
-        if (cs.music_settings.shuffle) {
-          playlist.shuffle();
-        }
         localStorage.playlist = JSON.stringify(playlist);
         delete localStorage.position;
         callback(playlist);

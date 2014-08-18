@@ -31,7 +31,7 @@ document.webL10n.ready ->
 				for value, i in all
 					all[i] = value.id
 				switch group_field
-					when 'artist', 'album', 'genre', 'year', 'rating'
+					when 'artist', 'album', 'genre', 'year', 'rated'
 						music_library_grouped.open(group_field, all)
 					else
 						@loading	= true

@@ -30,7 +30,7 @@ body {
   margin: 0 0 0 -100vw;
   overflow: hidden;
   transition: margin 200ms ease-out 0s;
-  width: 300vw; }
+  width: 400vw; }
   body[unresolved] {
     transition: none; }
   body.menu {
@@ -43,6 +43,9 @@ body {
     margin-top: -100vh; }
   body.library-grouped {
     margin-left: -200vw;
+    margin-top: 0; }
+  body.library-action {
+    margin-left: -300vw;
     margin-top: 0; }
   body.library-rescan {
     margin-left: -100vw;

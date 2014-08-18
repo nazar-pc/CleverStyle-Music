@@ -12,10 +12,11 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, music_library, stop;
+    var $body, music_library, music_library_action, stop;
     $body = $('body');
     music_library = cs.music_library;
     stop = false;
+    music_library_action = document.querySelector('cs-music-library-action');
     return Polymer('cs-music-library-grouped', {
       list: [],
       grouped_field: '',
@@ -56,7 +57,7 @@
               final_list.push({
                 field: group_field,
                 value: value,
-                items: items.join(','),
+                items: JSON.stringify(items),
                 count: items.length
               });
             }
@@ -64,7 +65,7 @@
               final_list.push({
                 field: group_field,
                 value: _unknown,
-                items: unknown.join(','),
+                items: JSON.stringify(unknown),
                 count: unknown.length
               });
             }
@@ -83,6 +84,14 @@
           }
         };
         return get_next_item();
+      },
+      choose_action: function(e) {
+        var target;
+        target = e.target;
+        if (target.tagName === 'SPAN') {
+          target = target.parentNode;
+        }
+        return music_library_action.open(JSON.parse(target.dataset.items));
       },
       back: function() {
         $body.removeClass('library-grouped');

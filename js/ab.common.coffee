@@ -12,20 +12,21 @@ if !window.cs
  * Using Fisher-Yates shuffle algorithm.
 ###
 Array::shuffle = ->
-	for i in [(@length - 1) .. 1]
-		j = Math.floor(Math.random() * (i + 1))
-		[@[i], @[j]] = [@[j], @[i]]
+	length = @length
+	if length == 0
+		return @
+	while --length
+		j	= Math.floor(Math.random() * (length + 1))
+		temp		= @[length]
+		@[length]	= @[j]
+		@[j]		= temp
 	@
 ###*
  * Remove duplicates
 ###
-Array::unique = ->
-	array	= @concat()
-	for first_val, i in array
-		for second_val, j in array when j >= i + 1
-			if first_val == second_val
-				array.splice(j--, 1)
-	return array
+Array::unique	= ->
+	@filter (item, index, array) =>
+		array.indexOf(item) == index
 window.time_format = (time) ->
 	min	= Math.floor(time / 60)
 	sec	= Math.floor(time % 60)

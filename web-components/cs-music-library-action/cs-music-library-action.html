@@ -1,0 +1,11 @@
+<polymer-element name="cs-music-library-action">
+	<template vertical center layout>
+		<link rel="stylesheet" href="css/cs-music-library-action.css">
+		<cs-menu-item on-click="{{create_playlist}}">{{create_playlist_text}}</cs-menu-item>
+		<cs-menu-item on-click="{{add_to_playlist}}">{{add_to_playlist_text}}</cs-menu-item>
+		<cs-controls horizontal center layout>
+			<cs-control flex icon="chevron-left" on-click="{{back}}"></cs-control>
+		</cs-controls>
+	</template>
+	<script src="js/cs-music-library-action.js"></script>
+</polymer-element>

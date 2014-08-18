@@ -7,9 +7,10 @@
 ###
 
 document.webL10n.ready ->
-	$body			= $('body')
-	music_library	= cs.music_library
-	stop			= false
+	$body					= $('body')
+	music_library			= cs.music_library
+	stop					= false
+	music_library_action	= document.querySelector('cs-music-library-action')
 
 	Polymer(
 		'cs-music-library-grouped'
@@ -45,14 +46,14 @@ document.webL10n.ready ->
 						final_list.push(
 							field	: group_field
 							value	: value
-							items	: items.join(',')
+							items	: JSON.stringify(items)
 							count	: items.length
 						)
 					if unknown
 						final_list.push(
 							field	: group_field
 							value	: _unknown
-							items	: unknown.join(',')
+							items	: JSON.stringify(unknown)
 							count	: unknown.length
 						)
 					final_list.sort (a, b) ->
@@ -63,6 +64,13 @@ document.webL10n.ready ->
 						else 1
 					@list			= final_list
 			get_next_item()
+		choose_action	: (e) ->
+			target	= e.target
+			if target.tagName == 'SPAN'
+				target	= target.parentNode
+			music_library_action.open(
+				JSON.parse(target.dataset.items)
+			)
 		back			: ->
 			$body.removeClass('library-grouped')
 			@list	= []

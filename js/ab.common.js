@@ -22,10 +22,16 @@
 
 
   Array.prototype.shuffle = function() {
-    var i, j, _i, _ref, _ref1;
-    for (i = _i = _ref = this.length - 1; _ref <= 1 ? _i <= 1 : _i >= 1; i = _ref <= 1 ? ++_i : --_i) {
-      j = Math.floor(Math.random() * (i + 1));
-      _ref1 = [this[j], this[i]], this[i] = _ref1[0], this[j] = _ref1[1];
+    var j, length, temp;
+    length = this.length;
+    if (length === 0) {
+      return this;
+    }
+    while (--length) {
+      j = Math.floor(Math.random() * (length + 1));
+      temp = this[length];
+      this[length] = this[j];
+      this[j] = temp;
     }
     return this;
   };
@@ -36,20 +42,10 @@
 
 
   Array.prototype.unique = function() {
-    var array, first_val, i, j, second_val, _i, _j, _len, _len1;
-    array = this.concat();
-    for (i = _i = 0, _len = array.length; _i < _len; i = ++_i) {
-      first_val = array[i];
-      for (j = _j = 0, _len1 = array.length; _j < _len1; j = ++_j) {
-        second_val = array[j];
-        if (j >= i + 1) {
-          if (first_val === second_val) {
-            array.splice(j--, 1);
-          }
-        }
-      }
-    }
-    return array;
+    var _this = this;
+    return this.filter(function(item, index, array) {
+      return array.indexOf(item) === index;
+    });
   };
 
   window.time_format = function(time) {
