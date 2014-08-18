@@ -84,7 +84,7 @@ cs.music_playlist	=
 			localStorage.playlist	= JSON.stringify(playlist)
 			callback()
 		if cs.music_settings.shuffle
-			#new_items.shuffle()
+			new_items.shuffle()
 			save_playlist(new_items)
 		else
 			@sort(new_items, (sorted) ->
@@ -94,8 +94,8 @@ cs.music_playlist	=
 		callback	= (callback || ->).bind(@)
 		playlist	= JSON.parse(localStorage.original_playlist || '[]')
 		if playlist.length
-#			if cs.music_settings.shuffle
-#				playlist.shuffle()
+			if cs.music_settings.shuffle
+				playlist.shuffle()
 			localStorage.playlist	= JSON.stringify(playlist)
 			delete localStorage.position
 			callback(playlist)

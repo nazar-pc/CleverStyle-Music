@@ -117,6 +117,7 @@
         return callback();
       };
       if (cs.music_settings.shuffle) {
+        new_items.shuffle();
         return save_playlist(new_items);
       } else {
         return this.sort(new_items, function(sorted) {
@@ -130,6 +131,9 @@
       callback = (callback || function() {}).bind(this);
       playlist = JSON.parse(localStorage.original_playlist || '[]');
       if (playlist.length) {
+        if (cs.music_settings.shuffle) {
+          playlist.shuffle();
+        }
         localStorage.playlist = JSON.stringify(playlist);
         delete localStorage.position;
         callback(playlist);
