@@ -1,7 +1,7 @@
 {
 	"name"           : "CleverStyle Music",
 	"description"    : "Simple and nice music player that supports mp3, mp4, flac and alac music files formats",
-	"version"        : "0.43.1+build-57",
+	"version"        : "0.43.2+build-58",
 	"launch_path"    : "/index.html",
 	"icons"          : {
 		"60"  : "/img/logo-60.png",
