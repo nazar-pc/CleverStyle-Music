@@ -5,10 +5,12 @@ Application intended to be used in Firefox OS (should also work in Windows, Linu
 
 There are some interesting technologies used here, like [Polymer](http://www.polymer-project.org/) (Web Components) and [Aurora.js](https://github.com/audiocogs/aurora.js) (music playing and decoding of metadata from files)
 
-Current version of music player can:
+With current version of music player you can:
 * scan and store music library
-* generate random playlist
-* remember current track in playlist after app restarts (you will not listen the same track over and over from the beginning)
+* generate playlist in normal or random order
+* repeat one song, playlist or do not repeat anything
+* remember current track in playlist after app restarts (you will not listen the same songs over and over from the beginning)
+* create or extend playlist with tracks of specific artist, album, genre, year or rating
 * extract meta-tags from music files including album cover and show them in app interface (blurred cover is used as application background)
 * obviously, play:) files in formats mp3, mp4, flac and alac
 * more features coming soon, feel free to suggest yours
@@ -18,7 +20,7 @@ Current version of music player can:
 * Download and extract content of this repository somewhere on local drive
 * Mozilla Firefox > Tools > Web Developer > App Manager
 * Add Packaged App
-* Choose directory with downloaded files
+* Choose directory with downloaded and extracted files
 * Start Simulator (If you do not have Firefox OS Simulator extension installed yet - you have to install it)
 * Press Update in App Manager
 * Click "CleverStyle Music" icon on home screen inside simulator
