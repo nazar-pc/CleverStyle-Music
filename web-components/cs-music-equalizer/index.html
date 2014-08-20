@@ -1,0 +1,21 @@
+<polymer-element name="cs-music-equalizer">
+	<template vertical center layout>
+		<link rel="stylesheet" href="css/style.css">
+		<div class="inner">
+			<input type="range" value="{{frequencies[0]}}" data-index="0">
+			<input type="range" value="{{frequencies[1]}}" data-index="1">
+			<input type="range" value="{{frequencies[2]}}" data-index="2">
+			<input type="range" value="{{frequencies[3]}}" data-index="3">
+			<input type="range" value="{{frequencies[4]}}" data-index="4">
+			<input type="range" value="{{frequencies[5]}}" data-index="5">
+			<input type="range" value="{{frequencies[6]}}" data-index="6">
+			<input type="range" value="{{frequencies[7]}}" data-index="7">
+			<input type="range" value="{{frequencies[8]}}" data-index="8">
+			<input type="range" value="{{frequencies[9]}}" data-index="9">
+		</div>
+		<cs-controls horizontal center layout>
+			<cs-control flex icon="chevron-right" on-click="{{back}}"></cs-control>
+		</cs-controls>
+	</template>
+	<script src="js/script.js"></script>
+</polymer-element>

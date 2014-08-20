@@ -38,6 +38,9 @@ body {
   body.playlist {
     margin-left: 0;
     margin-top: -100vh; }
+  body.equalizer {
+    margin-left: 0;
+    margin-top: 0; }
   body.library {
     margin-left: -200vw;
     margin-top: -100vh; }

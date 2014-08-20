@@ -51,6 +51,9 @@
         }
         return _results;
       },
+      get_gain_levels: function() {
+        return gain_levels;
+      },
       set_gain_levels: function(new_gain_levels) {
         gain_levels = new_gain_levels;
         music_settings.equalizer_gain_levels = new_gain_levels;

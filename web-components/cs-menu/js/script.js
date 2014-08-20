@@ -16,10 +16,15 @@
     $body = $('body');
     return Polymer('cs-menu', {
       playlist_text: _('playlist'),
+      equalizer_text: _('equalizer'),
       library_text: _('library'),
       rescan_library_text: _('rescan-library'),
       playlist: function() {
         return document.querySelector('cs-music-playlist').open();
+      },
+      equalizer: function() {
+        document.querySelector('cs-music-equalizer').open();
+        return this.back();
       },
       library: function() {
         return document.querySelector('cs-music-library').open();

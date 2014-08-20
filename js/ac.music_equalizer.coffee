@@ -32,6 +32,8 @@ cs.music_equalizer	= do ->
 				frequencies[index - 1].connect(frequencies[index])
 				if index == frequencies_to_control.length - 1
 					frequencies[index].connect(audioContext.destination)
+	get_gain_levels		: ->
+		gain_levels
 	set_gain_levels		: (new_gain_levels) ->
 		gain_levels								= new_gain_levels
 		music_settings.equalizer_gain_levels	= new_gain_levels

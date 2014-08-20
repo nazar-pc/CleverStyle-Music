@@ -11,10 +11,11 @@ cs.music_settings	= do ->
 		if settings
 			JSON.parse(settings)
 		else
-			repeat	: 'all'
-			shuffle	: true
+			repeat					: 'all'
+			shuffle					: true
+			equalizer_gain_levels	: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	public_settings	= {}
-	for option of settings
+	for option in ['repeat', 'shuffle', 'equalizer_gain_levels']
 		do (option = option) ->
 			Object.defineProperty(
 				public_settings

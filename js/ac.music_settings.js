@@ -12,13 +12,15 @@
 (function() {
 
   cs.music_settings = (function() {
-    var option, public_settings, settings, _fn;
+    var option, public_settings, settings, _fn, _i, _len, _ref;
     settings = localStorage.settings;
     settings = settings ? JSON.parse(settings) : {
       repeat: 'all',
-      shuffle: true
+      shuffle: true,
+      equalizer_gain_levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     };
     public_settings = {};
+    _ref = ['repeat', 'shuffle', 'equalizer_gain_levels'];
     _fn = function(option) {
       return Object.defineProperty(public_settings, option, {
         get: function() {
@@ -30,7 +32,8 @@
         }
       });
     };
-    for (option in settings) {
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      option = _ref[_i];
       _fn(option);
     }
     return public_settings;

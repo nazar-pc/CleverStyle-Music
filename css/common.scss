@@ -53,6 +53,11 @@ body {
 		margin-top  : -100vh;
 	}
 
+	&.equalizer {
+		margin-left : 0;
+		margin-top  : 0;
+	}
+
 	&.library {
 		margin-left : -200vw;
 		margin-top  : -100vh;

@@ -12,10 +12,14 @@ document.webL10n.ready ->
 	Polymer(
 		'cs-menu'
 		playlist_text		: _('playlist')
+		equalizer_text		: _('equalizer')
 		library_text		: _('library')
 		rescan_library_text	: _('rescan-library')
 		playlist			: ->
 			document.querySelector('cs-music-playlist').open()
+		equalizer			: ->
+			document.querySelector('cs-music-equalizer').open()
+			@back()
 		library				: ->
 			document.querySelector('cs-music-library').open()
 		rescan				: ->
