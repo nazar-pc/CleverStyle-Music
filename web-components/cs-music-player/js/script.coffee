@@ -7,6 +7,7 @@
 ###
 
 music_storage	= navigator.getDeviceStorage('music')
+music_equalizer	= cs.music_equalizer
 music_library	= cs.music_library
 music_playlist	= cs.music_playlist
 music_settings	= cs.music_settings
@@ -24,6 +25,13 @@ Polymer(
 		)
 		@player		= do =>
 			player_element						= document.createElement('audio')
+			music_equalizer.add_to_element(player_element.impl)
+			cs.bus.on('equalizer/update', ->
+				music_equalizer.add_to_element(player_element.impl)
+				# TODO: uncomment when equalizer will be able to deal with aurora.js
+#				if aurora_player
+#					music_equalizer.add_to_element(aurora_player.device.device.node)
+			)
 			aurora_player						= null
 			playing_started						= 0
 			# Change channel type to play in background
@@ -60,6 +68,8 @@ Polymer(
 				aurora_player	= AV.Player.fromURL(object_url)
 				aurora_player.on('ready', ->
 					@device.device.node.context.mozAudioChannelType	= 'content'
+					# TODO: uncomment when equalizer will be able to deal with aurora.js
+#					music_equalizer.add_to_element(@device.device.node)
 				)
 				aurora_player.on('end', =>
 					# Pause

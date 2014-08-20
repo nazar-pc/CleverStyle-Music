@@ -10,9 +10,11 @@
 
 
 (function() {
-  var body, music_library, music_playlist, music_settings, music_storage, seeking_bar;
+  var body, music_equalizer, music_library, music_playlist, music_settings, music_storage, seeking_bar;
 
   music_storage = navigator.getDeviceStorage('music');
+
+  music_equalizer = cs.music_equalizer;
 
   music_library = cs.music_library;
 
@@ -36,6 +38,10 @@
       this.player = (function() {
         var aurora_player, object_url, play_with_aurora, player_element, playing_started;
         player_element = document.createElement('audio');
+        music_equalizer.add_to_element(player_element.impl);
+        cs.bus.on('equalizer/update', function() {
+          return music_equalizer.add_to_element(player_element.impl);
+        });
         aurora_player = null;
         playing_started = 0;
         player_element.mozAudioChannelType = 'content';
