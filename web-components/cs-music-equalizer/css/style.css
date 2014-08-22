@@ -10,23 +10,35 @@
   display: block;
   position: relative; }
 
-.inner {
+cs-music-equalizer-levels-labels {
+  display: block;
+  height: 3rem;
+  overflow: hidden;
+  padding: 1rem;
+  position: absolute;
+  text-align: center;
+  width: 100%; }
+
+cs-music-equalizer-levels {
   display: flex;
-  height: calc(100vh - 3rem);
-  padding: 1rem; }
-  .inner input {
+  height: calc(100vh - 8rem);
+  margin: 1rem;
+  position: absolute;
+  top: 3rem;
+  width: calc(100% - 2rem); }
+  cs-music-equalizer-levels input {
     display: none; }
-  .inner .ranger {
+  cs-music-equalizer-levels .ranger {
     display: inline-block;
     height: 100%;
     width: 10%; }
-    .inner .ranger * {
+    cs-music-equalizer-levels .ranger * {
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       -o-user-select: none;
       user-select: none; }
-    .inner .ranger .ranger-track {
+    cs-music-equalizer-levels .ranger .ranger-track {
       background: #fff;
       border-radius: .1rem;
       box-shadow: 0 0 .1rem #000;
@@ -35,10 +47,11 @@
       margin: 0 auto;
       position: relative;
       width: .3rem; }
-      .inner .ranger .ranger-track .ranger-handle {
+      cs-music-equalizer-levels .ranger .ranger-track .ranger-handle {
         display: block;
+        height: 0;
         position: absolute; }
-        .inner .ranger .ranger-track .ranger-handle .ranger-disc {
+        cs-music-equalizer-levels .ranger .ranger-track .ranger-handle .ranger-disc {
           background: #fff;
           border-radius: 100%;
           box-shadow: 0 0 .1rem #000;

@@ -12,10 +12,23 @@
 	position   : relative;
 }
 
-.inner {
-	display : flex;
-	height  : calc(100vh - 3rem);
-	padding : 1rem;
+cs-music-equalizer-levels-labels {
+	display    : block;
+	height     : 3rem;
+	overflow   : hidden;
+	padding    : 1rem;
+	position   : absolute;
+	text-align : center;
+	width      : 100%;
+}
+
+cs-music-equalizer-levels {
+	display  : flex;
+	height   : calc(100vh - 8rem);
+	margin   : 1rem;
+	position : absolute;
+	top      : 3rem;
+	width    : calc(100% - 2rem);
 
 	input {
 		display : none;
@@ -46,6 +59,7 @@
 
 			.ranger-handle {
 				display  : block;
+				height   : 0;
 				position : absolute;
 
 				.ranger-disc {

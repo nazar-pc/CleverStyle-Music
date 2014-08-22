@@ -22,11 +22,11 @@ document.webL10n.ready ->
 				label		: false
 				min			: -20
 				max			: 20
-				step		: .001
+				step		: .01
 				callback	: (val) ->
+					gain_levels[$(@).prev().data('index')]	= Math.round(val * 100) / 100
 					clearTimeout(update_level_timeout)
 					update_level_timeout	= setTimeout (=>
-						gain_levels[$(@).prev().data('index')]	= Math.round(val * 10) / 10
 						music_equalizer.set_gain_levels(gain_levels)
 					), 500
 			)
@@ -34,7 +34,6 @@ document.webL10n.ready ->
 			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy')
 			@gain_levels	= gain_levels
 			music_equalizer.set_gain_levels(gain_levels)
-			console.log gain_levels
 			setTimeout (=>
 				@ready()
 			), 100

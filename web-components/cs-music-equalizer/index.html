@@ -1,18 +1,30 @@
 <polymer-element name="cs-music-equalizer">
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/style.css">
-		<div class="inner">
-			<input type="range" value="{{gain_levels[0]}}" data-index="0">
-			<input type="range" value="{{gain_levels[1]}}" data-index="1">
-			<input type="range" value="{{gain_levels[2]}}" data-index="2">
-			<input type="range" value="{{gain_levels[3]}}" data-index="3">
-			<input type="range" value="{{gain_levels[4]}}" data-index="4">
-			<input type="range" value="{{gain_levels[5]}}" data-index="5">
-			<input type="range" value="{{gain_levels[6]}}" data-index="6">
-			<input type="range" value="{{gain_levels[7]}}" data-index="7">
-			<input type="range" value="{{gain_levels[8]}}" data-index="8">
-			<input type="range" value="{{gain_levels[9]}}" data-index="9">
-		</div>
+		<cs-music-equalizer-levels-labels horizontal center layout>
+			<label flex>{{gain_levels[0]}}</label>
+			<label flex>{{gain_levels[1]}}</label>
+			<label flex>{{gain_levels[2]}}</label>
+			<label flex>{{gain_levels[3]}}</label>
+			<label flex>{{gain_levels[4]}}</label>
+			<label flex>{{gain_levels[5]}}</label>
+			<label flex>{{gain_levels[6]}}</label>
+			<label flex>{{gain_levels[7]}}</label>
+			<label flex>{{gain_levels[8]}}</label>
+			<label flex>{{gain_levels[9]}}</label>
+		</cs-music-equalizer-levels-labels>
+		<cs-music-equalizer-levels>
+			<input type="range" value="{{gain_levels[0]}}" data-index="0" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[1]}}" data-index="1" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[2]}}" data-index="2" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[3]}}" data-index="3" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[4]}}" data-index="4" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[5]}}" data-index="5" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[6]}}" data-index="6" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[7]}}" data-index="7" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[8]}}" data-index="8" min="-20" max="20" step=".01">
+			<input type="range" value="{{gain_levels[9]}}" data-index="9" min="-20" max="20" step=".01">
+		</cs-music-equalizer-levels>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-right" on-click="{{back}}"></cs-control>
 			<cs-control flex icon="database" on-click="{{equalizer_presets}}"></cs-control>

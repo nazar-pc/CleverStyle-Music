@@ -27,12 +27,12 @@
           label: false,
           min: -20,
           max: 20,
-          step: .001,
+          step: .01,
           callback: function(val) {
             var _this = this;
+            gain_levels[$(this).prev().data('index')] = Math.round(val * 100) / 100;
             clearTimeout(update_level_timeout);
             return update_level_timeout = setTimeout((function() {
-              gain_levels[$(_this).prev().data('index')] = Math.round(val * 10) / 10;
               return music_equalizer.set_gain_levels(gain_levels);
             }), 500);
           }
@@ -43,7 +43,6 @@
         $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy');
         this.gain_levels = gain_levels;
         music_equalizer.set_gain_levels(gain_levels);
-        console.log(gain_levels);
         return setTimeout((function() {
           return _this.ready();
         }), 100);

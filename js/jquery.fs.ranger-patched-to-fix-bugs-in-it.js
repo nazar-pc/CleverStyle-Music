@@ -167,10 +167,19 @@
 				opts.formatter = _formatNumber;
 			}
 
-			var min = parseFloat($input.attr("min")) || 0,
-				max = parseFloat($input.attr("max")) || 100,
+			var min = parseFloat($input.attr("min")),
+				max = parseFloat($input.attr("max")),
 				step = parseFloat($input.attr("step")) || 1,
-				value = parseFloat($input.val()) || (min + ((max - min) / 2));
+				value = parseFloat($input.val());
+			if (isNaN(min)) {
+				min	= 0;
+			}
+			if (isNaN(max)) {
+				max	= 100;
+			}
+			if (isNaN(value)) {
+				value	= min + (max - min) / 2;
+			}
 
 			var html = '<div class="ranger';
 			if (opts.vertical) {
@@ -286,7 +295,7 @@
 	 */
 	function _onMouseMove(e) {
 		var data = e.data,
-			offset = data.$track.offset(),
+			offset = $(data.$track[0].offsetParent).offset(),
 			perc = 0,
 			$disk = data.$track.find('.ranger-disc');
 
@@ -295,13 +304,13 @@
 			if (pageY === undefined) {
 				pageY = e.originalEvent.touches[0].pageY;
 			}
-			perc = 1 - (pageY - offset.top - $disk.height()) / data.trackHeight;
+			perc = 1 - (pageY - offset.top - $disk.height() / 2) / data.trackHeight;
 		} else {
 			var pageX = e.pageX;
 			if (pageX === undefined) {
 				pageX = e.originalEvent.touches[0].pageX;
 			}
-			perc = (pageX - offset.left - $disk.width()) / data.trackWidth;
+			perc = (pageX - offset.left - $disk.width() / 2) / data.trackWidth;
 		}
 
 		_position(data, perc);
