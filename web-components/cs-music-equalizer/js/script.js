@@ -12,18 +12,16 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, music_equalizer, update_level_timeout;
+    var $body, equalizer_presets, music_equalizer, update_level_timeout;
     $body = $('body');
     music_equalizer = cs.music_equalizer;
     update_level_timeout = 0;
+    equalizer_presets = document.querySelector('cs-music-equalizer-presets');
     return Polymer('cs-music-equalizer', {
-      frequencies: music_equalizer.get_gain_levels(),
-      created: function() {
-        return this.frequencies = music_equalizer.get_gain_levels();
-      },
+      gain_levels: music_equalizer.get_gain_levels(),
       ready: function() {
-        var frequencies;
-        frequencies = this.frequencies;
+        var gain_levels;
+        gain_levels = this.gain_levels;
         return $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger({
           vertical: true,
           label: false,
@@ -34,14 +32,27 @@
             var _this = this;
             clearTimeout(update_level_timeout);
             return update_level_timeout = setTimeout((function() {
-              frequencies[$(_this).prev().data('index')] = Math.round(val * 100000) / 100000;
-              return music_equalizer.set_gain_levels(frequencies);
+              gain_levels[$(_this).prev().data('index')] = Math.round(val * 10) / 10;
+              return music_equalizer.set_gain_levels(gain_levels);
             }), 500);
           }
         });
       },
+      update: function(gain_levels) {
+        var _this = this;
+        $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy');
+        this.gain_levels = gain_levels;
+        music_equalizer.set_gain_levels(gain_levels);
+        console.log(gain_levels);
+        return setTimeout((function() {
+          return _this.ready();
+        }), 100);
+      },
       open: function() {
         return $body.addClass('equalizer');
+      },
+      equalizer_presets: function() {
+        return equalizer_presets.open();
       },
       back: function() {
         return $body.removeClass('equalizer');

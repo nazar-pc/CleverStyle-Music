@@ -1,10 +1,12 @@
 <polymer-element name="cs-menu">
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/style.css">
-		<cs-menu-item icon="list" on-click="{{playlist}}">{{playlist_text}}</cs-menu-item>
-		<cs-menu-item icon="sliders" on-click="{{equalizer}}">{{equalizer_text}}</cs-menu-item>
-		<cs-menu-item icon="music" on-click="{{library}}">{{library_text}}</cs-menu-item>
-		<cs-menu-item icon="refresh" on-click="{{rescan}}">{{rescan_library_text}}</cs-menu-item>
+		<cs-menu-items>
+			<cs-menu-item icon="list" on-click="{{playlist}}">{{playlist_text}}</cs-menu-item>
+			<cs-menu-item icon="sliders" on-click="{{equalizer}}">{{equalizer_text}}</cs-menu-item>
+			<cs-menu-item icon="music" on-click="{{library}}">{{library_text}}</cs-menu-item>
+			<cs-menu-item icon="refresh" on-click="{{rescan}}">{{rescan_library_text}}</cs-menu-item>
+		</cs-menu-items>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-up" on-click="{{back}}"></cs-control>
 		</cs-controls>

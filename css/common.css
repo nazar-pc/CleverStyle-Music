@@ -41,6 +41,9 @@ body {
   body.equalizer {
     margin-left: -100vw;
     margin-top: 0; }
+  body.equalizer-presets {
+    margin-left: 0;
+    margin-top: 0; }
   body.library {
     margin-left: -300vw;
     margin-top: -100vh; }

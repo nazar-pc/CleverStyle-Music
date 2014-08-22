@@ -1,6 +1,11 @@
-<polymer-element name="cs-menu-item" attributes="icon" noscript>
+<polymer-element name="cs-menu-items" noscript>
 	<template>
 		<link rel="stylesheet" href="css/style.css">
+		<content></content>
+	</template>
+</polymer-element>
+<polymer-element name="cs-menu-item" attributes="icon" noscript>
+	<template>
 		<template if="{{icon}}">
 			<i class="fa fa-{{icon}}"></i>
 		</template>

@@ -2,12 +2,14 @@
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/style.css">
 		<template if="{{!loading}}">
-			<cs-menu-item data-group-field="" on-click="{{group}}">{{all_text}}</cs-menu-item>
-			<cs-menu-item data-group-field="artist" on-click="{{group}}">{{artists_text}}</cs-menu-item>
-			<cs-menu-item data-group-field="album" on-click="{{group}}">{{albums_text}}</cs-menu-item>
-			<cs-menu-item data-group-field="genre" on-click="{{group}}">{{genres_text}}</cs-menu-item>
-			<cs-menu-item data-group-field="year" on-click="{{group}}">{{years_text}}</cs-menu-item>
-			<cs-menu-item data-group-field="rated" on-click="{{group}}">{{ratings_text}}</cs-menu-item>
+			<cs-menu-items>
+				<cs-menu-item data-group-field="" on-click="{{group}}">{{all_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="artist" on-click="{{group}}">{{artists_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="album" on-click="{{group}}">{{albums_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="genre" on-click="{{group}}">{{genres_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="year" on-click="{{group}}">{{years_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="rated" on-click="{{group}}">{{ratings_text}}</cs-menu-item>
+			</cs-menu-items>
 		</template>
 		<template if="{{loading}}">
 			<cs-loading></cs-loading>
