@@ -17,7 +17,7 @@
   music_settings = cs.music_settings;
 
   cs.music_equalizer = (function() {
-    var create_equalizer, frequencies_to_control, frequencies_types, gain_levels, update_equalizer;
+    var create_equalizer, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_load, reverb_impulse_responses_files, update_equalizer;
     frequencies_to_control = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     frequencies_types = ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf'];
     gain_levels = music_settings.equalizer_gain_levels || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -47,15 +47,49 @@
         frequencies[index].gain.value = gain_levels[index];
       }
     };
+    reverb_impulse_responses_files = [];
+    reverb_impulse_response_load = function(filename, callback) {
+      var context, request, url;
+      context = new AudioContext;
+      url = "/audio/reverb_impulse_responses/" + filename + ".ogg";
+      request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.responseType = 'blob';
+      request.onload = function() {
+        var file_reader;
+        file_reader = new FileReader();
+        file_reader.onload = function() {
+          return context.decodeAudioData(this.result, function(buffer) {
+            if (!buffer) {
+              callback();
+              return;
+            }
+            callback(buffer);
+          });
+        };
+        file_reader.readAsArrayBuffer(request.response);
+      };
+      request.send();
+    };
     return {
       add_to_element: function(element) {
-        var audio;
+        var audio, compressor, reverb;
         audio = {};
+        window.a = audio;
         element.audio_processing = audio;
         audio.context = new AudioContext;
         audio.context.mozAudioChannelType = 'content';
         audio.source = audio.context.createMediaElementSource(element);
         audio.source = create_equalizer(audio);
+        compressor = audio.context.createDynamicsCompressor();
+        compressor.knee.value = 40;
+        compressor.threshold.value = -10;
+        compressor.ratio.value = 5;
+        reverb = audio.context.createConvolver();
+        audio.source.connect(compressor);
+        audio.source = compressor;
+        audio.source.connect(reverb);
+        audio.source = reverb;
         return audio.source.connect(audio.context.destination);
       },
       update: function(element) {
