@@ -19,8 +19,8 @@ document.webL10n.ready ->
 			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger(
 				vertical	: true
 				label		: false
-				min			: -20
-				max			: 20
+				min			: -10
+				max			: 10
 				step		: .01
 				callback	: (val) ->
 					gain_levels[$(@).prev().data('index')]	= Math.round(val * 100) / 100
