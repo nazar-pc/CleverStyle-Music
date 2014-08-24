@@ -40,7 +40,7 @@
         player_element = document.createElement('audio');
         music_equalizer.add_to_element(player_element.impl);
         cs.bus.on('equalizer/update', function() {
-          return music_equalizer.add_to_element(player_element.impl);
+          return music_equalizer.update(player_element.impl);
         });
         aurora_player = null;
         playing_started = 0;

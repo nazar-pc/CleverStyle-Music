@@ -12,10 +12,9 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, equalizer_presets, music_equalizer, update_level_timeout;
+    var $body, equalizer_presets, music_equalizer;
     $body = $('body');
     music_equalizer = cs.music_equalizer;
-    update_level_timeout = 0;
     equalizer_presets = document.querySelector('cs-music-equalizer-presets');
     return Polymer('cs-music-equalizer', {
       gain_levels: music_equalizer.get_gain_levels(),
@@ -29,12 +28,8 @@
           max: 20,
           step: .01,
           callback: function(val) {
-            var _this = this;
             gain_levels[$(this).prev().data('index')] = Math.round(val * 100) / 100;
-            clearTimeout(update_level_timeout);
-            return update_level_timeout = setTimeout((function() {
-              return music_equalizer.set_gain_levels(gain_levels);
-            }), 500);
+            return music_equalizer.set_gain_levels(gain_levels);
           }
         });
       },

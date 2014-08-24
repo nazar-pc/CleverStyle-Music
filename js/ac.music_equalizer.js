@@ -12,44 +12,56 @@
 (function() {
   var music_settings;
 
+  window.AudioContext = AudioContext || webkitAudioContext;
+
   music_settings = cs.music_settings;
 
   cs.music_equalizer = (function() {
-    var frequencies_to_control, frequencies_types, gain_levels;
+    var create_equalizer, frequencies_to_control, frequencies_types, gain_levels, update_equalizer;
     frequencies_to_control = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     frequencies_types = ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf'];
     gain_levels = music_settings.equalizer_gain_levels || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    create_equalizer = function(audio) {
+      var context, frequencies, frequency, index, source, _i, _len;
+      context = audio.context;
+      source = audio.source;
+      frequencies = [];
+      audio.frequencies = frequencies;
+      for (index = _i = 0, _len = frequencies_to_control.length; _i < _len; index = ++_i) {
+        frequency = frequencies_to_control[index];
+        frequencies[index] = context.createBiquadFilter();
+        frequencies[index].frequency.value = frequency;
+        frequencies[index].type = frequencies_types[index];
+        frequencies[index].gain.value = gain_levels[index];
+        frequencies[index].Q.value = 1;
+        source.connect(frequencies[index]);
+        source = frequencies[index];
+      }
+      return source;
+    };
+    update_equalizer = function(audio) {
+      var frequencies, frequency, index, _i, _len;
+      frequencies = audio.frequencies;
+      for (index = _i = 0, _len = frequencies_to_control.length; _i < _len; index = ++_i) {
+        frequency = frequencies_to_control[index];
+        frequencies[index].gain.value = gain_levels[index];
+      }
+    };
     return {
       add_to_element: function(element) {
-        var audioContext, audioSource, frequencies, frequency, index, _i, _len, _results;
-        audioContext = new AudioContext;
-        audioContext.mozAudioChannelType = 'content';
-        audioSource = audioContext.createMediaElementSource(element);
-        frequencies = [];
-        _results = [];
-        for (index = _i = 0, _len = frequencies_to_control.length; _i < _len; index = ++_i) {
-          frequency = frequencies_to_control[index];
-          frequencies[index] = audioContext.createBiquadFilter();
-          frequencies[index].frequency.value = frequency;
-          frequencies[index].type = frequencies_types[index];
-          frequencies[index].gain.value = gain_levels[index];
-          frequencies[index].Q.value = 1;
-          if (index === 0) {
-            if (element.equalizer_audio_source) {
-              element.equalizer_audio_source.disconnect();
-            }
-            element.equalizer_audio_source = audioSource;
-            _results.push(audioSource.connect(frequencies[index]));
-          } else {
-            frequencies[index - 1].connect(frequencies[index]);
-            if (index === frequencies_to_control.length - 1) {
-              _results.push(frequencies[index].connect(audioContext.destination));
-            } else {
-              _results.push(void 0);
-            }
-          }
-        }
-        return _results;
+        var audio;
+        audio = {};
+        element.audio_processing = audio;
+        audio.context = new AudioContext;
+        audio.context.mozAudioChannelType = 'content';
+        audio.source = audio.context.createMediaElementSource(element);
+        audio.source = create_equalizer(audio);
+        return audio.source.connect(audio.context.destination);
+      },
+      update: function(element) {
+        var audio;
+        audio = element.audio_processing;
+        return update_equalizer(audio);
       },
       get_gain_levels: function() {
         return gain_levels;

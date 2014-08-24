@@ -9,7 +9,6 @@
 document.webL10n.ready ->
 	$body					= $('body')
 	music_equalizer			= cs.music_equalizer
-	update_level_timeout	= 0
 	equalizer_presets		= document.querySelector('cs-music-equalizer-presets')
 
 	Polymer(
@@ -25,10 +24,7 @@ document.webL10n.ready ->
 				step		: .01
 				callback	: (val) ->
 					gain_levels[$(@).prev().data('index')]	= Math.round(val * 100) / 100
-					clearTimeout(update_level_timeout)
-					update_level_timeout	= setTimeout (=>
-						music_equalizer.set_gain_levels(gain_levels)
-					), 500
+					music_equalizer.set_gain_levels(gain_levels)
 			)
 		update				: (gain_levels) ->
 			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy')
