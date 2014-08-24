@@ -26,8 +26,8 @@ Polymer(
 		@player		= do =>
 			player_element						= document.createElement('audio')
 			sound_processing.add_to_element(player_element.impl)
-			cs.bus.on('equalizer/update', ->
-				sound_processing.update(player_element.impl)
+			cs.bus.on('sound-processing/update', ->
+				sound_processing.update_element(player_element.impl)
 				# TODO: uncomment when equalizer will be able to deal with aurora.js
 #				if aurora_player
 #					sound_processing.add_to_element(aurora_player.device.device.node)

@@ -17,10 +17,11 @@
     settings = settings ? JSON.parse(settings) : {
       repeat: 'all',
       shuffle: true,
-      equalizer_gain_levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      equalizer_gain_levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      reverb_mode: ''
     };
     public_settings = {};
-    _ref = ['repeat', 'shuffle', 'equalizer_gain_levels'];
+    _ref = ['repeat', 'shuffle', 'equalizer_gain_levels', 'reverb_mode'];
     _fn = function(option) {
       return Object.defineProperty(public_settings, option, {
         get: function() {

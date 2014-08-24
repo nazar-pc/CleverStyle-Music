@@ -17,6 +17,7 @@
     return Polymer('cs-menu', {
       playlist_text: _('playlist'),
       equalizer_text: _('equalizer'),
+      sound_environment_text: _('sound_environment'),
       library_text: _('library'),
       rescan_library_text: _('rescan-library'),
       playlist: function() {
@@ -24,6 +25,10 @@
       },
       equalizer: function() {
         document.querySelector('cs-music-equalizer').open();
+        return this.back();
+      },
+      sound_environment: function() {
+        document.querySelector('cs-music-sound-environment').open();
         return this.back();
       },
       library: function() {

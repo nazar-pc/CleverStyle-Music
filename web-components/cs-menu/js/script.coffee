@@ -11,19 +11,23 @@ document.webL10n.ready ->
 
 	Polymer(
 		'cs-menu'
-		playlist_text		: _('playlist')
-		equalizer_text		: _('equalizer')
-		library_text		: _('library')
-		rescan_library_text	: _('rescan-library')
-		playlist			: ->
+		playlist_text			: _('playlist')
+		equalizer_text			: _('equalizer')
+		sound_environment_text	: _('sound_environment')
+		library_text			: _('library')
+		rescan_library_text		: _('rescan-library')
+		playlist				: ->
 			document.querySelector('cs-music-playlist').open()
-		equalizer			: ->
+		equalizer				: ->
 			document.querySelector('cs-music-equalizer').open()
 			@back()
-		library				: ->
+		sound_environment		: ->
+			document.querySelector('cs-music-sound-environment').open()
+			@back()
+		library					: ->
 			document.querySelector('cs-music-library').open()
-		rescan				: ->
+		rescan					: ->
 			document.querySelector('cs-music-library-rescan').open()
-		back				: ->
+		back					: ->
 			$body.removeClass('menu')
 	)

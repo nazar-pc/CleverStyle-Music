@@ -3,15 +3,21 @@ HTML5 application based purely on Web technologies.
 
 Application intended to be used in Firefox OS (should also work in Windows, Linux, Mac OS X and Android if Firefox browser installed).
 
-There are some interesting technologies used here, like [Polymer](http://www.polymer-project.org/) (Web Components) and [Aurora.js](https://github.com/audiocogs/aurora.js) (music playing and decoding of metadata from files)
+There are some interesting technologies used here:
+* [Polymer](http://www.polymer-project.org/) (Web Components)
+* [Web Audio API](http://www.w3.org/TR/webaudio/)
+* [Aurora.js](https://github.com/audiocogs/aurora.js) (playing and decoding of metadata from some files without native browser support)
 
-With current version of music player you can:
+Main features of CleverStyle Music player:
 * scan and store music library
 * generate playlist in normal or random order
 * repeat one song, playlist or do not repeat anything
 * remember current track in playlist after app restarts (you will not listen the same songs over and over from the beginning)
 * create or extend playlist with tracks of specific artist, album, genre, year or rating
 * extract meta-tags from music files including album cover and show them in app interface (blurred cover is used as application background)
+* sound equalization with graphical equalizer
+* pre-installed equalizer presets
+* environment sound effects (surround) to imitate real physical spaces
 * obviously, play:) files in formats mp3, mp4, flac and alac
 * more features coming soon, feel free to suggest yours
 

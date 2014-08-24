@@ -27,11 +27,10 @@ document.webL10n.ready ->
 					sound_processing.set_gain_levels(gain_levels)
 			)
 		update				: (gain_levels) ->
-			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy')
 			@gain_levels	= gain_levels
 			sound_processing.set_gain_levels(gain_levels)
 			setTimeout (=>
-				@ready()
+				$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('reset')
 			), 100
 		open				: ->
 			$body.addClass('equalizer')

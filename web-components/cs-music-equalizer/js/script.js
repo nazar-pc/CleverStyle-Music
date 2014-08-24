@@ -35,11 +35,10 @@
       },
       update: function(gain_levels) {
         var _this = this;
-        $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy');
         this.gain_levels = gain_levels;
         sound_processing.set_gain_levels(gain_levels);
         return setTimeout((function() {
-          return _this.ready();
+          return $(_this.shadowRoot.querySelectorAll('input[type=range]')).ranger('reset');
         }), 100);
       },
       open: function() {

@@ -17,27 +17,24 @@
   music_settings = cs.music_settings;
 
   cs.sound_processing = (function() {
-    var create_equalizer, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_load, reverb_impulse_responses_files, update_equalizer;
+    var create_compressor, create_equalizer, create_reverb, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_current, reverb_impulse_response_load, reverb_impulse_responses_files, update_equalizer, update_reverb;
     frequencies_to_control = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     frequencies_types = ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf'];
     gain_levels = music_settings.equalizer_gain_levels || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     create_equalizer = function(audio) {
-      var context, frequencies, frequency, index, source, _i, _len;
-      context = audio.context;
-      source = audio.source;
+      var frequencies, frequency, index, _i, _len;
       frequencies = [];
       audio.frequencies = frequencies;
       for (index = _i = 0, _len = frequencies_to_control.length; _i < _len; index = ++_i) {
         frequency = frequencies_to_control[index];
-        frequencies[index] = context.createBiquadFilter();
+        frequencies[index] = audio.context.createBiquadFilter();
         frequencies[index].frequency.value = frequency;
         frequencies[index].type = frequencies_types[index];
         frequencies[index].gain.value = gain_levels[index];
         frequencies[index].Q.value = 1;
-        source.connect(frequencies[index]);
-        source = frequencies[index];
+        audio.source.connect(frequencies[index]);
+        audio.source = frequencies[index];
       }
-      return source;
     };
     update_equalizer = function(audio) {
       var frequencies, frequency, index, _i, _len;
@@ -47,9 +44,14 @@
         frequencies[index].gain.value = gain_levels[index];
       }
     };
-    reverb_impulse_responses_files = [];
+    reverb_impulse_responses_files = ['Block Inside', 'Cement Blocks', 'Chamber', 'Chateau de Logne, Outside', 'Derlon Sanctuary', 'Five Columns', 'Five Columns Long', 'Greek 7 Echo Hall', 'Hall', 'Highly Damped Large Room', 'In The Silo Revised', 'Inverse Room', 'Large Wide Echo Hall', 'Masonic Lodge', 'Musikvereinsaal', 'Narrow Bumpy Space', 'On a Star', 'Parking Garage', 'Plate', 'Rich Plate', 'Rich Split', 'Ruby Room', 'Scala Milan Opera Hall', 'St Nicolaes Church', 'Trig Room', 'Vocal Duo'];
+    reverb_impulse_response_current = music_settings.reverb_mode;
     reverb_impulse_response_load = function(filename, callback) {
       var context, request, url;
+      if (!filename) {
+        callback();
+        return;
+      }
       context = new AudioContext;
       url = "/audio/reverb_impulse_responses/" + filename + ".ogg";
       request = new XMLHttpRequest();
@@ -69,32 +71,58 @@
         };
         file_reader.readAsArrayBuffer(request.response);
       };
+      request.onerror = function() {
+        return callback();
+      };
       request.send();
+    };
+    create_compressor = function(audio) {
+      var compressor;
+      compressor = audio.context.createDynamicsCompressor();
+      audio.compressor = compressor;
+      compressor.knee.value = 40;
+      compressor.threshold.value = -10;
+      compressor.ratio.value = 5;
+      audio.source.connect(compressor);
+      audio.source = compressor;
+    };
+    create_reverb = function(audio) {
+      var reverb;
+      reverb = audio.context.createConvolver();
+      audio.reverb = reverb;
+      setTimeout((function() {
+        return reverb_impulse_response_load(reverb_impulse_response_current, function(buffer) {
+          return reverb.buffer = buffer;
+        });
+      }), 0);
+      audio.source.connect(reverb);
+      audio.source = reverb;
+    };
+    update_reverb = function(audio) {
+      return setTimeout((function() {
+        return reverb_impulse_response_load(reverb_impulse_response_current, function(buffer) {
+          return audio.reverb.buffer = buffer;
+        });
+      }), 0);
     };
     return {
       add_to_element: function(element) {
-        var audio, compressor, reverb;
+        var audio;
         audio = {};
         element.audio_processing = audio;
         audio.context = new AudioContext;
         audio.context.mozAudioChannelType = 'content';
         audio.source = audio.context.createMediaElementSource(element);
-        audio.source = create_equalizer(audio);
-        compressor = audio.context.createDynamicsCompressor();
-        compressor.knee.value = 40;
-        compressor.threshold.value = -10;
-        compressor.ratio.value = 5;
-        reverb = audio.context.createConvolver();
-        audio.source.connect(compressor);
-        audio.source = compressor;
-        audio.source.connect(reverb);
-        audio.source = reverb;
+        create_reverb(audio);
+        create_equalizer(audio);
+        create_compressor(audio);
         return audio.source.connect(audio.context.destination);
       },
-      update: function(element) {
+      update_element: function(element) {
         var audio;
         audio = element.audio_processing;
-        return update_equalizer(audio);
+        update_equalizer(audio);
+        return update_reverb(audio);
       },
       get_gain_levels: function() {
         return gain_levels;
@@ -102,7 +130,18 @@
       set_gain_levels: function(new_gain_levels) {
         gain_levels = new_gain_levels;
         music_settings.equalizer_gain_levels = new_gain_levels;
-        return cs.bus.trigger('equalizer/update');
+        return cs.bus.trigger('sound-processing/update');
+      },
+      get_reverb_mode: function() {
+        return reverb_impulse_response_current;
+      },
+      get_reverb_modes: function() {
+        return reverb_impulse_responses_files;
+      },
+      set_reverb_mode: function(mode) {
+        reverb_impulse_response_current = mode;
+        music_settings.reverb_mode = mode;
+        return cs.bus.trigger('sound-processing/update');
       }
     };
   })();

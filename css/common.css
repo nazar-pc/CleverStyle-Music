@@ -44,15 +44,18 @@ body {
   body.equalizer-presets {
     margin-left: 0;
     margin-top: 0; }
+  body.sound-environment {
+    margin-left: -300vw;
+    margin-top: 0; }
   body.library {
     margin-left: -300vw;
     margin-top: -100vh; }
   body.library-grouped {
     margin-left: -300vw;
-    margin-top: 0; }
+    margin-top: -200vh; }
   body.library-action {
     margin-left: -400vw;
-    margin-top: 0; }
+    margin-top: -200vh; }
   body.library-rescan {
     margin-left: -200vw;
     margin-top: -200vh; }
