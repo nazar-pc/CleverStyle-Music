@@ -6,13 +6,13 @@
  * @license     MIT License, see license.txt
 ###
 
-music_storage	= navigator.getDeviceStorage('music')
-music_equalizer	= cs.music_equalizer
-music_library	= cs.music_library
-music_playlist	= cs.music_playlist
-music_settings	= cs.music_settings
-body			= document.querySelector('body')
-seeking_bar		= null
+music_storage		= navigator.getDeviceStorage('music')
+sound_processing	= cs.sound_processing
+music_library		= cs.music_library
+music_playlist		= cs.music_playlist
+music_settings		= cs.music_settings
+body				= document.querySelector('body')
+seeking_bar			= null
 
 Polymer(
 	'cs-music-player'
@@ -25,12 +25,12 @@ Polymer(
 		)
 		@player		= do =>
 			player_element						= document.createElement('audio')
-			music_equalizer.add_to_element(player_element.impl)
+			sound_processing.add_to_element(player_element.impl)
 			cs.bus.on('equalizer/update', ->
-				music_equalizer.update(player_element.impl)
+				sound_processing.update(player_element.impl)
 				# TODO: uncomment when equalizer will be able to deal with aurora.js
 #				if aurora_player
-#					music_equalizer.add_to_element(aurora_player.device.device.node)
+#					sound_processing.add_to_element(aurora_player.device.device.node)
 			)
 			aurora_player						= null
 			playing_started						= 0
@@ -69,7 +69,7 @@ Polymer(
 				aurora_player.on('ready', ->
 					@device.device.node.context.mozAudioChannelType	= 'content'
 					# TODO: uncomment when equalizer will be able to deal with aurora.js
-#					music_equalizer.add_to_element(@device.device.node)
+#					sound_processing.add_to_element(@device.device.node)
 				)
 				aurora_player.on('end', =>
 					# Pause

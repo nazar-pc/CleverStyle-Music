@@ -12,12 +12,12 @@
 (function() {
 
   document.webL10n.ready(function() {
-    var $body, equalizer_presets, music_equalizer;
+    var $body, equalizer_presets, sound_processing;
     $body = $('body');
-    music_equalizer = cs.music_equalizer;
+    sound_processing = cs.sound_processing;
     equalizer_presets = document.querySelector('cs-music-equalizer-presets');
     return Polymer('cs-music-equalizer', {
-      gain_levels: music_equalizer.get_gain_levels(),
+      gain_levels: sound_processing.get_gain_levels(),
       ready: function() {
         var gain_levels;
         gain_levels = this.gain_levels;
@@ -29,7 +29,7 @@
           step: .01,
           callback: function(val) {
             gain_levels[$(this).prev().data('index')] = Math.round(val * 100) / 100;
-            return music_equalizer.set_gain_levels(gain_levels);
+            return sound_processing.set_gain_levels(gain_levels);
           }
         });
       },
@@ -37,7 +37,7 @@
         var _this = this;
         $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy');
         this.gain_levels = gain_levels;
-        music_equalizer.set_gain_levels(gain_levels);
+        sound_processing.set_gain_levels(gain_levels);
         return setTimeout((function() {
           return _this.ready();
         }), 100);

@@ -8,12 +8,12 @@
 
 document.webL10n.ready ->
 	$body					= $('body')
-	music_equalizer			= cs.music_equalizer
+	sound_processing		= cs.sound_processing
 	equalizer_presets		= document.querySelector('cs-music-equalizer-presets')
 
 	Polymer(
 		'cs-music-equalizer'
-		gain_levels			: music_equalizer.get_gain_levels()
+		gain_levels			: sound_processing.get_gain_levels()
 		ready				: ->
 			gain_levels	= @gain_levels
 			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger(
@@ -24,12 +24,12 @@ document.webL10n.ready ->
 				step		: .01
 				callback	: (val) ->
 					gain_levels[$(@).prev().data('index')]	= Math.round(val * 100) / 100
-					music_equalizer.set_gain_levels(gain_levels)
+					sound_processing.set_gain_levels(gain_levels)
 			)
 		update				: (gain_levels) ->
 			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('destroy')
 			@gain_levels	= gain_levels
-			music_equalizer.set_gain_levels(gain_levels)
+			sound_processing.set_gain_levels(gain_levels)
 			setTimeout (=>
 				@ready()
 			), 100

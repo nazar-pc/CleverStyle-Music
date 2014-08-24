@@ -16,7 +16,7 @@
 
   music_settings = cs.music_settings;
 
-  cs.music_equalizer = (function() {
+  cs.sound_processing = (function() {
     var create_equalizer, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_load, reverb_impulse_responses_files, update_equalizer;
     frequencies_to_control = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     frequencies_types = ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf'];
@@ -75,7 +75,6 @@
       add_to_element: function(element) {
         var audio, compressor, reverb;
         audio = {};
-        window.a = audio;
         element.audio_processing = audio;
         audio.context = new AudioContext;
         audio.context.mozAudioChannelType = 'content';

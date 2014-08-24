@@ -8,7 +8,7 @@
 window.AudioContext	= AudioContext || webkitAudioContext
 music_settings		= cs.music_settings
 
-cs.music_equalizer	= do ->
+cs.sound_processing	= do ->
 	frequencies_to_control			= [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000] #kHz
 	frequencies_types				= ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf']
 	gain_levels						= music_settings.equalizer_gain_levels || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -59,7 +59,6 @@ cs.music_equalizer	= do ->
 
 	add_to_element	: (element) ->
 		audio								= {}
-		window.a = audio
 		element.audio_processing			= audio
 		audio.context						= new AudioContext
 		audio.context.mozAudioChannelType	= 'content'
