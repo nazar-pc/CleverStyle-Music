@@ -57,21 +57,8 @@
       url = "/audio/reverb_impulse_responses/" + filename + ".ogg";
       request = new XMLHttpRequest();
       request.open('GET', url, true);
-      request.responseType = 'blob';
-      request.onload = function() {
-        var file_reader;
-        file_reader = new FileReader();
-        file_reader.onload = function() {
-          return context.decodeAudioData(this.result, function(buffer) {
-            if (!buffer) {
-              callback();
-              return;
-            }
-            callback(buffer);
-          });
-        };
-        file_reader.readAsArrayBuffer(request.response);
-      };
+      request.responseType = 'arraybuffer';
+      request.onload = function() {};
       request.onerror = function() {
         return callback();
       };

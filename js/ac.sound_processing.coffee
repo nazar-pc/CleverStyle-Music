@@ -68,22 +68,9 @@ cs.sound_processing	= do ->
 		# Load buffer asynchronously
 		request					= new XMLHttpRequest()
 		request.open('GET', url, true)
-		request.responseType	= 'blob'
+		request.responseType	= 'arraybuffer'
 		request.onload			= ->
-			file_reader = new FileReader();
-			file_reader.onload = ->
-				# Asynchronously decode the audio file data in request.response
-				context.decodeAudioData(
-					@result
-					(buffer) ->
-						if !buffer
-							callback()
-							return
-						callback(buffer)
-						return
-				)
-			file_reader.readAsArrayBuffer(request.response);
-			return
+			# Nothing
 		request.onerror			= ->
 			callback()
 		request.send()
