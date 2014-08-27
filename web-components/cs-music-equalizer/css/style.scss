@@ -22,6 +22,21 @@ cs-music-equalizer-levels-labels {
 	width      : 100%;
 }
 
+// For very small screens
+@media (max-width: 360px) {
+	cs-music-equalizer-levels-labels label {
+		font-size : .8rem;
+
+		&:nth-of-type(2n+1) {
+			margin-top : -.5rem;
+		}
+
+		&:nth-of-type(2n) {
+			margin-top : .5rem;
+		}
+	}
+}
+
 cs-music-equalizer-levels {
 	display  : flex;
 	height   : calc(100vh - 8rem);

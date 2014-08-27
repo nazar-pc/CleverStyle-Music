@@ -19,6 +19,13 @@ cs-music-equalizer-levels-labels {
   text-align: center;
   width: 100%; }
 
+@media (max-width: 360px) {
+  cs-music-equalizer-levels-labels label {
+    font-size: .8rem; }
+    cs-music-equalizer-levels-labels label:nth-of-type(2n+1) {
+      margin-top: -.5rem; }
+    cs-music-equalizer-levels-labels label:nth-of-type(2n) {
+      margin-top: .5rem; } }
 cs-music-equalizer-levels {
   display: flex;
   height: calc(100vh - 8rem);
