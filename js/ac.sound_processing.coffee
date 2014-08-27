@@ -58,6 +58,7 @@ cs.sound_processing	= do ->
 		'Vocal Duo'
 	]
 	reverb_impulse_response_current	= music_settings.reverb_mode
+	reverb_impulse_response_new		= music_settings.reverb_mode
 	reverb_impulse_response_load	= (filename, callback) ->
 		if !filename
 			callback()
@@ -112,7 +113,10 @@ cs.sound_processing	= do ->
 		audio.source	= reverb
 		return
 	update_reverb					= (audio) ->
+		if reverb_impulse_response_new == reverb_impulse_response_current
+			return
 		setTimeout (->
+			reverb_impulse_response_current	= reverb_impulse_response_new
 			reverb_impulse_response_load(
 				reverb_impulse_response_current
 				(buffer) ->
@@ -145,6 +149,6 @@ cs.sound_processing	= do ->
 	get_reverb_modes	: ->
 		reverb_impulse_responses_files
 	set_reverb_mode		: (mode) ->
-		reverb_impulse_response_current	= mode
+		reverb_impulse_response_new		= mode
 		music_settings.reverb_mode		= mode
 		cs.bus.trigger('sound-processing/update')

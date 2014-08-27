@@ -17,7 +17,7 @@
   music_settings = cs.music_settings;
 
   cs.sound_processing = (function() {
-    var create_compressor, create_equalizer, create_reverb, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_current, reverb_impulse_response_load, reverb_impulse_responses_files, update_equalizer, update_reverb;
+    var create_compressor, create_equalizer, create_reverb, frequencies_to_control, frequencies_types, gain_levels, reverb_impulse_response_current, reverb_impulse_response_load, reverb_impulse_response_new, reverb_impulse_responses_files, update_equalizer, update_reverb;
     frequencies_to_control = [32, 64, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
     frequencies_types = ['lowshelf', 'lowshelf', 'lowshelf', 'peaking', 'peaking', 'peaking', 'peaking', 'highshelf', 'highshelf', 'highshelf'];
     gain_levels = music_settings.equalizer_gain_levels || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -46,6 +46,7 @@
     };
     reverb_impulse_responses_files = ['Block Inside', 'Cement Blocks', 'Chamber', 'Chateau de Logne, Outside', 'Derlon Sanctuary', 'Five Columns', 'Five Columns Long', 'Greek 7 Echo Hall', 'Hall', 'Highly Damped Large Room', 'In The Silo Revised', 'Inverse Room', 'Large Wide Echo Hall', 'Masonic Lodge', 'Musikvereinsaal', 'Narrow Bumpy Space', 'On a Star', 'Parking Garage', 'Plate', 'Rich Plate', 'Rich Split', 'Ruby Room', 'Scala Milan Opera Hall', 'St Nicolaes Church', 'Trig Room', 'Vocal Duo'];
     reverb_impulse_response_current = music_settings.reverb_mode;
+    reverb_impulse_response_new = music_settings.reverb_mode;
     reverb_impulse_response_load = function(filename, callback) {
       var context, request, url;
       if (!filename) {
@@ -99,7 +100,11 @@
       audio.source = reverb;
     };
     update_reverb = function(audio) {
+      if (reverb_impulse_response_new === reverb_impulse_response_current) {
+        return;
+      }
       return setTimeout((function() {
+        reverb_impulse_response_current = reverb_impulse_response_new;
         return reverb_impulse_response_load(reverb_impulse_response_current, function(buffer) {
           return audio.reverb.buffer = buffer;
         });
@@ -139,7 +144,7 @@
         return reverb_impulse_responses_files;
       },
       set_reverb_mode: function(mode) {
-        reverb_impulse_response_current = mode;
+        reverb_impulse_response_new = mode;
         music_settings.reverb_mode = mode;
         return cs.bus.trigger('sound-processing/update');
       }
