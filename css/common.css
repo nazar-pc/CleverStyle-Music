@@ -60,5 +60,8 @@ body {
     margin-left: -200vw;
     margin-top: -200vh; }
   body > * {
+    background: rgba(0, 0, 0, 0.5);
+    display: block;
     height: 100vh;
+    position: relative;
     width: 100vw; }

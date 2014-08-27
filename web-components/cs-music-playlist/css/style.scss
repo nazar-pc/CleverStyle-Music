@@ -6,12 +6,6 @@
  * @license     MIT License, see license.txt
  */
 
-:host {
-	background : rgba(0, 0, 0, 0.5);
-	display    : block;
-	position   : relative;
-}
-
 cs-music-playlist-items {
 	height       : calc(100vh - 3rem);
 	overflow-x   : hidden;

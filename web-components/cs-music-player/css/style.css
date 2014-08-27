@@ -6,8 +6,7 @@
  * @license     MIT License, see license.txt
  */
 :host {
-  display: block;
-  position: relative; }
+  background: transparent !important; }
 
 audio {
   display: none; }
