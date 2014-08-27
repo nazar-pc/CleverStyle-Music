@@ -29,11 +29,16 @@ document.webL10n.ready ->
 					music_library.get_meta(all[index], (data) =>
 						property	= data[group_field]
 						if !property
-							property	= _unknown
-						if !list[property]
-							list[property]	= [data.id]
+							property			= _unknown
+							lowercase_property	= _unknown
 						else
-							list[property].push(data.id)
+							lowercase_property	= new String(property).toLowerCase()
+						if !list[lowercase_property]
+							list[lowercase_property]	=
+								property	: property
+								ids			: [data.id]
+						else
+							list[lowercase_property].ids.push(data.id)
 						data	= null
 						++index
 						get_next_item()
@@ -42,19 +47,19 @@ document.webL10n.ready ->
 					final_list	= []
 					unknown		= list[_unknown]
 					delete list[_unknown]
-					for value, items of list
+					for key, value of list
 						final_list.push(
 							field	: group_field
-							value	: value
-							items	: JSON.stringify(items)
-							count	: items.length
+							value	: value.property
+							items	: JSON.stringify(value.ids)
+							count	: value.ids.length
 						)
 					if unknown
 						final_list.push(
 							field	: group_field
 							value	: _unknown
-							items	: JSON.stringify(unknown)
-							count	: unknown.length
+							items	: JSON.stringify(unknown.ids)
+							count	: unknown.ids.length
 						)
 					final_list.sort (a, b) ->
 						a	= a.value
