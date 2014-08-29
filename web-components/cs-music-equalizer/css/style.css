@@ -18,6 +18,8 @@ cs-music-equalizer-levels-labels {
   position: absolute;
   text-align: center;
   width: 100%; }
+  cs-music-equalizer-levels-labels label {
+    font-size: .9rem; }
 
 @media (max-width: 360px) {
   cs-music-equalizer-levels-labels label {

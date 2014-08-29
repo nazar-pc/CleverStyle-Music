@@ -20,6 +20,10 @@ cs-music-equalizer-levels-labels {
 	position   : absolute;
 	text-align : center;
 	width      : 100%;
+
+	label {
+		font-size : .9rem;
+	}
 }
 
 // For very small screens

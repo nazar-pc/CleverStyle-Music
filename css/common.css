@@ -11,14 +11,10 @@
 
 html {
   font-family: 'Open Sans', sans-serif;
-  font-size: 12pt; }
+  font-size: 12pt;
+  position: fixed;
+  /* Fix for scrolling in Firefox for Android */ }
 
-@media (min-resolution: 2dppx), (-webkit-min-device-pixel-ratio: 2) {
-  html {
-    font-size: 16pt; } }
-@media (min-resolution: 3dppx), (-webkit-min-device-pixel-ratio: 3) {
-  html {
-    font-size: 22pt; } }
 body {
   background: url(../img/bg.jpg) no-repeat center center/cover fixed;
   color: #fff;
