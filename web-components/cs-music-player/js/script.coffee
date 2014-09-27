@@ -184,7 +184,6 @@ Polymer(
 						update_cover									= (cover) ->
 							cover	= cover || 'img/bg.jpg'
 							if body.style.backgroundImage != "url(#{cover})"
-								console.log 'update cover'
 								element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= "url(#{cover})"
 								# Resize cover to 128px max to speed-up blurring
 								resize_image(
