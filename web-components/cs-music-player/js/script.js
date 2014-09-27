@@ -224,7 +224,6 @@
               update_cover = function(cover) {
                 cover = cover || 'img/bg.jpg';
                 if (body.style.backgroundImage !== ("url(" + cover + ")")) {
-                  console.log('update cover');
                   element.shadowRoot.querySelector('cs-cover').style.backgroundImage = "url(" + cover + ")";
                   return resize_image(cover, 128, function(cover) {
                     var el;
