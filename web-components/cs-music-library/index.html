@@ -3,19 +3,19 @@
 		<link rel="stylesheet" href="css/style.css">
 		<template if="{{!loading}}">
 			<cs-menu-items>
-				<cs-menu-item data-group-field="" on-click="{{group}}">{{all_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="artist" on-click="{{group}}">{{artists_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="album" on-click="{{group}}">{{albums_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="genre" on-click="{{group}}">{{genres_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="year" on-click="{{group}}">{{years_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="rated" on-click="{{group}}">{{ratings_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="" on-tap="{{group}}">{{all_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="artist" on-tap="{{group}}">{{artists_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="album" on-tap="{{group}}">{{albums_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="genre" on-tap="{{group}}">{{genres_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="year" on-tap="{{group}}">{{years_text}}</cs-menu-item>
+				<cs-menu-item data-group-field="rated" on-tap="{{group}}">{{ratings_text}}</cs-menu-item>
 			</cs-menu-items>
 		</template>
 		<template if="{{loading}}">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-left" on-click="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="js/script.js"></script>

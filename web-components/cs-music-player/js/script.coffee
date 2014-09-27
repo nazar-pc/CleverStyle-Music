@@ -6,13 +6,30 @@
  * @license     MIT License, see license.txt
 ###
 
-music_storage		= navigator.getDeviceStorage('music')
-sound_processing	= cs.sound_processing
-music_library		= cs.music_library
-music_playlist		= cs.music_playlist
-music_settings		= cs.music_settings
-body				= document.querySelector('body')
-seeking_bar			= null
+music_storage			= navigator.getDeviceStorage('music')
+sound_processing		= cs.sound_processing
+music_library			= cs.music_library
+music_playlist			= cs.music_playlist
+music_settings			= cs.music_settings
+body					= document.querySelector('body')
+seeking_bar				= null
+update_cover_timeout	= 0
+
+resize_image			= (src, max_size, callback) ->
+	image			= new Image
+	image.onload	= ->
+		canvas	= document.createElement('canvas')
+		if image.height > max_size || image.width > max_size
+			image.width		*= max_size / image.height
+			image.height	= max_size
+		ctx								= canvas.getContext('2d')
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		canvas.width					= image.width
+		canvas.height					= image.height
+		ctx.mozImageSmoothingEnabled	= false;
+		ctx.drawImage(image, 0, 0, image.width, image.height)
+		callback(canvas.toDataURL())
+	image.src = src
 
 Polymer(
 	'cs-music-player'
@@ -165,34 +182,37 @@ Polymer(
 					element.player.open_new_file(blob, data.name)
 					do ->
 						update_cover									= (cover) ->
-							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= if cover then "url(#{cover})" else 'none'
-							if cover
-								el							= document.createElement('div')
-								el.style.backgroundImage	= "url(#{cover})"
-								new Blur(
-									el			: el
-									path		: cover
-									radius		: 20
-									callback	: ->
-										body.style.backgroundImage	= el.style.backgroundImage
-										setTimeout (->
-											URL.revokeObjectURL(cover)
-										), 500
+							cover	= cover || 'img/bg.jpg'
+							if body.style.backgroundImage != "url(#{cover})"
+								console.log 'update cover'
+								element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= "url(#{cover})"
+								# Resize cover to 128px max to speed-up blurring
+								resize_image(
+									cover
+									128
+									(cover) ->
+										# Start blurring of resized image
+										el	= document.createElement('div')
+										new Blur(
+											el			: el
+											path		: cover
+											radius		: 10
+											callback	: ->
+												body.style.backgroundImage	= el.style.backgroundImage
+												setTimeout (->
+													URL.revokeObjectURL(cover)
+												), 500
+										)
 								)
-							else
-								body.style.backgroundImage	= 'url(img/bg.jpg)'
-						update_cover_timeout = setTimeout (->
-							element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= 'none'
-							body.backgroundImage												= "url(img/bg.jpg)"
-						), 500
 						parseAudioMetadata(
 							blob
 							(metadata) ->
-								clearInterval(update_cover_timeout)
 								cover	= metadata.picture
 								if cover
 									cover	= URL.createObjectURL(cover)
 								update_cover(cover)
+							->
+								update_cover('img/bg.jpg')
 						)
 					play_button.icon = 'pause'
 					cs.bus.trigger('player/play', id)

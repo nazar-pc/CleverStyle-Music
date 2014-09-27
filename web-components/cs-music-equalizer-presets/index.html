@@ -3,11 +3,11 @@
 		<link rel="stylesheet" href="css/style.css">
 		<cs-menu-items>
 			<template repeat="{{preset in presets_names}}">
-				<cs-menu-item on-click="{{load_preset}}" data-preset="{{preset}}">{{preset}}</cs-menu-item>
+				<cs-menu-item on-tap="{{load_preset}}" data-preset="{{preset}}">{{preset}}</cs-menu-item>
 			</template>
 		</cs-menu-items>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-right" on-click="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-right" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="js/script.js"></script>

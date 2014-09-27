@@ -67,9 +67,11 @@
           position = localStorage.position || -1;
           if (position > 0) {
             --position;
-            localStorage.position = position;
-            callback(playlist[position]);
+          } else {
+            position = 0;
           }
+          localStorage.position = position;
+          callback(playlist[position]);
         }
       }
     },

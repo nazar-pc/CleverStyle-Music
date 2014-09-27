@@ -4,7 +4,7 @@
 		<template if="{{list.length}}">
 			<cs-music-library-grouped-items>
 				<template repeat="{{item in list}}">
-					<cs-music-library-grouped-item on-click="{{choose_action}}" data-items="{{item.items}}">
+					<cs-music-library-grouped-item on-tap="{{choose_action}}" data-items="{{item.items}}">
 						{{item.value}} <span>({{item.count}})</span>
 					</cs-music-library-grouped-item>
 				</template>
@@ -14,7 +14,7 @@
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-up" on-click="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-up" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="js/script.js"></script>

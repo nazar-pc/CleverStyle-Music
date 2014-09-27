@@ -271,7 +271,10 @@ cs.music_library	=
 						else
 							cursor.continue()
 					else
-						remove_old_files()
+						if !new_files.length
+							alert _('no_files_found')
+						else
+							remove_old_files()
 				cursor.onerror = ->
 					console.error(@error.name)
 			return

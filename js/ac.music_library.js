@@ -304,7 +304,11 @@
                 return cursor["continue"]();
               }
             } else {
-              return remove_old_files();
+              if (!new_files.length) {
+                return alert(_('no_files_found'));
+              } else {
+                return remove_old_files();
+              }
             }
           };
           return cursor.onerror = function() {

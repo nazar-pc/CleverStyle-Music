@@ -5,6 +5,7 @@ rescan-library						= Re-scan library
 searching-for-music					= Searching for music...
 files-found							= files found
 library-rescanned-playlist-updated	= Library re-scanned, playlist updated
+no_files_found                      = No files found. Make sure your music files placed into "Music" directory, if there is no such directory - you have to create it.
 cant-play-this-file					= Can't play this file: {{error}}
 all-songs							= All songs
 artists								= Artists

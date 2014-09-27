@@ -5,6 +5,7 @@ rescan-library						= Пересканувати бібліотеку
 searching-for-music					= Пошук музики...
 files-found							= файлів знайдено
 library-rescanned-playlist-updated	= Бібліотеку перескановано, список відтворення оновлено
+no_files_found                      = Не знайдено жодного файла. Переконайтесь, що ваші музичні файли лежать в папці "Music", якщо папки немає - створіть її.
 cant-play-this-file					= Не можу відтворити цей файл: {{error}}
 all-songs							= Всі композиції
 artists								= Виконавці

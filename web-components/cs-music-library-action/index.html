@@ -2,11 +2,11 @@
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/style.css">
 		<cs-menu-items>
-			<cs-menu-item on-click="{{create_playlist}}">{{create_playlist_text}}</cs-menu-item>
-			<cs-menu-item on-click="{{add_to_playlist}}">{{add_to_playlist_text}}</cs-menu-item>
+			<cs-menu-item on-tap="{{create_playlist}}">{{create_playlist_text}}</cs-menu-item>
+			<cs-menu-item on-tap="{{add_to_playlist}}">{{add_to_playlist_text}}</cs-menu-item>
 		</cs-menu-items>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-left" on-click="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="js/script.js"></script>

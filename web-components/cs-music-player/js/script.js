@@ -10,7 +10,7 @@
 
 
 (function() {
-  var body, music_library, music_playlist, music_settings, music_storage, seeking_bar, sound_processing;
+  var body, music_library, music_playlist, music_settings, music_storage, resize_image, seeking_bar, sound_processing, update_cover_timeout;
 
   music_storage = navigator.getDeviceStorage('music');
 
@@ -25,6 +25,29 @@
   body = document.querySelector('body');
 
   seeking_bar = null;
+
+  update_cover_timeout = 0;
+
+  resize_image = function(src, max_size, callback) {
+    var image;
+    image = new Image;
+    image.onload = function() {
+      var canvas, ctx;
+      canvas = document.createElement('canvas');
+      if (image.height > max_size || image.width > max_size) {
+        image.width *= max_size / image.height;
+        image.height = max_size;
+      }
+      ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = image.width;
+      canvas.height = image.height;
+      ctx.mozImageSmoothingEnabled = false;
+      ctx.drawImage(image, 0, 0, image.width, image.height);
+      return callback(canvas.toDataURL());
+    };
+    return image.src = src;
+  };
 
   Polymer('cs-music-player', {
     title: '',
@@ -197,40 +220,38 @@
             blob = this.result;
             element.player.open_new_file(blob, data.name);
             (function() {
-              var update_cover, update_cover_timeout;
+              var update_cover;
               update_cover = function(cover) {
-                var el;
-                element.shadowRoot.querySelector('cs-cover').style.backgroundImage = cover ? "url(" + cover + ")" : 'none';
-                if (cover) {
-                  el = document.createElement('div');
-                  el.style.backgroundImage = "url(" + cover + ")";
-                  return new Blur({
-                    el: el,
-                    path: cover,
-                    radius: 20,
-                    callback: function() {
-                      body.style.backgroundImage = el.style.backgroundImage;
-                      return setTimeout((function() {
-                        return URL.revokeObjectURL(cover);
-                      }), 500);
-                    }
+                cover = cover || 'img/bg.jpg';
+                if (body.style.backgroundImage !== ("url(" + cover + ")")) {
+                  console.log('update cover');
+                  element.shadowRoot.querySelector('cs-cover').style.backgroundImage = "url(" + cover + ")";
+                  return resize_image(cover, 128, function(cover) {
+                    var el;
+                    el = document.createElement('div');
+                    return new Blur({
+                      el: el,
+                      path: cover,
+                      radius: 10,
+                      callback: function() {
+                        body.style.backgroundImage = el.style.backgroundImage;
+                        return setTimeout((function() {
+                          return URL.revokeObjectURL(cover);
+                        }), 500);
+                      }
+                    });
                   });
-                } else {
-                  return body.style.backgroundImage = 'url(img/bg.jpg)';
                 }
               };
-              update_cover_timeout = setTimeout((function() {
-                element.shadowRoot.querySelector('cs-cover').style.backgroundImage = 'none';
-                return body.backgroundImage = "url(img/bg.jpg)";
-              }), 500);
               return parseAudioMetadata(blob, function(metadata) {
                 var cover;
-                clearInterval(update_cover_timeout);
                 cover = metadata.picture;
                 if (cover) {
                   cover = URL.createObjectURL(cover);
                 }
                 return update_cover(cover);
+              }, function() {
+                return update_cover('img/bg.jpg');
               });
             })();
             play_button.icon = 'pause';

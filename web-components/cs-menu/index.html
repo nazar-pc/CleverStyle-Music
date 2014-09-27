@@ -2,14 +2,14 @@
 	<template vertical center layout>
 		<link rel="stylesheet" href="css/style.css">
 		<cs-menu-items>
-			<cs-menu-item icon="list" on-click="{{playlist}}">{{playlist_text}}</cs-menu-item>
-			<cs-menu-item icon="sliders" on-click="{{equalizer}}">{{equalizer_text}}</cs-menu-item>
-			<cs-menu-item icon="magic" on-click="{{sound_environment}}">{{sound_environment_text}}</cs-menu-item>
-			<cs-menu-item icon="music" on-click="{{library}}">{{library_text}}</cs-menu-item>
-			<cs-menu-item icon="refresh" on-click="{{rescan}}">{{rescan_library_text}}</cs-menu-item>
+			<cs-menu-item icon="list" on-tap="{{playlist}}">{{playlist_text}}</cs-menu-item>
+			<cs-menu-item icon="sliders" on-tap="{{equalizer}}">{{equalizer_text}}</cs-menu-item>
+			<cs-menu-item icon="magic" on-tap="{{sound_environment}}">{{sound_environment_text}}</cs-menu-item>
+			<cs-menu-item icon="music" on-tap="{{library}}">{{library_text}}</cs-menu-item>
+			<cs-menu-item icon="refresh" on-tap="{{rescan}}">{{rescan_library_text}}</cs-menu-item>
 		</cs-menu-items>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-up" on-click="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-up" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="js/script.js"></script>
