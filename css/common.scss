@@ -17,64 +17,67 @@ html {
 }
 
 body {
-	background        : url(../img/bg.jpg) no-repeat center center / cover fixed;
-	color             : #fff;
-	display           : flex;
-	display           : -webkit-flex;
-	flex-wrap         : wrap;
-	-webkit-flex-wrap : wrap;
-	height            : 300vh;
-	margin            : 0 0 0 -200vw;
-	overflow          : hidden;
-	transition        : margin 200ms ease-out 0s;
-	width             : 500vw;
+	background          : url(../img/bg.jpg) no-repeat center center / cover fixed;
+	color               : #fff;
+	display             : flex;
+	display             : -webkit-flex;
+	flex-wrap           : wrap;
+	-webkit-flex-wrap   : wrap;
+	height              : 300vh;
+	left                : -200vw;
+	overflow            : hidden;
+	position            : absolute;
+	top                 : 0;
+	transform           : translateZ(0);
+	transition          : left 200ms ease-out 0s, top 200ms ease-out 0s;
+	width               : 500vw;
 
 	&[unresolved] {
 		transition : none;
 	}
 
 	&.menu {
-		margin-top : -100vh;
+		top : -100vh;
 	}
 
 	&.playlist {
-		margin-left : -100vw;
-		margin-top  : -100vh;
+		left : -100vw;
+		top  : -100vh;
 	}
 
 	&.equalizer {
-		margin-left : -100vw;
-		margin-top  : 0;
+		left : -100vw;
+		top  : 0;
 	}
 
 	&.equalizer-presets {
-		margin-left : 0;
-		margin-top  : 0;
+		left : 0;
+		top  : 0;
 	}
 
 	&.sound-environment {
-		margin-left : -300vw;
-		margin-top  : 0;
+		left : -300vw;
+		top  : 0;
 	}
 
 	&.library {
-		margin-left : -300vw;
-		margin-top  : -100vh;
+		left : -300vw;
+		top  : -100vh;
 	}
 
 	&.library-grouped {
-		margin-left : -300vw;
-		margin-top  : -200vh;
+		left : -300vw;
+		top  : -200vh;
 	}
 
 	&.library-action {
-		margin-left : -400vw;
-		margin-top  : -200vh;
+		left : -400vw;
+		top  : -200vh;
 	}
 
 	&.library-rescan {
-		margin-left : -200vw;
-		margin-top  : -200vh;
+		left : -200vw;
+		top  : -200vh;
 	}
 
 	> * {

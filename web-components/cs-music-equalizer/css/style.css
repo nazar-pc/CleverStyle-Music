@@ -38,7 +38,6 @@ cs-music-equalizer-levels {
   cs-music-equalizer-levels input {
     display: none; }
   cs-music-equalizer-levels .ranger {
-    display: inline-block;
     height: 100%;
     width: 10%; }
     cs-music-equalizer-levels .ranger * {
@@ -55,6 +54,7 @@ cs-music-equalizer-levels {
       height: 100%;
       margin: 0 auto;
       position: relative;
+      transform: translateZ(0);
       width: .3rem; }
       cs-music-equalizer-levels .ranger .ranger-track .ranger-handle {
         display: block;
@@ -68,4 +68,5 @@ cs-music-equalizer-levels {
           display: block;
           height: 1rem;
           margin: 0 0 -.5rem -.4rem;
+          transform: translateZ(0);
           width: 1rem; }

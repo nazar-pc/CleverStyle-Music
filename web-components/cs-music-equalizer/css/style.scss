@@ -27,7 +27,7 @@ cs-music-equalizer-levels-labels {
 }
 
 // For very small screens
-@media (max-width: 360px) {
+@media (max-width : 360px) {
 	cs-music-equalizer-levels-labels label {
 		font-size : .8rem;
 
@@ -54,9 +54,8 @@ cs-music-equalizer-levels {
 	}
 
 	.ranger {
-		display : inline-block;
-		height  : 100%;
-		width   : 10%;
+		height : 100%;
+		width  : 10%;
 
 		* {
 			-webkit-user-select : none;
@@ -74,6 +73,7 @@ cs-music-equalizer-levels {
 			height        : 100%;
 			margin        : 0 auto;
 			position      : relative;
+			transform     : translateZ(0);
 			width         : .3rem;
 
 			.ranger-handle {
@@ -89,6 +89,7 @@ cs-music-equalizer-levels {
 					display       : block;
 					height        : 1rem;
 					margin        : 0 0 -.5rem -.4rem;
+					transform     : translateZ(0);
 					width         : 1rem;
 				}
 			}
