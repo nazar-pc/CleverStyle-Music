@@ -29,7 +29,7 @@ cs-title {
 cs-cover {
   background: transparent no-repeat center center / contain;
   height: calc(100vh - 10rem);
-  left: 2rem;
+  left: .5rem;
   position: absolute;
   top: 4rem;
-  width: calc(100vw - 4rem); }
+  width: calc(100vw - 1rem); }
