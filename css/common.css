@@ -23,38 +23,30 @@ body {
   flex-wrap: wrap;
   -webkit-flex-wrap: wrap;
   height: 300vh;
-  margin: 0 0 0 -200vw;
   overflow: hidden;
-  transition: margin 200ms ease-out 0s;
+  transform: translate3d(-200vw, 0, 0);
+  transition: transform 200ms ease-out 0s;
   width: 500vw; }
   body[unresolved] {
     transition: none; }
   body.menu {
-    margin-top: -100vh; }
+    transform: translate3d(-200vw, -100vh, 0); }
   body.playlist {
-    margin-left: -100vw;
-    margin-top: -100vh; }
+    transform: translate3d(-100vw, -100vh, 0); }
   body.equalizer {
-    margin-left: -100vw;
-    margin-top: 0; }
+    transform: translate3d(-100vw, 0, 0); }
   body.equalizer-presets {
-    margin-left: 0;
-    margin-top: 0; }
+    transform: translate3d(0, 0, 0); }
   body.sound-environment {
-    margin-left: -300vw;
-    margin-top: 0; }
+    transform: translate3d(-300vw, 0, 0); }
   body.library {
-    margin-left: -300vw;
-    margin-top: -100vh; }
+    transform: translate3d(-300vw, -100vh, 0); }
   body.library-grouped {
-    margin-left: -300vw;
-    margin-top: -200vh; }
+    transform: translate3d(-300vw, -200vh, 0); }
   body.library-action {
-    margin-left: -400vw;
-    margin-top: -200vh; }
+    transform: translate3d(-400vw, -200vh, 0); }
   body.library-rescan {
-    margin-left: -200vw;
-    margin-top: -200vh; }
+    transform: translate3d(-200vw, -200vh, 0); }
   body > * {
     background: rgba(0, 0, 0, 0.5);
     display: block;
