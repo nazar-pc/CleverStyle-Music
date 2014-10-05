@@ -92,12 +92,7 @@
           }
         });
         player_element.addEventListener('timeupdate', function() {
-          var current_time, duration;
-          current_time = player_element.currentTime;
-          duration = player_element.duration;
-          seeking_bar.current_time = time_format(current_time);
-          seeking_bar.duration = duration ? time_format(duration) : '00:00';
-          return seeking_bar.progress_percentage = duration ? current_time / duration * 100 : 0;
+          return _this.update(player_element.currentTime, player_element.duration);
         });
         play_with_aurora = function() {
           aurora_player = AV.Player.fromURL(object_url);
@@ -118,11 +113,7 @@
           aurora_player.on('duration', function(duration) {
             duration /= 1000;
             return aurora_player.on('progress', function() {
-              var current_time;
-              current_time = aurora_player.currentTime / 1000;
-              seeking_bar.current_time = time_format(current_time);
-              seeking_bar.duration = duration ? time_format(duration) : '00:00';
-              return seeking_bar.progress_percentage = duration ? current_time / duration * 100 : 0;
+              return this.update(aurora_player.currentTime / 1000, duration);
             });
           });
           return aurora_player.play();
@@ -187,6 +178,21 @@
         _this.play();
         return _this.player.currentTime = 0;
       });
+    },
+    update: function(current_time, duration) {
+      var progress_percentage;
+      current_time = time_format(current_time);
+      if (current_time !== seeking_bar.current_time) {
+        seeking_bar.current_time = current_time;
+      }
+      progress_percentage = duration ? current_time / duration * 100 : 0;
+      if (progress_percentage !== seeking_bar.progress_percentage) {
+        seeking_bar.progress_percentage = progress_percentage;
+      }
+      duration = duration ? time_format(duration) : '00:00';
+      if (duration !== seeking_bar.duration) {
+        return seeking_bar.duration = duration;
+      }
     },
     play: function(id, callback) {
       var element, play_button,

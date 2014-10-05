@@ -91,7 +91,7 @@ document.webL10n.ready ->
 			stop			= true
 			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 			if items_container
-				items_container.innerHTML = ''
+				items_container.style.opacity = 0
 			setTimeout (=>
 				@list = []
 				if scroll_interval

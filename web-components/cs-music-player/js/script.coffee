@@ -75,11 +75,7 @@ Polymer(
 						@next()
 			)
 			player_element.addEventListener('timeupdate', =>
-				current_time					= player_element.currentTime
-				duration						= player_element.duration
-				seeking_bar.current_time		= time_format(current_time)
-				seeking_bar.duration			= if duration then time_format(duration) else '00:00'
-				seeking_bar.progress_percentage	= if duration then current_time / duration * 100 else 0
+				@update(player_element.currentTime, player_element.duration)
 			)
 			play_with_aurora	= =>
 				aurora_player	= AV.Player.fromURL(object_url)
@@ -101,10 +97,7 @@ Polymer(
 				aurora_player.on('duration', (duration) ->
 					duration	/= 1000
 					aurora_player.on('progress', ->
-						current_time					= aurora_player.currentTime / 1000
-						seeking_bar.current_time		= time_format(current_time)
-						seeking_bar.duration			= if duration then time_format(duration) else '00:00'
-						seeking_bar.progress_percentage	= if duration then current_time / duration * 100 else 0
+						@update(aurora_player.currentTime / 1000, duration)
 					)
 				)
 				aurora_player.play()
@@ -155,6 +148,16 @@ Polymer(
 			@play()
 			@player.currentTime = 0
 		)
+	update	: (current_time, duration) ->
+		current_time = time_format(current_time)
+		if current_time != seeking_bar.current_time
+			seeking_bar.current_time = current_time
+		progress_percentage = if duration then current_time / duration * 100 else 0
+		if progress_percentage != seeking_bar.progress_percentage
+			seeking_bar.progress_percentage = progress_percentage
+		duration = if duration then time_format(duration) else '00:00'
+		if duration != seeking_bar.duration
+			seeking_bar.duration			= duration
 	play	: (id, callback) ->
 		id			= if !isNaN(parseInt(id)) then id else undefined
 		if typeof callback != 'function'

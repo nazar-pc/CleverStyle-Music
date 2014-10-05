@@ -3,7 +3,7 @@
 		<link rel="stylesheet" href="css/style.css">
 		<div class="time">{{current_time}}</div>
 		<div class="progress-container">
-			<div class="progress" style="width: {{progress_percentage}}%;"></div>
+			<div class="progress" style="transform: translateX({{progress_percentage - 100}}%);"></div>
 		</div>
 		<div class="time">{{duration}}</div>
 	</template>

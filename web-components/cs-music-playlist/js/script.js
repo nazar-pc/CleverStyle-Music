@@ -122,7 +122,7 @@
         stop = true;
         items_container = this.shadowRoot.querySelector('cs-music-playlist-items');
         if (items_container) {
-          items_container.innerHTML = '';
+          items_container.style.opacity = 0;
         }
         return setTimeout((function() {
           _this.list = [];

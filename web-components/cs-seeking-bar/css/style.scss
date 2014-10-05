@@ -62,7 +62,9 @@
 	display      : inline-block;
 	flex         : 1;
 	-webkit-flex : 1;
-	width        : calc(100% - 12rem);
+	height       : 1rem;
+	overflow     : hidden;
+	width        : calc(100% - 11.5rem);
 
 	&:before {
 		background    : rgba(36, 36, 36, .7);
@@ -70,14 +72,19 @@
 		content       : '';
 		display       : block;
 		height        : .1rem;
+		left          : .25rem;
 		margin-bottom : -.1rem;
+		position      : relative;
+		top           : .5rem;
 		width         : 100%;
 	}
 
 	.progress {
 		background : rgba(255, 255, 255, .7);
 		height     : .1rem;
+		left       : .25rem;
 		position   : relative;
+		top        : .5rem;
 
 		&:after {
 			background    : #fff;
