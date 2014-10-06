@@ -38,5 +38,6 @@ cs-cover {
 	left       : .5rem;
 	position   : absolute;
 	top        : 4rem;
+	transform  : translateZ(0);
 	width      : calc(100vw - 1rem);
 }

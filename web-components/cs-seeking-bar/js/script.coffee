@@ -14,7 +14,7 @@ Polymer(
 		@addEventListener('click', (e) ->
 			progress_container	= @.shadowRoot.querySelector('.progress-container')
 			percents			= (e.pageX - progress_container.offsetLeft - @offsetLeft) / progress_container.clientWidth * 100
-			if percents < 0 || percents > 100
+			if percents < 0 || percents > 100 || isNaN(percents)
 				return
 			$(@).trigger(
 				'seeking-update'

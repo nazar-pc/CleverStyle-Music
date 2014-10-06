@@ -149,12 +149,12 @@ Polymer(
 			@player.currentTime = 0
 		)
 	update	: (current_time, duration) ->
+		progress_percentage = if duration then current_time / duration * 100 else 0
+		if progress_percentage != seeking_bar.progress_percentage && progress_percentage >= 0 && progress_percentage <= 100 && !isNaN(progress_percentage)
+			seeking_bar.progress_percentage = progress_percentage
 		current_time = time_format(current_time)
 		if current_time != seeking_bar.current_time
 			seeking_bar.current_time = current_time
-		progress_percentage = if duration then current_time / duration * 100 else 0
-		if progress_percentage != seeking_bar.progress_percentage
-			seeking_bar.progress_percentage = progress_percentage
 		duration = if duration then time_format(duration) else '00:00'
 		if duration != seeking_bar.duration
 			seeking_bar.duration			= duration
@@ -184,15 +184,29 @@ Polymer(
 					blob			= @result
 					element.player.open_new_file(blob, data.name)
 					do ->
-						update_cover									= (cover) ->
+						play_button.icon = 'pause'
+						cs.bus.trigger('player/play', id)
+						cs.bus.state.player	= 'playing'
+						music_library.get_meta(id, (data) ->
+							if data
+								element.title	= data.title || _('unknown')
+								element.artist	= data.artist
+								if data.artist && data.album
+									element.artist += ": #{data.album}"
+							else
+								element.title	= _('unknown')
+								element.artist	= ''
+						)
+						update_cover	= (cover) ->
 							cover	= cover || 'img/bg.jpg'
 							if body.style.backgroundImage != "url(#{cover})"
-								element.shadowRoot.querySelector('cs-cover').style.backgroundImage	= "url(#{cover})"
-								# Resize cover to 128px max to speed-up blurring
+								cs_cover	= element.shadowRoot.querySelector('cs-cover')
+								# Resize cover to needed size to decrease memory consumption and speed-up blurring
 								resize_image(
 									cover
-									128
+									Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
 									(cover) ->
+										cs_cover.style.backgroundImage	= "url(#{cover})"
 										# Start blurring of resized image
 										el	= document.createElement('div')
 										new Blur(
@@ -204,6 +218,7 @@ Polymer(
 												setTimeout (->
 													URL.revokeObjectURL(cover)
 												), 500
+												callback()
 										)
 								)
 						parseAudioMetadata(
@@ -216,20 +231,6 @@ Polymer(
 							->
 								update_cover('img/bg.jpg')
 						)
-					play_button.icon = 'pause'
-					cs.bus.trigger('player/play', id)
-					cs.bus.state.player	= 'playing'
-					music_library.get_meta(id, (data) ->
-						if data
-							element.title	= data.title || _('unknown')
-							element.artist	= data.artist
-							if data.artist && data.album
-								element.artist += ": #{data.album}"
-						else
-							element.title	= _('unknown')
-							element.artist	= ''
-					)
-					callback()
 				get_file.onerror = (e) ->
 					alert _(
 						'cant-play-this-file'

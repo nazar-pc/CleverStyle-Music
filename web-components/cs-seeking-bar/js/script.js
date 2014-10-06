@@ -20,7 +20,7 @@
         var percents, progress_container;
         progress_container = this.shadowRoot.querySelector('.progress-container');
         percents = (e.pageX - progress_container.offsetLeft - this.offsetLeft) / progress_container.clientWidth * 100;
-        if (percents < 0 || percents > 100) {
+        if (percents < 0 || percents > 100 || isNaN(percents)) {
           return;
         }
         return $(this).trigger('seeking-update', {
