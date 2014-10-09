@@ -6,16 +6,18 @@
  * @license     MIT License, see license.txt
 ###
 
+music_settings		= cs.music_settings
 document.webL10n.ready ->
 	$body			= $('body')
-
 	Polymer(
 		'cs-menu'
-		playlist_text			: _('playlist')
-		equalizer_text			: _('equalizer')
-		sound_environment_text	: _('sound_environment')
-		library_text			: _('library')
-		rescan_library_text		: _('rescan-library')
+		playlist_text				: _('playlist')
+		equalizer_text				: _('equalizer')
+		sound_environment_text		: _('sound-environment')
+		library_text				: _('library')
+		rescan_library_text			: _('rescan-library')
+		low_performance_mode_text	: _('low-performance-mode')
+		low_performance				: music_settings.low_performance
 		playlist				: ->
 			document.querySelector('cs-music-playlist').open()
 		equalizer				: ->
@@ -28,6 +30,10 @@ document.webL10n.ready ->
 			document.querySelector('cs-music-library').open()
 		rescan					: ->
 			document.querySelector('cs-music-library-rescan').open()
+		performance				: ->
+			if music_settings.low_performance != confirm _('low-performance-mode-details')
+				music_settings.low_performance = !music_settings.low_performance
+				location.reload()
 		back					: ->
 			$body.removeClass('menu')
 	)

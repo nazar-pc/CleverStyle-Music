@@ -15,8 +15,9 @@ cs.music_settings	= do ->
 			shuffle					: true
 			equalizer_gain_levels	: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			reverb_mode				: ''
+			low_performance			: null
 	public_settings	= {}
-	for option in ['repeat', 'shuffle', 'equalizer_gain_levels', 'reverb_mode']
+	for option in ['repeat', 'shuffle', 'equalizer_gain_levels', 'reverb_mode', 'low_performance']
 		do (option = option) ->
 			Object.defineProperty(
 				public_settings
@@ -27,4 +28,11 @@ cs.music_settings	= do ->
 					settings[option]		= value
 					localStorage.settings	= JSON.stringify(settings)
 			)
+	if public_settings.low_performance == null
+		document.webL10n.ready ->
+			public_settings.low_performance = confirm _('low-performance-mode-details')
+			location.reload()
+	if public_settings.low_performance
+		$ ->
+			$('body').addClass('low-performance')
 	public_settings

@@ -125,6 +125,8 @@ cs.sound_processing	= do ->
 		), 0
 
 	add_to_element		: (element) ->
+		if music_settings.low_performance
+			return
 		audio								= {}
 		element.audio_processing			= audio
 		audio.context						= new AudioContext

@@ -32,7 +32,8 @@ body {
 	transition        : left 200ms ease-out 0s, top 200ms ease-out 0s;
 	width             : 500vw;
 
-	&[unresolved] {
+	&[unresolved],
+	&.low-performance {
 		transition : none;
 	}
 

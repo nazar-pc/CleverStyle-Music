@@ -18,4 +18,6 @@ create-playlist						= Create playlist
 add-to-playlist						= Add to playlist
 equalizer							= Equalizer
 reset								= Reset
-sound_environment					= Sound environment
+sound-environment					= Sound environment
+low-performance-mode				= Low performance mode
+low-performance-mode-details		= Application may be slow on low-end devices, do you want to disable audio effects and transition effects to make application faster?

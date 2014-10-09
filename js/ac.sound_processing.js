@@ -113,6 +113,9 @@
     return {
       add_to_element: function(element) {
         var audio;
+        if (music_settings.low_performance) {
+          return;
+        }
         audio = {};
         element.audio_processing = audio;
         audio.context = new AudioContext;

@@ -18,10 +18,11 @@
       repeat: 'all',
       shuffle: true,
       equalizer_gain_levels: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      reverb_mode: ''
+      reverb_mode: '',
+      low_performance: null
     };
     public_settings = {};
-    _ref = ['repeat', 'shuffle', 'equalizer_gain_levels', 'reverb_mode'];
+    _ref = ['repeat', 'shuffle', 'equalizer_gain_levels', 'reverb_mode', 'low_performance'];
     _fn = function(option) {
       return Object.defineProperty(public_settings, option, {
         get: function() {
@@ -36,6 +37,17 @@
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       option = _ref[_i];
       _fn(option);
+    }
+    if (public_settings.low_performance === null) {
+      document.webL10n.ready(function() {
+        public_settings.low_performance = confirm(_('low-performance-mode-details'));
+        return location.reload();
+      });
+    }
+    if (public_settings.low_performance) {
+      $(function() {
+        return $('body').addClass('low-performance');
+      });
     }
     return public_settings;
   })();
