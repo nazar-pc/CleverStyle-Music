@@ -35,5 +35,9 @@
 			"name"        : "CleverStyle Музика",
 			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac"
 		}
+		"es" : {
+			"name"        : "CleverStyle Music",
+			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac"
+		}
 	}
 }
