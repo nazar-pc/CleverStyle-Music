@@ -27,6 +27,38 @@
 	"type"           : "privileged",
 	"default_locale" : "en",
 	"locales"        : {
+		"es" : {
+			"name"        : "CleverStyle Music",
+			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac"
+		},
+		"eo" : {
+			"name"           : "CleverStyle Music",
+			"description"    : "Simpla kaj bela muzikludilo, kiu rekonas la dosieraranĝojn mp3, mp4, flac kaj alac",
+			"permissions"    : {
+				"device-storage:music"  : {
+					"description" : "Aliro al amasmemorilo por serĉi kaj ludi muzikon"
+				},
+				"storage"               : {
+					"description" : "Akiro al IndexDB por memorigi aron kaj por nereskani la tutan aron po aplikaĵkomencigo"
+				},
+				"audio-channel-content" : {
+					"description" : "Ludi sonon fone"
+				}
+		},
+		"it" : {
+			"name"           : "CleverStyle Music",
+			"description"    : "Lettore musicale semplice e carino che supporta i file mp3, mp4, flac e alac",
+			"permissions"    : {
+				"device-storage:music"  : {
+					"description" : "Accesso alla memoria per cercare e suonare la musica"
+				},
+				"storage"               : {
+					"description" : "Accesso a IndexDB per memorizzare la libreria e per non scansionare l'intera libreria ad ogni avvio dell'app"
+				},
+				"audio-channel-content" : {
+					"description" : "Continua a suonare in background"
+				}
+		},
 		"ru" : {
 			"name"        : "CleverStyle Музыка",
 			"description" : "Простой и красивый музыкальный плеер, который поддерживает воспроизведение музыкальних файлов форматов mp3, mp4, flac и alac"
@@ -34,10 +66,6 @@
 		"uk" : {
 			"name"        : "CleverStyle Музика",
 			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac"
-		},
-		"es" : {
-			"name"        : "CleverStyle Music",
-			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac"
 		}
 	}
 }
