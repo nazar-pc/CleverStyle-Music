@@ -1,7 +1,7 @@
 {
 	"name"           : "CleverStyle Music",
 	"description"    : "Simple and nice music player that supports mp3, mp4, flac and alac music files formats",
-	"version"        : "0.53.0+build-83",
+	"version"        : "0.54.0+build-84",
 	"launch_path"    : "/index.html",
 	"icons"          : {
 		"60"  : "/img/logo-60.png",
@@ -32,9 +32,9 @@
 			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac"
 		},
 		"eo" : {
-			"name"           : "CleverStyle Music",
-			"description"    : "Simpla kaj bela muzikludilo, kiu rekonas la dosieraranĝojn mp3, mp4, flac kaj alac",
-			"permissions"    : {
+			"name"        : "CleverStyle Music",
+			"description" : "Simpla kaj bela muzikludilo, kiu rekonas la dosieraranĝojn mp3, mp4, flac kaj alac",
+			"permissions" : {
 				"device-storage:music"  : {
 					"description" : "Aliro al amasmemorilo por serĉi kaj ludi muzikon"
 				},
@@ -44,11 +44,12 @@
 				"audio-channel-content" : {
 					"description" : "Ludi sonon fone"
 				}
+			}
 		},
 		"it" : {
-			"name"           : "CleverStyle Music",
-			"description"    : "Lettore musicale semplice e carino che supporta i file mp3, mp4, flac e alac",
-			"permissions"    : {
+			"name"        : "CleverStyle Music",
+			"description" : "Lettore musicale semplice e carino che supporta i file mp3, mp4, flac e alac",
+			"permissions" : {
 				"device-storage:music"  : {
 					"description" : "Accesso alla memoria per cercare e suonare la musica"
 				},
@@ -58,14 +59,37 @@
 				"audio-channel-content" : {
 					"description" : "Continua a suonare in background"
 				}
+			}
 		},
 		"ru" : {
 			"name"        : "CleverStyle Музыка",
-			"description" : "Простой и красивый музыкальный плеер, который поддерживает воспроизведение музыкальних файлов форматов mp3, mp4, flac и alac"
+			"description" : "Простой и красивый музыкальный плеер, который поддерживает воспроизведение музыкальних файлов форматов mp3, mp4, flac и alac",
+			"permissions" : {
+				"device-storage:music"  : {
+					"description" : "Доступ до хранилища музыки"
+				},
+				"storage"               : {
+					"description" : "Доступ к IndexDB для хранения бмблиотеки чтобы избежать пересканирования всей библиотеки при каждом старте"
+				},
+				"audio-channel-content" : {
+					"description" : "Проигрывание музыки в фоне"
+				}
+			}
 		},
 		"uk" : {
 			"name"        : "CleverStyle Музика",
-			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac"
+			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac",
+			"permissions" : {
+				"device-storage:music"  : {
+					"description" : "Доступ до сховища музики"
+				},
+				"storage"               : {
+					"description" : "Доступ до IndexDB для збереження бібліотеки щоб уникнути пересканування всієї бібліотеки при кожному запуску"
+				},
+				"audio-channel-content" : {
+					"description" : "Програвання музики в фоні"
+				}
+			}
 		}
 	}
 }
