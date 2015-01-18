@@ -8,6 +8,12 @@
 
 :host {
 	background : transparent !important;
+
+
+	body.low-performance & {
+		background : rgba(0, 0, 0, .5) !important;
+	}
+
 }
 
 audio {

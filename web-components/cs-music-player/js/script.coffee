@@ -207,19 +207,23 @@ Polymer(
 									Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
 									(cover) ->
 										cs_cover.style.backgroundImage	= "url(#{cover})"
-										# Start blurring of resized image
-										el	= document.createElement('div')
-										new Blur(
-											el			: el
-											path		: cover
-											radius		: 10
-											callback	: ->
-												body.style.backgroundImage	= el.style.backgroundImage
-												setTimeout (->
-													URL.revokeObjectURL(cover)
-												), 500
-												callback()
-										)
+										# No blurring in low performance mode
+										if music_settings.low_performance
+											body.style.backgroundImage = "url(#{cover})"
+										else
+											# Start blurring of resized image
+											el	= document.createElement('div')
+											new Blur(
+												el			: el
+												path		: cover
+												radius		: 10
+												callback	: ->
+													body.style.backgroundImage	= el.style.backgroundImage
+													setTimeout (->
+														URL.revokeObjectURL(cover)
+													), 500
+													callback()
+											)
 								)
 						parseAudioMetadata(
 							blob

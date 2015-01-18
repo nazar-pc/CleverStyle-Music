@@ -253,19 +253,23 @@
                   return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
                     var el;
                     cs_cover.style.backgroundImage = "url(" + cover + ")";
-                    el = document.createElement('div');
-                    return new Blur({
-                      el: el,
-                      path: cover,
-                      radius: 10,
-                      callback: function() {
-                        body.style.backgroundImage = el.style.backgroundImage;
-                        setTimeout((function() {
-                          return URL.revokeObjectURL(cover);
-                        }), 500);
-                        return callback();
-                      }
-                    });
+                    if (music_settings.low_performance) {
+                      return body.style.backgroundImage = "url(" + cover + ")";
+                    } else {
+                      el = document.createElement('div');
+                      return new Blur({
+                        el: el,
+                        path: cover,
+                        radius: 10,
+                        callback: function() {
+                          body.style.backgroundImage = el.style.backgroundImage;
+                          setTimeout((function() {
+                            return URL.revokeObjectURL(cover);
+                          }), 500);
+                          return callback();
+                        }
+                      });
+                    }
                   });
                 }
               };
