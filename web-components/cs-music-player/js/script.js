@@ -250,12 +250,12 @@
                 cover = cover || 'img/bg.jpg';
                 if (body.style.backgroundImage !== ("url(" + cover + ")")) {
                   cs_cover = element.shadowRoot.querySelector('cs-cover');
-                  return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
-                    var el;
-                    cs_cover.style.backgroundImage = "url(" + cover + ")";
-                    if (music_settings.low_performance) {
-                      return body.style.backgroundImage = "url(" + cover + ")";
-                    } else {
+                  cs_cover.style.backgroundImage = "url(" + cover + ")";
+                  if (music_settings.low_performance) {
+                    return body.style.backgroundImage = "url(" + cover + ")";
+                  } else {
+                    return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
+                      var el;
                       el = document.createElement('div');
                       return new Blur({
                         el: el,
@@ -269,8 +269,8 @@
                           return callback();
                         }
                       });
-                    }
-                  });
+                    });
+                  }
                 }
               };
               return parseAudioMetadata(blob, function(metadata) {

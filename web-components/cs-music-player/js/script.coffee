@@ -200,17 +200,17 @@ Polymer(
 						update_cover	= (cover) ->
 							cover	= cover || 'img/bg.jpg'
 							if body.style.backgroundImage != "url(#{cover})"
-								cs_cover	= element.shadowRoot.querySelector('cs-cover')
-								# Resize cover to needed size to decrease memory consumption and speed-up blurring
-								resize_image(
-									cover
-									Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
-									(cover) ->
-										cs_cover.style.backgroundImage	= "url(#{cover})"
-										# No blurring in low performance mode
-										if music_settings.low_performance
-											body.style.backgroundImage = "url(#{cover})"
-										else
+								cs_cover						= element.shadowRoot.querySelector('cs-cover')
+								cs_cover.style.backgroundImage	= "url(#{cover})"
+								# No blurring in low performance mode
+								if music_settings.low_performance
+									body.style.backgroundImage		= "url(#{cover})"
+								else
+									# Resize cover to needed size to decrease memory consumption and speed-up blurring
+									resize_image(
+										cover
+										Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
+										(cover) ->
 											# Start blurring of resized image
 											el	= document.createElement('div')
 											new Blur(
@@ -224,7 +224,7 @@ Polymer(
 													), 500
 													callback()
 											)
-								)
+									)
 						parseAudioMetadata(
 							blob
 							(metadata) ->
