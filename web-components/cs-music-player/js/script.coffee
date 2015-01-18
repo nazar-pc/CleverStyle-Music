@@ -113,7 +113,7 @@ Polymer(
 					if object_url
 						URL.revokeObjectURL(object_url)
 					object_url			= URL.createObjectURL(blob)
-					if filename.substr(0, -4) == 'alac'
+					if filename.substr(0, -4) == 'alac' || filename.substr(0, -4) == 'alac.mp3'
 						play_with_aurora(just_load)
 					else
 						player_element.src	= object_url
