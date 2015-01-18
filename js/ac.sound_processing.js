@@ -120,7 +120,7 @@
         element.audio_processing = audio;
         audio.context = new AudioContext;
         audio.context.mozAudioChannelType = 'content';
-        audio.source = audio.context.createMediaElementSource(element);
+        audio.source = audio.context.createMediaElementSource(unwrap(element));
         create_reverb(audio);
         create_equalizer(audio);
         create_compressor(audio);

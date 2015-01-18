@@ -61,9 +61,9 @@
       this.player = (function() {
         var aurora_player, object_url, play_with_aurora, player_element, playing_started;
         player_element = document.createElement('audio');
-        sound_processing.add_to_element(player_element.impl);
+        sound_processing.add_to_element(player_element);
         cs.bus.on('sound-processing/update', function() {
-          return sound_processing.update_element(player_element.impl);
+          return sound_processing.update_element(player_element);
         });
         aurora_player = null;
         playing_started = 0;
