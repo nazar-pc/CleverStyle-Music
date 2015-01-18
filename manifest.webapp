@@ -29,7 +29,7 @@
 	"locales"        : {
 		"es" : {
 			"name"        : "CleverStyle Music",
-			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac"
+			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac",
 			"permissions" : {
 				"device-storage:music"  : {
 					"description" : "Acceso al almacenamiento de música"
