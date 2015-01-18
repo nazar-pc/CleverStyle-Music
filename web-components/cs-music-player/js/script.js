@@ -94,7 +94,7 @@
         player_element.addEventListener('timeupdate', function() {
           return _this.update(player_element.currentTime, player_element.duration);
         });
-        play_with_aurora = function() {
+        play_with_aurora = function(just_load) {
           aurora_player = AV.Player.fromURL(object_url);
           aurora_player.on('ready', function() {
             return this.device.device.node.context.mozAudioChannelType = 'content';
@@ -116,10 +116,12 @@
               return this.update(aurora_player.currentTime / 1000, duration);
             });
           });
-          return aurora_player.play();
+          if (!just_load) {
+            return aurora_player.play();
+          }
         };
         return {
-          open_new_file: function(blob, filename) {
+          open_new_file: function(blob, filename, just_load) {
             playing_started = new Date;
             if (this.playing) {
               this.pause();
@@ -133,13 +135,15 @@
             }
             object_url = URL.createObjectURL(blob);
             if (filename.substr(0, -4) === 'alac') {
-              return play_with_aurora();
+              return play_with_aurora(just_load);
             } else {
               player_element.src = object_url;
               player_element.load();
               this.file_loaded = true;
-              player_element.play();
-              return this.playing = true;
+              if (!just_load) {
+                player_element.play();
+                return this.playing = true;
+              }
             }
           },
           play: function() {
@@ -174,10 +178,7 @@
           }
         };
       })();
-      return this.play(null, function() {
-        _this.play();
-        return _this.player.currentTime = 0;
-      });
+      return this.play(null, null, true);
     },
     update: function(current_time, duration) {
       var progress_percentage;
@@ -194,7 +195,7 @@
         return seeking_bar.duration = duration;
       }
     },
-    play: function(id, callback) {
+    play: function(id, callback, just_load) {
       var element, play_button,
         _this = this;
       id = !isNaN(parseInt(id)) ? id : void 0;
@@ -224,12 +225,14 @@
           get_file.onsuccess = function() {
             var blob;
             blob = this.result;
-            element.player.open_new_file(blob, data.name);
+            element.player.open_new_file(blob, data.name, just_load);
             return (function() {
               var update_cover;
-              play_button.icon = 'pause';
-              cs.bus.trigger('player/play', id);
-              cs.bus.state.player = 'playing';
+              if (!just_load) {
+                play_button.icon = 'pause';
+                cs.bus.trigger('player/play', id);
+                cs.bus.state.player = 'playing';
+              }
               music_library.get_meta(id, function(data) {
                 if (data) {
                   element.title = data.title || _('unknown');
@@ -286,7 +289,7 @@
         });
       } else {
         return music_playlist.current(function(id) {
-          return _this.play(id, callback);
+          return _this.play(id, callback, just_load);
         });
       }
     },

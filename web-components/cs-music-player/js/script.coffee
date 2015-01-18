@@ -77,7 +77,7 @@ Polymer(
 			player_element.addEventListener('timeupdate', =>
 				@update(player_element.currentTime, player_element.duration)
 			)
-			play_with_aurora	= =>
+			play_with_aurora	= (just_load) =>
 				aurora_player	= AV.Player.fromURL(object_url)
 				aurora_player.on('ready', ->
 					@device.device.node.context.mozAudioChannelType	= 'content'
@@ -100,9 +100,10 @@ Polymer(
 						@update(aurora_player.currentTime / 1000, duration)
 					)
 				)
-				aurora_player.play()
+				if !just_load
+					aurora_player.play()
 			return {
-				open_new_file	: (blob, filename) ->
+				open_new_file	: (blob, filename, just_load) ->
 					playing_started	= new Date
 					if @playing
 						@pause()
@@ -113,13 +114,14 @@ Polymer(
 						URL.revokeObjectURL(object_url)
 					object_url			= URL.createObjectURL(blob)
 					if filename.substr(0, -4) == 'alac'
-						play_with_aurora()
+						play_with_aurora(just_load)
 					else
 						player_element.src	= object_url
 						player_element.load()
 						this.file_loaded	= true
-						player_element.play()
-						@playing		= true
+						if !just_load
+							player_element.play()
+							@playing		= true
 				play			: ->
 					playing_started	= new Date
 					if	aurora_player
@@ -144,10 +146,7 @@ Polymer(
 						else
 							@play()
 			}
-		@play(null, =>
-			@play()
-			@player.currentTime = 0
-		)
+		@play(null, null, true)
 	update	: (current_time, duration) ->
 		progress_percentage = if duration then current_time / duration * 100 else 0
 		if progress_percentage != seeking_bar.progress_percentage && progress_percentage >= 0 && progress_percentage <= 100 && !isNaN(progress_percentage)
@@ -158,7 +157,7 @@ Polymer(
 		duration = if duration then time_format(duration) else '00:00'
 		if duration != seeking_bar.duration
 			seeking_bar.duration			= duration
-	play	: (id, callback) ->
+	play	: (id, callback, just_load) ->
 		id			= if !isNaN(parseInt(id)) then id else undefined
 		if typeof callback != 'function'
 			callback	= ->
@@ -182,11 +181,12 @@ Polymer(
 				get_file	= music_storage.get(data.name)
 				get_file.onsuccess = ->
 					blob			= @result
-					element.player.open_new_file(blob, data.name)
+					element.player.open_new_file(blob, data.name, just_load)
 					do ->
-						play_button.icon = 'pause'
-						cs.bus.trigger('player/play', id)
-						cs.bus.state.player	= 'playing'
+						if !just_load
+							play_button.icon = 'pause'
+							cs.bus.trigger('player/play', id)
+							cs.bus.state.player	= 'playing'
 						music_library.get_meta(id, (data) ->
 							if data
 								element.title	= data.title || _('unknown')
@@ -239,7 +239,7 @@ Polymer(
 			)
 		else
 			music_playlist.current (id) =>
-				@play(id, callback)
+				@play(id, callback, just_load)
 	prev	: (callback) ->
 		music_playlist.prev (id) =>
 			@play(id, callback)
