@@ -208,6 +208,7 @@ cs.music_library	=
 	rescan			: (done_callback) ->
 		known_extensions	= [
 			'mp3',
+			'wave',
 
 			'm4a',
 			'm4b',

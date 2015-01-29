@@ -246,7 +246,7 @@
     },
     rescan: function(done_callback) {
       var found_files, known_extensions;
-      known_extensions = ['mp3', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'];
+      known_extensions = ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'];
       done_callback = (done_callback || function() {}).bind(this);
       found_files = 0;
       return this.onready(function() {
