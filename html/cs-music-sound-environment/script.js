@@ -10,8 +10,7 @@
 
 (function() {
   document.webL10n.ready(function() {
-    var $body, mode, modes, sound_processing;
-    $body = $('body');
+    var mode, modes, sound_processing;
     sound_processing = cs.sound_processing;
     modes = {};
     modes[_('reset')] = '';
@@ -35,15 +34,12 @@
         }
         return results;
       })(),
-      open: function() {
-        return $body.addClass('sound-environment');
-      },
       update_mode: function(e) {
         this.current_mode = $(e.target).data('mode');
         return sound_processing.set_reverb_mode(modes[this.current_mode]);
       },
       back: function() {
-        return $body.removeClass('sound-environment');
+        return this.go_back_screen();
       }
     });
   });

@@ -1,0 +1,26 @@
+/**
+ * @package   CleverStyle Music
+ * @category  app
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
+ */
+
+@mixin keyframes($name) {
+	@-webkit-keyframes #{$name} {
+		@content;
+	}
+	@keyframes #{$name} {
+		@content;
+	}
+}
+
+@mixin animation($animation) {
+	animation         : $animation;
+	-webkit-animation : $animation;
+}
+
+@mixin transform($what) {
+	transform         : $what;
+	-webkit-transform : $what;
+}

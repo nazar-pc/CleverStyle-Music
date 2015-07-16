@@ -149,8 +149,7 @@
               }
               return _this.set(all, callback);
             } else if (confirm(_('library-empty-want-to-rescan'))) {
-              $(document.body).addClass('library-rescan');
-              return document.querySelector('cs-music-library-rescan').open();
+              return _this.go_to_screen('library-rescan');
             }
           };
         })(this));

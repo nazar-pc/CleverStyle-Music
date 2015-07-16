@@ -315,7 +315,7 @@
       })(this));
     },
     menu: function() {
-      return $(body).addClass('menu');
+      return this.go_to_screen('menu');
     },
     seeking: function(percents) {
       return this.player.seeking(percents);

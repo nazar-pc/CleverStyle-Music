@@ -251,7 +251,7 @@ Polymer(
 		music_playlist.next (id) =>
 			@play(id, callback)
 	menu	: ->
-		$(body).addClass('menu')
+		@go_to_screen('menu')
 	seeking	: (percents) ->
 		@player.seeking(percents)
 )

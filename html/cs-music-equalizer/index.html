@@ -1,4 +1,4 @@
-<polymer-element name="cs-music-equalizer">
+<polymer-element name="cs-music-equalizer" extends="cs-music-screen">
 	<template vertical center layout>
 		<link rel="stylesheet" href="style.css">
 		<cs-music-equalizer-levels-labels horizontal center layout>
@@ -26,7 +26,7 @@
 			<input type="range" value="{{gain_levels[9]}}" data-index="9" min="-10" max="10" step=".01">
 		</cs-music-equalizer-levels>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-right" on-tap="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 			<cs-control flex icon="database" on-tap="{{equalizer_presets}}"></cs-control>
 		</cs-controls>
 	</template>

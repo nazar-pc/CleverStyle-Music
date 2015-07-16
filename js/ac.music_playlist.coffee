@@ -108,8 +108,7 @@ cs.music_playlist	=
 						all[i] = value.id
 					@set(all, callback)
 				else if confirm(_('library-empty-want-to-rescan'))
-					$(document.body).addClass('library-rescan')
-					document.querySelector('cs-music-library-rescan').open()
+					@go_to_screen('library-rescan')
 		return
 	sort			: (all, callback) ->
 		index			= 0

@@ -10,8 +10,7 @@
 
 (function() {
   document.webL10n.ready(function() {
-    var $body, equalizer_presets, sound_processing;
-    $body = $('body');
+    var equalizer_presets, sound_processing;
     sound_processing = cs.sound_processing;
     equalizer_presets = document.querySelector('cs-music-equalizer-presets');
     return Polymer('cs-music-equalizer', {
@@ -40,14 +39,11 @@
           };
         })(this)), 100);
       },
-      open: function() {
-        return $body.addClass('equalizer');
-      },
       equalizer_presets: function() {
-        return equalizer_presets.open();
+        return this.go_to_screen('equalizer-presets');
       },
       back: function() {
-        return $body.removeClass('equalizer');
+        return this.go_back_screen();
       }
     });
   });

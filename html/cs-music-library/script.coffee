@@ -7,7 +7,6 @@
 ###
 
 document.webL10n.ready ->
-	$body					= $('body')
 	music_library			= cs.music_library
 	music_playlist			= cs.music_playlist
 	player					= document.querySelector('cs-music-player')
@@ -22,9 +21,6 @@ document.webL10n.ready ->
 		years_text		: _('years')
 		ratings_text	: _('ratings')
 		loading			: false
-		open			: ->
-			@loading	= false
-			$body.addClass('library')
 		group			: (e) ->
 			group_field		= $(e.originalTarget).data('group-field')
 			music_library.get_all (all) =>
@@ -32,14 +28,15 @@ document.webL10n.ready ->
 					all[i] = value.id
 				switch group_field
 					when 'artist', 'album', 'genre', 'year', 'rated'
-						music_library_grouped.open(group_field, all)
+						music_library_grouped.update(group_field, all)
+						@go_to_screen('library-grouped')
 					else
 						@loading	= true
 						music_playlist.set(all, =>
 							player.next ->
-								$body.removeClass('library menu')
+								@go_to_screen('player')
 								@loading	= false
 						)
 		back			: ->
-			$body.removeClass('library')
+			@go_back_screen()
 	)

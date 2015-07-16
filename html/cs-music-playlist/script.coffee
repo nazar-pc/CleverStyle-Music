@@ -7,23 +7,21 @@
 ###
 
 document.webL10n.ready ->
-	$body			= $('body')
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	music_settings	= cs.music_settings
 	player			= document.querySelector('cs-music-player')
 	scroll_interval	= 0
-	stop			= false
 
 	Polymer(
 		'cs-music-playlist'
-		list	: []
-		created	: ->
+		list			: []
+		created			: ->
 			cs.bus.on('player/play', (id) =>
 				if @list.length
-					@update(id)
+					@update_status(id)
 			)
-		ready	: ->
+		ready			: ->
 			switch music_settings.repeat
 				when 'none'
 					@.shadowRoot.querySelector('[icon=repeat]').setAttribute('disabled', '')
@@ -31,9 +29,10 @@ document.webL10n.ready ->
 					@.shadowRoot.querySelector('[icon=repeat]').innerHTML	= 1
 			if !music_settings.shuffle
 				@.shadowRoot.querySelector('[icon=random]').setAttribute('disabled', '')
-		open	: ->
-			$body.addClass('playlist')
-			stop	= false
+		showChanged		: ->
+			if @show
+				@update()
+		update			: ->
 			music_playlist.current (current_id) =>
 				music_playlist.get_all (all) =>
 					index			= 0
@@ -55,7 +54,7 @@ document.webL10n.ready ->
 								++index
 								get_next_item()
 							)
-						else if !stop
+						else if @show
 							@list			= list
 							scroll_interval	= setInterval (=>
 								items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
@@ -66,7 +65,7 @@ document.webL10n.ready ->
 									items_container.scrollTop	= item.offsetTop
 							), 100
 					get_next_item()
-		play	: (e) ->
+		play			: (e) ->
 			music_playlist.current (old_id) =>
 				music_playlist.set_current(
 					e.target.dataset.index
@@ -74,11 +73,11 @@ document.webL10n.ready ->
 				music_playlist.current (id) =>
 					if id != old_id
 						player.play(id)
-						@update(id)
+						@update_status(id)
 					else
 						player.play()
-						@update(id)
-		update	: (new_id) ->
+						@update_status(id)
+		update_status	: (new_id) ->
 			@list.forEach (data, index) =>
 				if data.id == new_id
 					@list[index].playing	= 'yes'
@@ -86,9 +85,8 @@ document.webL10n.ready ->
 				else
 					@list[index].playing = 'no'
 					delete @list[index].icon
-		back	: ->
-			$body.removeClass('playlist')
-			stop			= true
+		back			: ->
+			@go_back_screen()
 			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 			if items_container
 				items_container.style.opacity = 0
@@ -98,7 +96,7 @@ document.webL10n.ready ->
 					clearInterval(scroll_interval)
 					scroll_interval	= 0
 			), 300
-		repeat	: (e) ->
+		repeat			: (e) ->
 			control					= e.target
 			music_settings.repeat	=
 				switch music_settings.repeat
@@ -110,7 +108,7 @@ document.webL10n.ready ->
 			else
 				control.removeAttribute('disabled')
 			control.innerHTML	= if music_settings.repeat == 'one' then 1 else ''
-		shuffle	: (e) ->
+		shuffle			: (e) ->
 			control					= e.target
 			music_settings.shuffle	= !music_settings.shuffle
 			if !music_settings.shuffle
@@ -121,5 +119,5 @@ document.webL10n.ready ->
 			music_playlist.current (id) =>
 				music_playlist.refresh =>
 					music_playlist.set_current_id(id)
-					@open()
+					@update()
 	)

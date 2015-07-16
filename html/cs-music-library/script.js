@@ -10,8 +10,7 @@
 
 (function() {
   document.webL10n.ready(function() {
-    var $body, music_library, music_library_grouped, music_playlist, player;
-    $body = $('body');
+    var music_library, music_library_grouped, music_playlist, player;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
@@ -24,10 +23,6 @@
       years_text: _('years'),
       ratings_text: _('ratings'),
       loading: false,
-      open: function() {
-        this.loading = false;
-        return $body.addClass('library');
-      },
       group: function(e) {
         var group_field;
         group_field = $(e.originalTarget).data('group-field');
@@ -44,12 +39,13 @@
               case 'genre':
               case 'year':
               case 'rated':
-                return music_library_grouped.open(group_field, all);
+                music_library_grouped.update(group_field, all);
+                return _this.go_to_screen('library-grouped');
               default:
                 _this.loading = true;
                 return music_playlist.set(all, function() {
                   return player.next(function() {
-                    $body.removeClass('library menu');
+                    this.go_to_screen('player');
                     return this.loading = false;
                   });
                 });
@@ -58,7 +54,7 @@
         })(this));
       },
       back: function() {
-        return $body.removeClass('library');
+        return this.go_back_screen();
       }
     });
   });

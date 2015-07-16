@@ -1,4 +1,4 @@
-<polymer-element name="cs-music-playlist">
+<polymer-element name="cs-music-playlist" extends="cs-music-screen">
 	<template vertical center layout>
 		<link rel="stylesheet" href="style.css">
 		<template if="{{list.length}}">
@@ -17,7 +17,7 @@
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-right" on-tap="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 			<cs-control flex icon="repeat" on-tap="{{repeat}}"></cs-control>
 			<cs-control flex icon="random" on-tap="{{shuffle}}"></cs-control>
 		</cs-controls>

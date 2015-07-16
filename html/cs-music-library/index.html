@@ -1,15 +1,15 @@
-<polymer-element name="cs-music-library">
+<polymer-element name="cs-music-library" extends="cs-music-screen">
 	<template vertical center layout>
 		<link rel="stylesheet" href="style.css">
 		<template if="{{!loading}}">
-			<cs-menu-items>
-				<cs-menu-item data-group-field="" on-tap="{{group}}">{{all_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="artist" on-tap="{{group}}">{{artists_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="album" on-tap="{{group}}">{{albums_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="genre" on-tap="{{group}}">{{genres_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="year" on-tap="{{group}}">{{years_text}}</cs-menu-item>
-				<cs-menu-item data-group-field="rated" on-tap="{{group}}">{{ratings_text}}</cs-menu-item>
-			</cs-menu-items>
+			<cs-music-menu-items>
+				<cs-music-menu-item data-group-field="" on-tap="{{group}}">{{all_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="artist" on-tap="{{group}}">{{artists_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="album" on-tap="{{group}}">{{albums_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="genre" on-tap="{{group}}">{{genres_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="year" on-tap="{{group}}">{{years_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="rated" on-tap="{{group}}">{{ratings_text}}</cs-music-menu-item>
+			</cs-music-menu-items>
 		</template>
 		<template if="{{loading}}">
 			<cs-loading></cs-loading>

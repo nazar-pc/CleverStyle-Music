@@ -1,16 +1,16 @@
-<polymer-element name="cs-music-sound-environment">
+<polymer-element name="cs-music-sound-environment" extends="cs-music-screen">
 	<template vertical center layout>
 		<link rel="stylesheet" href="style.css">
-		<cs-menu-items>
+		<cs-music-menu-items>
 			<template repeat="{{mode in modes}}">
 				<template if="{{current_mode == mode}}">
-					<cs-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}" icon="check">{{mode}}</cs-menu-item>
+					<cs-music-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}" icon="check">{{mode}}</cs-music-menu-item>
 				</template>
 				<template if="{{current_mode != mode}}">
-					<cs-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}">{{mode}}</cs-menu-item>
+					<cs-music-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}">{{mode}}</cs-music-menu-item>
 				</template>
 			</template>
-		</cs-menu-items>
+		</cs-music-menu-items>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 		</cs-controls>

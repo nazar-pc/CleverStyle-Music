@@ -7,9 +7,8 @@
 ###
 
 document.webL10n.ready ->
-	$body					= $('body')
-	sound_processing		= cs.sound_processing
-	equalizer_presets		= document.querySelector('cs-music-equalizer-presets')
+	sound_processing	= cs.sound_processing
+	equalizer_presets	= document.querySelector('cs-music-equalizer-presets')
 
 	Polymer(
 		'cs-music-equalizer'
@@ -32,10 +31,8 @@ document.webL10n.ready ->
 			setTimeout (=>
 				$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('reset')
 			), 100
-		open				: ->
-			$body.addClass('equalizer')
 		equalizer_presets	: ->
-			equalizer_presets.open()
+			@go_to_screen('equalizer-presets')
 		back				: ->
-			$body.removeClass('equalizer')
+			@go_back_screen()
 	)

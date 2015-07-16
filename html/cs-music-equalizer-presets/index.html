@@ -1,0 +1,14 @@
+<polymer-element name="cs-music-equalizer-presets" extends="cs-music-screen">
+	<template vertical center layout>
+		<link rel="stylesheet" href="style.css">
+		<cs-music-menu-items>
+			<template repeat="{{preset in presets_names}}">
+				<cs-music-menu-item on-tap="{{load_preset}}" data-preset="{{preset}}">{{preset}}</cs-music-menu-item>
+			</template>
+		</cs-music-menu-items>
+		<cs-controls horizontal center layout>
+			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
+		</cs-controls>
+	</template>
+	<script src="script.js"></script>
+</polymer-element>

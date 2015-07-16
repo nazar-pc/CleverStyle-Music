@@ -7,7 +7,6 @@
 ###
 
 document.webL10n.ready ->
-	$body				= $('body')
 	sound_processing	= cs.sound_processing
 	modes				= {}
 	modes[_('reset')]	= ''
@@ -22,11 +21,9 @@ document.webL10n.ready ->
 		modes			:
 			for mode of modes
 				mode
-		open			: ->
-			$body.addClass('sound-environment')
 		update_mode		: (e) ->
 			@current_mode	= $(e.target).data('mode')
 			sound_processing.set_reverb_mode(modes[@current_mode])
 		back			: ->
-			$body.removeClass('sound-environment')
+			@go_back_screen()
 	)
