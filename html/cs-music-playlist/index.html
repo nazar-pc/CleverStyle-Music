@@ -1,6 +1,6 @@
 <polymer-element name="cs-music-playlist">
 	<template vertical center layout>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="style.css">
 		<template if="{{list.length}}">
 			<cs-music-playlist-items>
 				<template repeat="{{item, index in list}}">
@@ -22,5 +22,5 @@
 			<cs-control flex icon="random" on-tap="{{shuffle}}"></cs-control>
 		</cs-controls>
 	</template>
-	<script src="js/script.js"></script>
+	<script src="script.js"></script>
 </polymer-element>

@@ -1,6 +1,6 @@
 <polymer-element name="cs-menu">
 	<template vertical center layout>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="style.css">
 		<cs-menu-items>
 			<cs-menu-item icon="list" on-tap="{{playlist}}">{{playlist_text}}</cs-menu-item>
 			<template if="{{!low_performance}}">
@@ -20,5 +20,5 @@
 			<cs-control flex icon="chevron-up" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
-	<script src="js/script.js"></script>
+	<script src="script.js"></script>
 </polymer-element>

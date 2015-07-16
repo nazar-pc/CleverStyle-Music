@@ -1,6 +1,6 @@
 <polymer-element name="cs-music-library">
 	<template vertical center layout>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="style.css">
 		<template if="{{!loading}}">
 			<cs-menu-items>
 				<cs-menu-item data-group-field="" on-tap="{{group}}">{{all_text}}</cs-menu-item>
@@ -18,5 +18,5 @@
 			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
-	<script src="js/script.js"></script>
+	<script src="script.js"></script>
 </polymer-element>

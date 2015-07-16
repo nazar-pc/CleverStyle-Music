@@ -1,11 +1,11 @@
 <polymer-element name="cs-music-library-rescan">
 	<template vertical center layout>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="style.css">
 		<cs-scanning-progress>{{searching_for_music_text}} {{found}} {{files_found_text}}</cs-scanning-progress>
 		<cs-loading></cs-loading>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-up" on-tap="{{back}}"></cs-control>
 		</cs-controls>
 	</template>
-	<script src="js/script.js"></script>
+	<script src="script.js"></script>
 </polymer-element>
