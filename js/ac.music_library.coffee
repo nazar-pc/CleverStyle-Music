@@ -1,9 +1,9 @@
 ###*
- * @package     CleverStyle Music
- * @category    app
- * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright   Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license     MIT License, see license.txt
+ * @package   CleverStyle Music
+ * @category  app
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
 ###
 if !window.indexedDB
 	alert "Indexed DB is not supported O_o"

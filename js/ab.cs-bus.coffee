@@ -1,9 +1,9 @@
 ###*
- * @package     CleverStyle Music
- * @category    app
- * @author      Nazar Mokrynskyi <nazar@mokrynskyi.com>
- * @copyright   Copyright (c) 2014-2015, Nazar Mokrynskyi
- * @license     MIT License, see license.txt
+ * @package   CleverStyle Music
+ * @category  app
+ * @author    Nazar Mokrynskyi <nazar@mokrynskyi.com>
+ * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
+ * @license   MIT License, see license.txt
 ###
 ###*
  * Randomize array element order in-place.
