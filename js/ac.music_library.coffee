@@ -8,9 +8,9 @@
 if !window.indexedDB
 	alert "Indexed DB is not supported O_o"
 	return
+storage			= cs.storage
 db				= null
 on_db_ready		= []
-music_storage	= navigator.getDeviceStorage('music')
 request 		= indexedDB.open('music_db', 1)
 request.onsuccess = ->
 	db = request.result
@@ -69,8 +69,9 @@ cs.music_library	=
 						.get(name).onsuccess	= ->
 							if @result
 								data	= @result
-								music_storage.get(data.name).onsuccess = ->
-									if @result
+								storage.get(
+									data.name
+									(blob) ->
 										store	= (metadata) ->
 											store_object = db
 												.transaction(['meta'], 'readwrite')
@@ -89,12 +90,12 @@ cs.music_library	=
 											store_object.onerror = ->
 												callback()
 										parseAudioMetadata(
-											@result
+											blob
 											(metadata) ->
 												store(metadata)
-											=>
+											->
 												# If unable to get metadata with previous parser - try another one
-												url		= URL.createObjectURL(@result)
+												url		= URL.createObjectURL(blob)
 												asset	= AV.Asset.fromURL(url)
 												asset.get('metadata', (metadata) ->
 													URL.revokeObjectURL(url)
@@ -132,6 +133,7 @@ cs.music_library	=
 													)
 												)
 										)
+								)
 	get				: (id, callback) ->
 		callback	= (callback || ->).bind(@)
 		@onready ->
@@ -157,7 +159,7 @@ cs.music_library	=
 									id	: id
 								)
 	get_all			: (callback, filter) ->
-		callback	= (callback || ->).bind(@)
+		callback	= callback.bind(@)
 		filter		= filter || -> true
 		@onready ->
 			all					= []
@@ -172,7 +174,8 @@ cs.music_library	=
 								result.continue()
 							else
 								callback(all)
-	del				: (id, callback) ->
+	del				: (id, callback = ->) ->
+		callback	= callback.bind(@)
 		@onready ->
 			db
 				.transaction(['music'], 'readwrite')
@@ -206,43 +209,52 @@ cs.music_library	=
 									library_size = calculated_size
 								callback(calculated_size)
 	rescan			: (done_callback) ->
-		done_callback		= (done_callback || ->).bind(@)
-		found_files			= 0
-		@onready ->
-			new_files		= []
-			cs.storage.scan(
-				(name) =>
-					db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess	= (e) =>
-						if !e.target.result
-							@add(name, ->
-								@parse_metadata(name, ->
-									new_files.push(name)
-									++found_files
-									cs.bus.fire('library/rescan/found', found_files)
-								)
-							)
-						else
-							new_files.push(name)
+		done_callback	= (done_callback || ->).bind(@)
+		found_files		= 0
+		new_files		= []
+		add_new_files	= (files) =>
+			if !files.length
+				done_callback()
+				return
+			filename	= files.shift()
+			db.transaction(['music']).objectStore('music').index('name').get(filename).onsuccess	= (e) =>
+				if !e.target.result
+					@add(filename, ->
+						@parse_metadata(filename, ->
+							new_files.push(filename)
 							++found_files
 							cs.bus.fire('library/rescan/found', found_files)
-				=>
-					if !new_files.length
+							add_new_files(files)
+						)
+					)
+				else
+					new_files.push(filename)
+					++found_files
+					cs.bus.fire('library/rescan/found', found_files)
+					add_new_files(files)
+		@onready ->
+			storage.scan(
+				(files) =>
+					if !files.length
 						alert _('no_files_found')
 						return
+					###
+					 * At first we'll remove old non-existing files, and afterwards will add new found
+					###
 					@get_all (all) =>
-						id_to_remove	= []
+						ids_to_remove	= []
 						all.forEach (file) =>
-							if file.name not in new_files
-								id_to_remove.push(file.id)
+							if file.name not in files
+								ids_to_remove.push(file.id)
 							return
-						remove	= (index) =>
-							if id_to_remove[index]
-								@del(id_to_remove[index], ->
-									remove(index + 1)
-								)
-							else
-								done_callback()
-						remove(0)
+						remove	= (ids_to_remove) =>
+							if !ids_to_remove.length
+								add_new_files(files)
+								return
+							@del(ids_to_remove.pop(), ->
+								remove(ids_to_remove)
+							)
+						remove(ids_to_remove)
 			)
 			return
 	onready			: (callback) ->

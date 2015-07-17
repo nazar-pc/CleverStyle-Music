@@ -108,7 +108,7 @@ cs.music_playlist	=
 						all[i] = value.id
 					@set(all, callback)
 				else if confirm(_('library-empty-want-to-rescan'))
-					@go_to_screen('library-rescan')
+					$('body > [show]')[0].go_to_screen('library-rescan')
 		return
 	sort			: (all, callback) ->
 		index			= 0

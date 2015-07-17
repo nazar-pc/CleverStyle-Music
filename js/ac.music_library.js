@@ -9,7 +9,7 @@
  */
 
 (function() {
-  var db, library_size, music_storage, on_db_ready, request,
+  var db, library_size, on_db_ready, request, storage,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   if (!window.indexedDB) {
@@ -17,11 +17,11 @@
     return;
   }
 
+  storage = cs.storage;
+
   db = null;
 
   on_db_ready = [];
-
-  music_storage = navigator.getDeviceStorage('music');
 
   request = indexedDB.open('music_db', 1);
 
@@ -88,72 +88,68 @@
         var data;
         if (this.result) {
           data = this.result;
-          return music_storage.get(data.name).onsuccess = function() {
+          return storage.get(data.name, function(blob) {
             var store;
-            if (this.result) {
-              store = function(metadata) {
-                var store_object;
-                store_object = db.transaction(['meta'], 'readwrite').objectStore('meta').put({
-                  id: data.id,
-                  title: metadata.title || '',
-                  artist: metadata.artist || '',
-                  album: metadata.album || '',
-                  genre: metadata.genre || '',
-                  year: metadata.year || metadata.recordingTime || '',
-                  rated: metadata.rated || 0
-                });
-                store_object.onsuccess = function() {
-                  return callback();
-                };
-                return store_object.onerror = function() {
-                  return callback();
-                };
+            store = function(metadata) {
+              var store_object;
+              store_object = db.transaction(['meta'], 'readwrite').objectStore('meta').put({
+                id: data.id,
+                title: metadata.title || '',
+                artist: metadata.artist || '',
+                album: metadata.album || '',
+                genre: metadata.genre || '',
+                year: metadata.year || metadata.recordingTime || '',
+                rated: metadata.rated || 0
+              });
+              store_object.onsuccess = function() {
+                return callback();
               };
-              return parseAudioMetadata(this.result, function(metadata) {
+              return store_object.onerror = function() {
+                return callback();
+              };
+            };
+            return parseAudioMetadata(blob, function(metadata) {
+              return store(metadata);
+            }, function() {
+              var asset, url;
+              url = URL.createObjectURL(blob);
+              asset = AV.Asset.fromURL(url);
+              asset.get('metadata', function(metadata) {
+                URL.revokeObjectURL(url);
+                if (!metadata) {
+                  callback();
+                  return;
+                }
                 return store(metadata);
-              }, (function(_this) {
-                return function() {
-                  var asset, url;
-                  url = URL.createObjectURL(_this.result);
-                  asset = AV.Asset.fromURL(url);
-                  asset.get('metadata', function(metadata) {
-                    URL.revokeObjectURL(url);
-                    if (!metadata) {
-                      callback();
-                      return;
-                    }
-                    return store(metadata);
+              });
+              return asset.on('error', function() {
+                var metadata;
+                metadata = data.name.split('/').pop();
+                metadata = metadata.split('.');
+                metadata.pop();
+                metadata = metadata.join('.');
+                metadata = metadata.split('–', 2);
+                if (metadata.length === 2) {
+                  store({
+                    artist: $.trim(metadata[0]),
+                    title: $.trim(metadata[1])
                   });
-                  return asset.on('error', function() {
-                    var metadata;
-                    metadata = data.name.split('/').pop();
-                    metadata = metadata.split('.');
-                    metadata.pop();
-                    metadata = metadata.join('.');
-                    metadata = metadata.split('–', 2);
-                    if (metadata.length === 2) {
-                      store({
-                        artist: $.trim(metadata[0]),
-                        title: $.trim(metadata[1])
-                      });
-                      return;
-                    }
-                    metadata = metadata[0].split(' - ', 2);
-                    if (metadata.length === 2) {
-                      store({
-                        artist: $.trim(metadata[0]),
-                        title: $.trim(metadata[1])
-                      });
-                      return;
-                    }
-                    return store({
-                      title: $.trim(metadata[0])
-                    });
+                  return;
+                }
+                metadata = metadata[0].split(' - ', 2);
+                if (metadata.length === 2) {
+                  store({
+                    artist: $.trim(metadata[0]),
+                    title: $.trim(metadata[1])
                   });
-                };
-              })(this));
-            }
-          };
+                  return;
+                }
+                return store({
+                  title: $.trim(metadata[0])
+                });
+              });
+            });
+          });
         }
       };
     },
@@ -186,7 +182,7 @@
       });
     },
     get_all: function(callback, filter) {
-      callback = (callback || function() {}).bind(this);
+      callback = callback.bind(this);
       filter = filter || function() {
         return true;
       };
@@ -208,6 +204,10 @@
       });
     },
     del: function(id, callback) {
+      if (callback == null) {
+        callback = function() {};
+      }
+      callback = callback.bind(this);
       return this.onready(function() {
         return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id).onsuccess = function() {
           return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id).onsuccess = function() {
@@ -245,55 +245,67 @@
       });
     },
     rescan: function(done_callback) {
-      var found_files;
+      var add_new_files, found_files, new_files;
       done_callback = (done_callback || function() {}).bind(this);
       found_files = 0;
-      return this.onready(function() {
-        var new_files;
-        new_files = [];
-        cs.storage.scan((function(_this) {
-          return function(name) {
-            return db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess = function(e) {
-              if (!e.target.result) {
-                return _this.add(name, function() {
-                  return this.parse_metadata(name, function() {
-                    new_files.push(name);
-                    ++found_files;
-                    return cs.bus.fire('library/rescan/found', found_files);
-                  });
+      new_files = [];
+      add_new_files = (function(_this) {
+        return function(files) {
+          var filename;
+          if (!files.length) {
+            done_callback();
+            return;
+          }
+          filename = files.shift();
+          return db.transaction(['music']).objectStore('music').index('name').get(filename).onsuccess = function(e) {
+            if (!e.target.result) {
+              return _this.add(filename, function() {
+                return this.parse_metadata(filename, function() {
+                  new_files.push(filename);
+                  ++found_files;
+                  cs.bus.fire('library/rescan/found', found_files);
+                  return add_new_files(files);
                 });
-              } else {
-                new_files.push(name);
-                ++found_files;
-                return cs.bus.fire('library/rescan/found', found_files);
-              }
-            };
+              });
+            } else {
+              new_files.push(filename);
+              ++found_files;
+              cs.bus.fire('library/rescan/found', found_files);
+              return add_new_files(files);
+            }
           };
-        })(this), (function(_this) {
-          return function() {
-            if (!new_files.length) {
+        };
+      })(this);
+      return this.onready(function() {
+        storage.scan((function(_this) {
+          return function(files) {
+            if (!files.length) {
               alert(_('no_files_found'));
               return;
             }
+
+            /*
+            					 * At first we'll remove old non-existing files, and afterwards will add new found
+             */
             return _this.get_all(function(all) {
-              var id_to_remove, remove;
-              id_to_remove = [];
+              var ids_to_remove, remove;
+              ids_to_remove = [];
               all.forEach(function(file) {
                 var ref;
-                if (ref = file.name, indexOf.call(new_files, ref) < 0) {
-                  id_to_remove.push(file.id);
+                if (ref = file.name, indexOf.call(files, ref) < 0) {
+                  ids_to_remove.push(file.id);
                 }
               });
-              remove = function(index) {
-                if (id_to_remove[index]) {
-                  return _this.del(id_to_remove[index], function() {
-                    return remove(index + 1);
-                  });
-                } else {
-                  return done_callback();
+              remove = function(ids_to_remove) {
+                if (!ids_to_remove.length) {
+                  add_new_files(files);
+                  return;
                 }
+                return _this.del(ids_to_remove.pop(), function() {
+                  return remove(ids_to_remove);
+                });
               };
-              return remove(0);
+              return remove(ids_to_remove);
             });
           };
         })(this));

@@ -17,8 +17,9 @@
 
   music_storage = navigator.getDeviceStorage('music');
 
-  cs.storage.scan = function(each_callback, finish_callback) {
-    var cursor;
+  cs.storage.scan = function(callback) {
+    var cursor, files;
+    files = [];
     cursor = music_storage.enumerate();
     cursor.onsuccess = (function(_this) {
       return function() {
@@ -26,16 +27,24 @@
         if (cursor.result) {
           file = cursor.result;
           if (_this.known_extensions.indexOf(file.name.split('.').pop()) !== -1) {
-            each_callback(file.name);
+            files.push(file.name);
           }
           return cursor["continue"]();
         } else {
-          return finish_callback();
+          return callback(files);
         }
       };
     })(this);
     return cursor.onerror = function() {
       return console.error(this.error.name);
+    };
+  };
+
+  cs.storage.get = function(filename, callback) {
+    return music_storage.get(filename).onsuccess = function() {
+      if (this.result) {
+        return callback(this.result);
+      }
     };
   };
 

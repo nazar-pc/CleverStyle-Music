@@ -25,5 +25,7 @@ cs.storage	=
 
 		'alac'
 	]
-	scan				: (each_callback, finish_callback) ->
+	scan				: (callback) ->
+		# To be implemented by specific storage
+	get					: (filename, callback) ->
 		# To be implemented by specific storage

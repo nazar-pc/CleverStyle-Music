@@ -8,15 +8,20 @@
 if !navigator.getDeviceStorage
 	return
 music_storage	= navigator.getDeviceStorage('music')
-cs.storage.scan	= (each_callback, finish_callback) ->
-		cursor				= music_storage.enumerate()
-		cursor.onsuccess	= =>
-			if cursor.result
-				file = cursor.result
-				if @known_extensions.indexOf(file.name.split('.').pop()) != -1
-					each_callback(file.name)
-				cursor.continue()
-			else
-				finish_callback()
-		cursor.onerror = ->
-			console.error(@error.name)
+cs.storage.scan	= (callback) ->
+	files				= []
+	cursor				= music_storage.enumerate()
+	cursor.onsuccess	= =>
+		if cursor.result
+			file = cursor.result
+			if @known_extensions.indexOf(file.name.split('.').pop()) != -1
+				files.push(file.name)
+			cursor.continue()
+		else
+			callback(files)
+	cursor.onerror = ->
+		console.error(@error.name)
+cs.storage.get	= (filename, callback) ->
+	music_storage.get(filename).onsuccess = ->
+		if @result
+			callback(@result)

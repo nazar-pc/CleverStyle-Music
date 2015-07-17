@@ -11,7 +11,8 @@
 (function() {
   cs.storage = {
     known_extensions: ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'],
-    scan: function(each_callback, finish_callback) {}
+    scan: function(callback) {},
+    get: function(filename, callback) {}
   };
 
 }).call(this);
