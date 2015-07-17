@@ -8,17 +8,7 @@
  * @license   MIT License, see license.txt
  */
 
-
-/**
- * Randomize array element order in-place.
- * Using Fisher-Yates shuffle algorithm.
- */
-
 (function() {
-  if (!window.cs) {
-    window.cs = {};
-  }
-
   cs.bus = (function() {
     var subscribers;
     subscribers = {};
@@ -43,7 +33,7 @@
         });
         return cs.bus;
       },
-      trigger: function(event_name, data) {
+      fire: function(event_name, data) {
         if (subscribers[event_name]) {
           return subscribers[event_name].forEach(function(callback) {
             return setTimeout((function() {

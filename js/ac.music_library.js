@@ -291,14 +291,14 @@
                         return this.parse_metadata(file.name, function() {
                           new_files.push(file.name);
                           ++found_files;
-                          cs.bus.trigger('library/rescan/found', found_files);
+                          cs.bus.fire('library/rescan/found', found_files);
                           return cursor["continue"]();
                         });
                       });
                     } else {
                       new_files.push(file.name);
                       ++found_files;
-                      cs.bus.trigger('library/rescan/found', found_files);
+                      cs.bus.fire('library/rescan/found', found_files);
                       return cursor["continue"]();
                     }
                   };

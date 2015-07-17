@@ -137,7 +137,7 @@
       set_gain_levels: function(new_gain_levels) {
         gain_levels = new_gain_levels;
         music_settings.equalizer_gain_levels = new_gain_levels;
-        return cs.bus.trigger('sound-processing/update');
+        return cs.bus.fire('sound-processing/update');
       },
       get_reverb_mode: function() {
         return reverb_impulse_response_current;
@@ -148,7 +148,7 @@
       set_reverb_mode: function(mode) {
         reverb_impulse_response_new = mode;
         music_settings.reverb_mode = mode;
-        return cs.bus.trigger('sound-processing/update');
+        return cs.bus.fire('sound-processing/update');
       }
     };
   })();

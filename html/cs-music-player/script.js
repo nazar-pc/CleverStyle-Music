@@ -211,12 +211,12 @@
         if (this.player.playing) {
           this.player.pause();
           play_button.icon = 'play';
-          cs.bus.trigger('player/pause');
+          cs.bus.fire('player/pause');
           return cs.bus.state.player = 'paused';
         } else {
           this.player.play();
           play_button.icon = 'pause';
-          cs.bus.trigger('player/resume');
+          cs.bus.fire('player/resume');
           return cs.bus.state.player = 'playing';
         }
       } else if (id) {
@@ -231,7 +231,7 @@
               var update_cover;
               if (!just_load) {
                 play_button.icon = 'pause';
-                cs.bus.trigger('player/play', id);
+                cs.bus.fire('player/play', id);
                 cs.bus.state.player = 'playing';
               }
               music_library.get_meta(id, function(data) {

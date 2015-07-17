@@ -169,12 +169,12 @@ Polymer(
 			if @player.playing
 				@player.pause()
 				play_button.icon = 'play'
-				cs.bus.trigger('player/pause')
+				cs.bus.fire('player/pause')
 				cs.bus.state.player	= 'paused'
 			else
 				@player.play()
 				play_button.icon = 'pause'
-				cs.bus.trigger('player/resume')
+				cs.bus.fire('player/resume')
 				cs.bus.state.player	= 'playing'
 		else if id
 			music_library.get(id, (data) ->
@@ -185,7 +185,7 @@ Polymer(
 					do ->
 						if !just_load
 							play_button.icon = 'pause'
-							cs.bus.trigger('player/play', id)
+							cs.bus.fire('player/play', id)
 							cs.bus.state.player	= 'playing'
 						music_library.get_meta(id, (data) ->
 							if data

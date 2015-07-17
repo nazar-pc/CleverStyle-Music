@@ -260,14 +260,14 @@ cs.music_library	=
 														@parse_metadata(file.name, ->
 															new_files.push(file.name)
 															++found_files
-															cs.bus.trigger('library/rescan/found', found_files)
+															cs.bus.fire('library/rescan/found', found_files)
 															cursor.continue()
 														)
 													)
 												else
 													new_files.push(file.name)
 													++found_files
-													cs.bus.trigger('library/rescan/found', found_files)
+													cs.bus.fire('library/rescan/found', found_files)
 													cursor.continue()
 						else
 							cursor.continue()

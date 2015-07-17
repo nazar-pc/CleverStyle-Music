@@ -145,7 +145,7 @@ cs.sound_processing	= do ->
 	set_gain_levels		: (new_gain_levels) ->
 		gain_levels								= new_gain_levels
 		music_settings.equalizer_gain_levels	= new_gain_levels
-		cs.bus.trigger('sound-processing/update')
+		cs.bus.fire('sound-processing/update')
 	get_reverb_mode		: ->
 		reverb_impulse_response_current
 	get_reverb_modes	: ->
@@ -153,4 +153,4 @@ cs.sound_processing	= do ->
 	set_reverb_mode		: (mode) ->
 		reverb_impulse_response_new		= mode
 		music_settings.reverb_mode		= mode
-		cs.bus.trigger('sound-processing/update')
+		cs.bus.fire('sound-processing/update')
