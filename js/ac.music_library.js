@@ -245,15 +245,36 @@
       });
     },
     rescan: function(done_callback) {
-      var found_files, known_extensions;
-      known_extensions = ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'];
+      var found_files;
       done_callback = (done_callback || function() {}).bind(this);
       found_files = 0;
       return this.onready(function() {
-        var new_files, remove_old_files;
+        var new_files;
         new_files = [];
-        remove_old_files = (function(_this) {
+        cs.storage.scan((function(_this) {
+          return function(name) {
+            return db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess = function(e) {
+              if (!e.target.result) {
+                return _this.add(name, function() {
+                  return this.parse_metadata(name, function() {
+                    new_files.push(name);
+                    ++found_files;
+                    return cs.bus.fire('library/rescan/found', found_files);
+                  });
+                });
+              } else {
+                new_files.push(name);
+                ++found_files;
+                return cs.bus.fire('library/rescan/found', found_files);
+              }
+            };
+          };
+        })(this), (function(_this) {
           return function() {
+            if (!new_files.length) {
+              alert(_('no_files_found'));
+              return;
+            }
             return _this.get_all(function(all) {
               var id_to_remove, remove;
               id_to_remove = [];
@@ -275,49 +296,7 @@
               return remove(0);
             });
           };
-        })(this);
-        (function(_this) {
-          return (function() {
-            var cursor;
-            cursor = music_storage.enumerate();
-            cursor.onsuccess = function() {
-              var file;
-              if (cursor.result) {
-                file = cursor.result;
-                if (known_extensions.indexOf(file.name.split('.').pop()) !== -1) {
-                  return db.transaction(['music']).objectStore('music').index('name').get(file.name).onsuccess = function(e) {
-                    if (!e.target.result) {
-                      return _this.add(file.name, function() {
-                        return this.parse_metadata(file.name, function() {
-                          new_files.push(file.name);
-                          ++found_files;
-                          cs.bus.fire('library/rescan/found', found_files);
-                          return cursor["continue"]();
-                        });
-                      });
-                    } else {
-                      new_files.push(file.name);
-                      ++found_files;
-                      cs.bus.fire('library/rescan/found', found_files);
-                      return cursor["continue"]();
-                    }
-                  };
-                } else {
-                  return cursor["continue"]();
-                }
-              } else {
-                if (!new_files.length) {
-                  return alert(_('no_files_found'));
-                } else {
-                  return remove_old_files();
-                }
-              }
-            };
-            return cursor.onerror = function() {
-              return console.error(this.error.name);
-            };
-          });
-        })(this)();
+        })(this));
       });
     },
     onready: function(callback) {

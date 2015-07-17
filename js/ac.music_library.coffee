@@ -206,78 +206,44 @@ cs.music_library	=
 									library_size = calculated_size
 								callback(calculated_size)
 	rescan			: (done_callback) ->
-		known_extensions	= [
-			'mp3',
-			'wave',
-
-			'm4a',
-			'm4b',
-			'm4p',
-			'm4r',
-			'3gp',
-			'mp4',
-			'aac',
-
-			'ogg',
-			'oga',
-			'opus',
-			'flac',
-
-			'alac'
-		]
 		done_callback		= (done_callback || ->).bind(@)
 		found_files			= 0
 		@onready ->
 			new_files		= []
-			remove_old_files	= =>
-				@get_all (all) =>
-					id_to_remove	= []
-					all.forEach (file) =>
-						if file.name not in new_files
-							id_to_remove.push(file.id)
-						return
-					remove	= (index) =>
-						if id_to_remove[index]
-							@del(id_to_remove[index], ->
-								remove(index + 1)
+			cs.storage.scan(
+				(name) =>
+					db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess	= (e) =>
+						if !e.target.result
+							@add(name, ->
+								@parse_metadata(name, ->
+									new_files.push(name)
+									++found_files
+									cs.bus.fire('library/rescan/found', found_files)
+								)
 							)
 						else
-							done_callback()
-					remove(0)
-			do =>
-				cursor				= music_storage.enumerate()
-				cursor.onsuccess	= =>
-					if cursor.result
-						file = cursor.result
-						if known_extensions.indexOf(file.name.split('.').pop()) != -1
-							db
-								.transaction(['music'])
-									.objectStore('music')
-										.index('name')
-											.get(file.name).onsuccess	= (e) =>
-												if !e.target.result
-													@add(file.name, ->
-														@parse_metadata(file.name, ->
-															new_files.push(file.name)
-															++found_files
-															cs.bus.fire('library/rescan/found', found_files)
-															cursor.continue()
-														)
-													)
-												else
-													new_files.push(file.name)
-													++found_files
-													cs.bus.fire('library/rescan/found', found_files)
-													cursor.continue()
-						else
-							cursor.continue()
-					else
-						if !new_files.length
-							alert _('no_files_found')
-						else
-							remove_old_files()
-				cursor.onerror = ->
-					console.error(@error.name)
+							new_files.push(name)
+							++found_files
+							cs.bus.fire('library/rescan/found', found_files)
+				=>
+					if !new_files.length
+						alert _('no_files_found')
+						return
+					@get_all (all) =>
+						id_to_remove	= []
+						all.forEach (file) =>
+							if file.name not in new_files
+								id_to_remove.push(file.id)
+							return
+						remove	= (index) =>
+							if id_to_remove[index]
+								@del(id_to_remove[index], ->
+									remove(index + 1)
+								)
+							else
+								done_callback()
+						remove(0)
+			)
 			return
 	onready			: (callback) ->
 		callback	= (callback || ->).bind(@)
