@@ -9,105 +9,50 @@
  */
 
 (function() {
-  var db, library_size, on_db_ready, request, storage,
+  var db, library_size, storage, store_metadata,
     indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-
-  if (!window.indexedDB) {
-    alert("Indexed DB is not supported O_o");
-    return;
-  }
 
   storage = cs.storage;
 
-  db = null;
-
-  on_db_ready = [];
-
-  request = indexedDB.open('music_db', 1);
-
-  request.onsuccess = function() {
-    var callback;
-    db = request.result;
-    while (callback = on_db_ready.shift()) {
-      callback();
-    }
-  };
-
-  request.onerror = function(e) {
-    console.error(e);
-  };
-
-  request.onupgradeneeded = function() {
-    var meta_store, music_store;
-    db = request.result;
-    if (db.objectStoreNames.contains('music')) {
-      db.deleteObjectStore('music');
-    }
-    music_store = db.createObjectStore('music', {
-      keyPath: 'id',
-      autoIncrement: true
-    });
-    music_store.createIndex('name', 'name', {
-      unique: true
-    });
-    meta_store = db.createObjectStore('meta', {
-      keyPath: 'id'
-    });
-    meta_store.createIndex('title', 'title');
-    meta_store.createIndex('artist', 'artist');
-    meta_store.createIndex('album', 'album');
-    meta_store.createIndex('genre', 'genre');
-    meta_store.createIndex('year', 'year');
-    db.transaction.oncomplete = function() {
-      var callback, results;
-      results = [];
-      while (callback = on_db_ready.shift()) {
-        results.push(callback());
-      }
-      return results;
-    };
-  };
+  db = cs.db;
 
   library_size = -1;
 
+  store_metadata = function(id, callback, metadata) {
+    return db.insert('meta', {
+      id: id,
+      title: metadata.title || '',
+      artist: metadata.artist || '',
+      album: metadata.album || '',
+      genre: metadata.genre || '',
+      year: metadata.year || metadata.recordingTime || '',
+      rated: metadata.rated || 0
+    })(callback, callback);
+  };
+
   cs.music_library = {
     add: function(name, callback) {
-      callback = (callback || function() {}).bind(this);
-      return this.onready(function() {
-        var put_transaction;
-        put_transaction = db.transaction(['music'], 'readwrite').objectStore('music').put({
-          name: name
-        });
-        put_transaction.onsuccess = callback;
-        return put_transaction.onerror = callback;
-      });
+      if (callback == null) {
+        callback = function() {};
+      }
+      callback = callback.bind(this);
+      return db.insert('music', {
+        name: name
+      })(callback, callback);
     },
     parse_metadata: function(name, callback) {
-      callback = (callback || function() {}).bind(this);
-      return db.transaction(['music']).objectStore('music').index('name').get(name).onsuccess = function() {
-        var data;
+      if (callback == null) {
+        callback = function() {};
+      }
+      callback = callback.bind(this);
+      return db.read('music', 'name', name)(function() {
+        var data, store;
         if (this.result) {
           data = this.result;
+          store = function(metadata) {
+            return store_metadata(data.id, callback, metadata);
+          };
           return storage.get(data.name, function(blob) {
-            var store;
-            store = function(metadata) {
-              var store_object;
-              store_object = db.transaction(['meta'], 'readwrite').objectStore('meta').put({
-                id: data.id,
-                title: metadata.title || '',
-                artist: metadata.artist || '',
-                album: metadata.album || '',
-                genre: metadata.genre || '',
-                year: metadata.year || metadata.recordingTime || '',
-                rated: metadata.rated || 0
-              });
-              store_object.onsuccess = function() {
-                return callback();
-              };
-              return store_object.onerror = function() {
-                return callback();
-              };
-            };
             return parseAudioMetadata(blob, function(metadata) {
               return store(metadata);
             }, function() {
@@ -151,114 +96,72 @@
             });
           });
         }
-      };
+      });
     },
     get: function(id, callback) {
-      callback = (callback || function() {}).bind(this);
-      return this.onready(function() {
-        return db.transaction(['music']).objectStore('music').get(id).onsuccess = function() {
-          var result;
-          result = this.result;
-          if (result) {
-            return callback(result);
-          }
-        };
+      callback = callback.bind(this);
+      return db.read('music', id)(function(result) {
+        if (result) {
+          return callback(result);
+        }
       });
     },
     get_meta: function(id, callback) {
-      callback = (callback || function() {}).bind(this);
-      return this.onready(function() {
-        return db.transaction(['meta']).objectStore('meta').get(id).onsuccess = function() {
-          var result;
-          result = this.result;
-          if (result) {
-            return callback(result);
-          } else {
-            return callback({
-              id: id
-            });
-          }
-        };
+      callback = callback.bind(this);
+      return db.read('meta', id)(function(result) {
+        if (result) {
+          return callback(result);
+        } else {
+          return callback({
+            id: id
+          });
+        }
       });
     },
     get_all: function(callback, filter) {
       callback = callback.bind(this);
-      filter = filter || function() {
-        return true;
-      };
-      return this.onready(function() {
-        var all;
-        all = [];
-        return db.transaction(['music']).objectStore('music').openCursor().onsuccess = function() {
-          var result;
-          result = this.result;
-          if (result) {
-            if (filter(result.value)) {
-              all.push(result.value);
-            }
-            return result["continue"]();
-          } else {
-            return callback(all);
-          }
-        };
-      });
+      return db.read_all('music', callback, filter);
     },
     del: function(id, callback) {
       if (callback == null) {
         callback = function() {};
       }
       callback = callback.bind(this);
-      return this.onready(function() {
-        return db.transaction(['music'], 'readwrite').objectStore('music')["delete"](id).onsuccess = function() {
-          return db.transaction(['meta'], 'readwrite').objectStore('meta')["delete"](id).onsuccess = function() {
-            return callback();
-          };
-        };
+      return db["delete"]('music', id)(function() {
+        return db["delete"]('meta', id)(callback);
       });
     },
     size: function(callback, filter) {
-      callback = (callback || function() {}).bind(this);
-      filter = filter || function() {
-        return true;
-      };
-      return this.onready(function() {
-        var calculated_size;
-        if (library_size >= 0 && !filter) {
-          callback(library_size);
+      callback = callback.bind(this);
+      if (library_size >= 0 && !filter) {
+        callback(library_size);
+        return;
+      }
+      return db.count('music', function(count) {
+        if (!filter) {
+          library_size = count;
         }
-        calculated_size = 0;
-        return db.transaction(['music']).objectStore('music').openCursor().onsuccess = function() {
-          var result;
-          result = this.result;
-          if (result) {
-            if (!filter || filter(result.value)) {
-              ++calculated_size;
-            }
-            return result["continue"]();
-          } else {
-            if (!filter) {
-              library_size = calculated_size;
-            }
-            return callback(calculated_size);
-          }
-        };
-      });
+        return callback(count);
+      }, filter);
     },
-    rescan: function(done_callback) {
+    rescan: function(callback) {
       var add_new_files, found_files, new_files;
-      done_callback = (done_callback || function() {}).bind(this);
+      if (callback == null) {
+        callback = function() {};
+      }
+      callback = callback.bind(this);
       found_files = 0;
       new_files = [];
       add_new_files = (function(_this) {
         return function(files) {
           var filename;
           if (!files.length) {
-            done_callback();
+            callback();
             return;
           }
           filename = files.shift();
-          return db.transaction(['music']).objectStore('music').index('name').get(filename).onsuccess = function(e) {
-            if (!e.target.result) {
+          return db.read('music', filename, 'name')(function(result) {
+            if (!result) {
               return _this.add(filename, function() {
                 return this.parse_metadata(filename, function() {
                   new_files.push(filename);
@@ -273,51 +176,41 @@
               cs.bus.fire('library/rescan/found', found_files);
               return add_new_files(files);
             }
-          };
+          });
         };
       })(this);
-      return this.onready(function() {
-        storage.scan((function(_this) {
-          return function(files) {
-            if (!files.length) {
-              alert(_('no_files_found'));
-              return;
-            }
+      storage.scan((function(_this) {
+        return function(files) {
+          if (!files.length) {
+            alert(_('no_files_found'));
+            return;
+          }
 
-            /*
-            					 * At first we'll remove old non-existing files, and afterwards will add new found
-             */
-            return _this.get_all(function(all) {
-              var ids_to_remove, remove;
-              ids_to_remove = [];
-              all.forEach(function(file) {
-                var ref;
-                if (ref = file.name, indexOf.call(files, ref) < 0) {
-                  ids_to_remove.push(file.id);
-                }
-              });
-              remove = function(ids_to_remove) {
-                if (!ids_to_remove.length) {
-                  add_new_files(files);
-                  return;
-                }
-                return _this.del(ids_to_remove.pop(), function() {
-                  return remove(ids_to_remove);
-                });
-              };
-              return remove(ids_to_remove);
+          /*
+          				 * At first we'll remove old non-existing files, and afterwards will add new found
+           */
+          return _this.get_all(function(all) {
+            var ids_to_remove, remove;
+            ids_to_remove = [];
+            all.forEach(function(file) {
+              var ref;
+              if (ref = file.name, indexOf.call(files, ref) < 0) {
+                ids_to_remove.push(file.id);
+              }
             });
-          };
-        })(this));
-      });
-    },
-    onready: function(callback) {
-      callback = (callback || function() {}).bind(this);
-      if (db) {
-        callback();
-      } else {
-        on_db_ready.push(callback);
-      }
+            remove = function(ids_to_remove) {
+              if (!ids_to_remove.length) {
+                add_new_files(files);
+                return;
+              }
+              return _this.del(ids_to_remove.pop(), function() {
+                return remove(ids_to_remove);
+              });
+            };
+            return remove(ids_to_remove);
+          });
+        };
+      })(this));
     }
   };
 
