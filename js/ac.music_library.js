@@ -175,8 +175,6 @@
               cs.bus.fire('library/rescan/found', found_files);
               return add_new_files(files);
             }
-          }, function(e) {
-            return console.log(e);
           });
         };
       })(this);
