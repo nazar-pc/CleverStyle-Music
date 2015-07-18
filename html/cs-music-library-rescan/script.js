@@ -32,7 +32,7 @@
       rescan: function() {
         return cs.music_library.rescan((function(_this) {
           return function() {
-            music_playlist.refresh();
+            music_playlist.clear().refresh();
             alert(_('library-rescanned-playlist-updated'));
             _this.go_to_screen('player');
             return setTimeout((function() {

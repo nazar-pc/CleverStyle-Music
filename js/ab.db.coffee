@@ -71,8 +71,9 @@ cs.db	=
 			store_object.get(value)
 	read_all	: (store_name, callback, filter) ->
 		onready	->
-			all	= []
-			db.transaction([store_name]).objectStore(store_name).openCursor().onsuccess	= ->
+			all					= []
+			cursor				= db.transaction([store_name]).objectStore(store_name).openCursor()
+			cursor.onsuccess	= ->
 				result	= @result
 				if result
 					if !filter || filter(result.value)
@@ -80,10 +81,13 @@ cs.db	=
 					result.continue()
 				else
 					callback(all)
+			cursor.onerror		= ->
+				callback(all)
 	count		: (store_name, callback, filter) ->
 		onready	->
-			count	= 0
-			db.transaction([store_name]).objectStore(store_name).openCursor().onsuccess	= ->
+			count				= 0
+			cursor				= db.transaction([store_name]).objectStore(store_name).openCursor()
+			cursor.onsuccess	= ->
 				result	= @result
 				if result
 					if !filter || filter(result.value)
@@ -91,6 +95,8 @@ cs.db	=
 					result.continue()
 				else
 					callback(count)
+			cursor.onerror		= ->
+				callback(count)
 	insert		: (store_name, data) ->
 		wrap ->
 			db.transaction([store_name], 'readwrite').objectStore(store_name).put(data)

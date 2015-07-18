@@ -15,7 +15,7 @@
     return;
   }
 
-  music_storage = navigator.getDeviceStorage('music');
+  music_storage = navigator.getDeviceStorage('sdcard');
 
   cs.storage.scan = function(callback) {
     var cursor, files;

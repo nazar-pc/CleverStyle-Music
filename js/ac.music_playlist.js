@@ -127,6 +127,10 @@
         });
       }
     },
+    clear: function() {
+      delete localStorage.original_playlist;
+      return this;
+    },
     refresh: function(callback) {
       var playlist;
       callback = (callback || function() {}).bind(this);

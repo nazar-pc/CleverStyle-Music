@@ -7,7 +7,7 @@
 ###
 if !navigator.getDeviceStorage
 	return
-music_storage	= navigator.getDeviceStorage('music')
+music_storage	= navigator.getDeviceStorage('sdcard')
 cs.storage.scan	= (callback) ->
 	files				= []
 	cursor				= music_storage.enumerate()

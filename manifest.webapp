@@ -1,7 +1,7 @@
 {
 	"name"           : "CleverStyle Music",
 	"description"    : "Simple and nice music player that supports mp3, mp4, flac and alac music files formats",
-	"version"        : "0.67.1+build-101",
+	"version"        : "0.68.0+build-102",
 	"launch_path"    : "/index.html",
 	"icons"          : {
 		"60"  : "/img/logo-60.png",
@@ -13,7 +13,7 @@
 		"url"  : "http://cleverstyle.org"
 	},
 	"permissions"    : {
-		"device-storage:music"  : {
+		"device-storage:sdcard"  : {
 			"description" : "Music storage access",
 			"access"      : "readonly"
 		},
@@ -31,7 +31,7 @@
 			"name"        : "CleverStyle Music",
 			"description" : "Reproductor de música simple y agradable que soporta los formatos de música mp3, mp4, flac y alac",
 			"permissions" : {
-				"device-storage:music"  : {
+				"device-storage:sdcard"  : {
 					"description" : "Acceso al almacenamiento de música"
 				},
 				"storage"               : {
@@ -46,7 +46,7 @@
 			"name"        : "CleverStyle Music",
 			"description" : "Simpla kaj bela muzikludilo, kiu rekonas la dosieraranĝojn mp3, mp4, flac kaj alac",
 			"permissions" : {
-				"device-storage:music"  : {
+				"device-storage:sdcard"  : {
 					"description" : "Aliro al amasmemorilo por serĉi kaj ludi muzikon"
 				},
 				"storage"               : {
@@ -61,7 +61,7 @@
 			"name"        : "CleverStyle Music",
 			"description" : "Lettore musicale semplice e carino che supporta i file mp3, mp4, flac e alac",
 			"permissions" : {
-				"device-storage:music"  : {
+				"device-storage:sdcard"  : {
 					"description" : "Accesso alla memoria per cercare e suonare la musica"
 				},
 				"storage"               : {
@@ -76,7 +76,7 @@
 			"name"        : "CleverStyle Музыка",
 			"description" : "Простой и красивый музыкальный плеер, который поддерживает воспроизведение музыкальних файлов форматов mp3, mp4, flac и alac",
 			"permissions" : {
-				"device-storage:music"  : {
+				"device-storage:sdcard"  : {
 					"description" : "Доступ до хранилища музыки"
 				},
 				"storage"               : {
@@ -91,7 +91,7 @@
 			"name"        : "CleverStyle Музика",
 			"description" : "Простий і красивий музичний плеєр, який підтримує відтворення музичних файлів форматів mp3, mp4, flac та alac",
 			"permissions" : {
-				"device-storage:music"  : {
+				"device-storage:sdcard"  : {
 					"description" : "Доступ до сховища музики"
 				},
 				"storage"               : {

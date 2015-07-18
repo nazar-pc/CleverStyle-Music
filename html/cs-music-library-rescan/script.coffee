@@ -24,7 +24,9 @@ document.webL10n.ready ->
 				@rescan()
 		rescan					: ->
 			cs.music_library.rescan(=>
-				music_playlist.refresh()
+				music_playlist
+					.clear()
+					.refresh()
 				alert _('library-rescanned-playlist-updated')
 				@go_to_screen('player')
 				setTimeout (=>

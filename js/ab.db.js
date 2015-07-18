@@ -104,9 +104,10 @@
     },
     read_all: function(store_name, callback, filter) {
       return onready(function() {
-        var all;
+        var all, cursor;
         all = [];
-        return db.transaction([store_name]).objectStore(store_name).openCursor().onsuccess = function() {
+        cursor = db.transaction([store_name]).objectStore(store_name).openCursor();
+        cursor.onsuccess = function() {
           var result;
           result = this.result;
           if (result) {
@@ -118,13 +119,17 @@
             return callback(all);
           }
         };
+        return cursor.onerror = function() {
+          return callback(all);
+        };
       });
     },
     count: function(store_name, callback, filter) {
       return onready(function() {
-        var count;
+        var count, cursor;
         count = 0;
-        return db.transaction([store_name]).objectStore(store_name).openCursor().onsuccess = function() {
+        cursor = db.transaction([store_name]).objectStore(store_name).openCursor();
+        cursor.onsuccess = function() {
           var result;
           result = this.result;
           if (result) {
@@ -135,6 +140,9 @@
           } else {
             return callback(count);
           }
+        };
+        return cursor.onerror = function() {
+          return callback(count);
         };
       });
     },

@@ -125,7 +125,7 @@
         if (items_container) {
           items_container.style.opacity = 0;
         }
-        return setTimeout(((function(_this) {
+        return requestAnimationFrame((function(_this) {
           return function() {
             _this.list = [];
             if (scroll_interval) {
@@ -133,7 +133,7 @@
               return scroll_interval = 0;
             }
           };
-        })(this)), 300);
+        })(this));
       },
       repeat: function(e) {
         var control;

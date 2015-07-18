@@ -92,6 +92,9 @@ cs.music_playlist	=
 			@sort(new_items, (sorted) ->
 				save_playlist(sorted)
 			)
+	clear			: ->
+		delete localStorage.original_playlist
+		@
 	refresh			: (callback) ->
 		callback	= (callback || ->).bind(@)
 		playlist	= JSON.parse(localStorage.original_playlist || '[]')

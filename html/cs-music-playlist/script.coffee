@@ -90,12 +90,11 @@ document.webL10n.ready ->
 			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 			if items_container
 				items_container.style.opacity = 0
-			setTimeout (=>
+			requestAnimationFrame =>
 				@list = []
 				if scroll_interval
 					clearInterval(scroll_interval)
 					scroll_interval	= 0
-			), 300
 		repeat			: (e) ->
 			control					= e.target
 			music_settings.repeat	=
