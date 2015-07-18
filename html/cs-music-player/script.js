@@ -91,6 +91,7 @@
         return function() {
           var aurora_player, object_url, play_with_aurora, player_element, playing_started;
           player_element = document.createElement('audio');
+          player_element.preload = 'metadata';
           sound_processing.add_to_element(player_element);
           cs.bus.on('sound-processing/update', function() {
             return sound_processing.update_element(player_element);
@@ -122,6 +123,9 @@
             }
           });
           player_element.addEventListener('timeupdate', function() {
+            return _this.update(player_element.currentTime, player_element.duration);
+          });
+          player_element.addEventListener('loadedmetadata', function() {
             return _this.update(player_element.currentTime, player_element.duration);
           });
           play_with_aurora = function(just_load) {
@@ -300,10 +304,10 @@
         };
       })(this));
     },
-    next: function(callback) {
+    next: function(callback, just_load) {
       return music_playlist.next((function(_this) {
         return function(id) {
-          return _this.play(id, callback);
+          return _this.play(id, callback, just_load);
         };
       })(this));
     },

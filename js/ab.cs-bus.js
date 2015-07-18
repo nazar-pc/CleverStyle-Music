@@ -21,13 +21,23 @@
         subscribers[event_name].push(callback);
         return cs.bus;
       },
+      once: function(event_name, callback) {
+        var callback_;
+        callback_ = (function(_this) {
+          return function() {
+            callback();
+            return _this.off(callback_);
+          };
+        })(this);
+        return this.on(event_name, callback_);
+      },
       'off': function(event_name, callback) {
         if (!subscribers[event_name]) {
           return cs.bus;
         }
         subscribers[event_name].forEach(function(func, index) {
           if (func === callback) {
-            delete subscriberssubscribers[event_name][index];
+            delete subscribers[event_name][index];
             return false;
           }
         });
@@ -36,9 +46,9 @@
       fire: function(event_name, data) {
         if (subscribers[event_name]) {
           return subscribers[event_name].forEach(function(callback) {
-            return setTimeout((function() {
+            return requestAnimationFrame(function() {
               return callback(data);
-            }), 0);
+            });
           });
         }
       }

@@ -28,12 +28,12 @@ document.webL10n.ready ->
 					.clear()
 					.refresh()
 				alert _('library-rescanned-playlist-updated')
+				$(player).one('animationend', ->
+					player.next((->), true)
+				)
 				@go_to_screen('player')
-				setTimeout (=>
-					@found	= 0
-					player.next ->
-						player.play()
-				), 200
+				# Some events might be stuck at the moment and thus they'll override zero here, so better add event firing here
+				cs.bus.fire('library/rescan/found', 0)
 			)
 		back						: ->
 			@go_back_screen()

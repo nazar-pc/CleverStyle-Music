@@ -14,18 +14,22 @@ cs.bus	= do ->
 				subscribers[event_name]	= []
 			subscribers[event_name].push(callback)
 			cs.bus
+		once	: (event_name, callback) ->
+			callback_	= =>
+				callback()
+				@off(callback_)
+			@on(event_name, callback_)
 		'off'	: (event_name, callback) ->
 			if !subscribers[event_name]
 				return cs.bus
 			subscribers[event_name].forEach (func, index) ->
 				if func == callback
-					delete subscriberssubscribers[event_name][index]
+					delete subscribers[event_name][index]
 					return false
 			cs.bus
 		fire	: (event_name, data) ->
 			if subscribers[event_name]
 				subscribers[event_name].forEach (callback) ->
-					setTimeout (->
+					requestAnimationFrame ->
 						callback(data)
-					), 0
 	}

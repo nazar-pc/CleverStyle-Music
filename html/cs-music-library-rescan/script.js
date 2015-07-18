@@ -34,13 +34,11 @@
           return function() {
             music_playlist.clear().refresh();
             alert(_('library-rescanned-playlist-updated'));
+            $(player).one('animationend', function() {
+              return player.next((function() {}), true);
+            });
             _this.go_to_screen('player');
-            return setTimeout((function() {
-              _this.found = 0;
-              return player.next(function() {
-                return player.play();
-              });
-            }), 200);
+            return cs.bus.fire('library/rescan/found', 0);
           };
         })(this));
       },

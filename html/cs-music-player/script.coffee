@@ -69,7 +69,8 @@ Polymer(
 			@seeking(data.percents)
 		)
 		@player		= do =>
-			player_element						= document.createElement('audio')
+			player_element			= document.createElement('audio')
+			player_element.preload	= 'metadata'
 			sound_processing.add_to_element(player_element)
 			cs.bus.on('sound-processing/update', ->
 				sound_processing.update_element(player_element)
@@ -103,6 +104,9 @@ Polymer(
 						@next()
 			)
 			player_element.addEventListener('timeupdate', =>
+				@update(player_element.currentTime, player_element.duration)
+			)
+			player_element.addEventListener('loadedmetadata', =>
 				@update(player_element.currentTime, player_element.duration)
 			)
 			play_with_aurora	= (just_load) =>
@@ -146,7 +150,7 @@ Polymer(
 					else
 						player_element.src	= object_url
 						player_element.load()
-						this.file_loaded	= true
+						@file_loaded	= true
 						if !just_load
 							player_element.play()
 							@playing		= true
@@ -247,9 +251,9 @@ Polymer(
 	prev	: (callback) ->
 		music_playlist.prev (id) =>
 			@play(id, callback)
-	next	: (callback) ->
+	next	: (callback, just_load) ->
 		music_playlist.next (id) =>
-			@play(id, callback)
+			@play(id, callback, just_load)
 	menu	: ->
 		@go_to_screen('menu')
 	seeking	: (percents) ->
