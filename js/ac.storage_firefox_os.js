@@ -9,43 +9,55 @@
  */
 
 (function() {
-  var music_storage;
+  var storages;
 
   if (!navigator.getDeviceStorage) {
     return;
   }
 
-  music_storage = navigator.getDeviceStorage('sdcard');
+  storages = navigator.getDeviceStorages('sdcard');
 
   cs.storage.scan = function(callback) {
-    var cursor, files;
+    var files, scan_storages;
     files = [];
-    cursor = music_storage.enumerate();
-    cursor.onsuccess = (function(_this) {
-      return function() {
-        var file;
-        if (cursor.result) {
-          file = cursor.result;
-          if (_this.known_extensions.indexOf(file.name.split('.').pop()) !== -1) {
-            files.push(file.name);
-          }
-          return cursor["continue"]();
-        } else {
-          return callback(files);
+    scan_storages = (function(_this) {
+      return function(storages, index) {
+        var cursor, storage;
+        if (!storages.length) {
+          callback(files);
+          return;
         }
+        ++index;
+        storage = storages.shift();
+        cursor = storage.enumerate();
+        cursor.onsuccess = function() {
+          var file;
+          if (cursor.result) {
+            file = cursor.result;
+            if (_this.known_extensions.indexOf(file.name.split('.').pop()) !== -1) {
+              files.push('' + index + file.name);
+            }
+            return cursor["continue"]();
+          } else {
+            return scan_storages(storages, index);
+          }
+        };
+        return cursor.onerror = function() {
+          return scan_storages(storages, index);
+        };
       };
     })(this);
-    return cursor.onerror = function() {
-      return console.error(this.error.name);
-    };
+    return scan_storages(storages.slice(), -1);
   };
 
   cs.storage.get = function(filename, success_callback, error_callback) {
-    var result;
+    var index, result;
     if (error_callback == null) {
       error_callback = function() {};
     }
-    result = music_storage.get(filename);
+    index = filename.substr(0, 1);
+    filename = filename.substr(1);
+    result = storages[index].get(filename);
     result.onsuccess = function() {
       if (this.result) {
         return success_callback(this.result);

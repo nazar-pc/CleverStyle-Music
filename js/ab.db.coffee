@@ -11,16 +11,16 @@ if !window.indexedDB
 db				= null
 on_db_ready		= []
 do ->
-	request 		= indexedDB.open('music_db', 1)
-	request.onsuccess = ->
+	request 				= indexedDB.open('music_db', 2)
+	request.onsuccess		= ->
 		db = request.result
 		while callback = on_db_ready.shift()
 			callback()
 		return
-	request.onerror = (e) ->
+	request.onerror			= (e) ->
 		console.error(e)
 		return
-	request.onupgradeneeded = ->
+	request.onupgradeneeded	= ->
 		db = request.result
 		if db.objectStoreNames.contains('music')
 			db.deleteObjectStore('music')

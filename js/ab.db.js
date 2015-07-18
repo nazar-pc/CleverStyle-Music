@@ -22,7 +22,7 @@
 
   (function() {
     var request;
-    request = indexedDB.open('music_db', 1);
+    request = indexedDB.open('music_db', 2);
     request.onsuccess = function() {
       var callback;
       db = request.result;

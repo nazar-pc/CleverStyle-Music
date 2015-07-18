@@ -7,22 +7,34 @@
 ###
 if !navigator.getDeviceStorage
 	return
-music_storage	= navigator.getDeviceStorage('sdcard')
+storages		= navigator.getDeviceStorages('sdcard')
 cs.storage.scan	= (callback) ->
 	files				= []
-	cursor				= music_storage.enumerate()
-	cursor.onsuccess	= =>
-		if cursor.result
-			file = cursor.result
-			if @known_extensions.indexOf(file.name.split('.').pop()) != -1
-				files.push(file.name)
-			cursor.continue()
-		else
+	scan_storages		= (storages, index) =>
+		if !storages.length
 			callback(files)
-	cursor.onerror = ->
-		console.error(@error.name)
+			return
+		++index
+		storage				= storages.shift()
+		cursor				= storage.enumerate()
+		cursor.onsuccess	= =>
+			if cursor.result
+				file = cursor.result
+				if @known_extensions.indexOf(file.name.split('.').pop()) != -1
+					files.push('' + index + file.name)
+				cursor.continue()
+			else
+				scan_storages(storages, index)
+		cursor.onerror = ->
+			scan_storages(storages, index)
+	scan_storages(
+		storages.slice(),
+		-1
+	)
 cs.storage.get	= (filename, success_callback, error_callback = ->) ->
-	result	= music_storage.get(filename)
+	index				= filename.substr(0, 1)
+	filename			= filename.substr(1)
+	result				= storages[index].get(filename)
 	result.onsuccess	= ->
 		if @result
 			success_callback(@result)
