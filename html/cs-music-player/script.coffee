@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-music_storage			= navigator.getDeviceStorage('music')
+storage					= cs.storage
 sound_processing		= cs.sound_processing
 music_library			= cs.music_library
 music_playlist			= cs.music_playlist
@@ -31,6 +31,34 @@ resize_image			= (src, max_size, callback) ->
 		callback(canvas.toDataURL())
 	image.src = src
 
+update_cover			= (cover, element, callback) ->
+	cover	= cover || 'img/bg.jpg'
+	if body.style.backgroundImage != "url(#{cover})"
+		cs_cover						= element.shadowRoot.querySelector('cs-cover')
+		cs_cover.style.backgroundImage	= "url(#{cover})"
+		# No blurring in low performance mode
+		if music_settings.low_performance
+			body.style.backgroundImage		= "url(#{cover})"
+		else
+			# Resize cover to needed size to decrease memory consumption and speed-up blurring
+			resize_image(
+				cover
+				Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
+				(cover) ->
+					# Start blurring of resized image
+					el	= document.createElement('div')
+					new Blur(
+						el			: el
+						path		: cover
+						radius		: 10
+						callback	: ->
+							body.style.backgroundImage	= el.style.backgroundImage
+							setTimeout (->
+								URL.revokeObjectURL(cover)
+							), 500
+							callback()
+					)
+			)
 Polymer(
 	'cs-music-player'
 	title				: ''
@@ -178,11 +206,10 @@ Polymer(
 				cs.bus.state.player	= 'playing'
 		else if id
 			music_library.get(id, (data) ->
-				get_file	= music_storage.get(data.name)
-				get_file.onsuccess = ->
-					blob			= @result
-					element.player.open_new_file(blob, data.name, just_load)
-					do ->
+				storage.get(
+					data.name
+					(blob) ->
+						element.player.open_new_file(blob, data.name, just_load)
 						if !just_load
 							play_button.icon = 'pause'
 							cs.bus.fire('player/play', id)
@@ -197,49 +224,22 @@ Polymer(
 								element.title	= _('unknown')
 								element.artist	= ''
 						)
-						update_cover	= (cover) ->
-							cover	= cover || 'img/bg.jpg'
-							if body.style.backgroundImage != "url(#{cover})"
-								cs_cover						= element.shadowRoot.querySelector('cs-cover')
-								cs_cover.style.backgroundImage	= "url(#{cover})"
-								# No blurring in low performance mode
-								if music_settings.low_performance
-									body.style.backgroundImage		= "url(#{cover})"
-								else
-									# Resize cover to needed size to decrease memory consumption and speed-up blurring
-									resize_image(
-										cover
-										Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
-										(cover) ->
-											# Start blurring of resized image
-											el	= document.createElement('div')
-											new Blur(
-												el			: el
-												path		: cover
-												radius		: 10
-												callback	: ->
-													body.style.backgroundImage	= el.style.backgroundImage
-													setTimeout (->
-														URL.revokeObjectURL(cover)
-													), 500
-													callback()
-											)
-									)
 						parseAudioMetadata(
 							blob
 							(metadata) ->
 								cover	= metadata.picture
 								if cover
 									cover	= URL.createObjectURL(cover)
-								update_cover(cover)
+								update_cover(cover, element, callback)
 							->
-								update_cover('img/bg.jpg')
+								update_cover('img/bg.jpg', element, callback)
 						)
-				get_file.onerror = (e) ->
-					alert _(
-						'cant-play-this-file'
-						error	: e.target.error.name
-					)
+					(e) ->
+						alert _(
+							'cant-play-this-file'
+							error	: e.target.error.name
+						)
+				)
 			)
 		else
 			music_playlist.current (id) =>

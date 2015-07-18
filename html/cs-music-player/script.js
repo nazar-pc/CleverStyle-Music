@@ -9,9 +9,9 @@
  */
 
 (function() {
-  var body, music_library, music_playlist, music_settings, music_storage, resize_image, seeking_bar, sound_processing, update_cover_timeout;
+  var body, music_library, music_playlist, music_settings, resize_image, seeking_bar, sound_processing, storage, update_cover, update_cover_timeout;
 
-  music_storage = navigator.getDeviceStorage('music');
+  storage = cs.storage;
 
   sound_processing = cs.sound_processing;
 
@@ -46,6 +46,35 @@
       return callback(canvas.toDataURL());
     };
     return image.src = src;
+  };
+
+  update_cover = function(cover, element, callback) {
+    var cs_cover;
+    cover = cover || 'img/bg.jpg';
+    if (body.style.backgroundImage !== ("url(" + cover + ")")) {
+      cs_cover = element.shadowRoot.querySelector('cs-cover');
+      cs_cover.style.backgroundImage = "url(" + cover + ")";
+      if (music_settings.low_performance) {
+        return body.style.backgroundImage = "url(" + cover + ")";
+      } else {
+        return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
+          var el;
+          el = document.createElement('div');
+          return new Blur({
+            el: el,
+            path: cover,
+            radius: 10,
+            callback: function() {
+              body.style.backgroundImage = el.style.backgroundImage;
+              setTimeout((function() {
+                return URL.revokeObjectURL(cover);
+              }), 500);
+              return callback();
+            }
+          });
+        });
+      }
+    }
   };
 
   Polymer('cs-music-player', {
@@ -221,76 +250,40 @@
         }
       } else if (id) {
         return music_library.get(id, function(data) {
-          var get_file;
-          get_file = music_storage.get(data.name);
-          get_file.onsuccess = function() {
-            var blob;
-            blob = this.result;
+          return storage.get(data.name, function(blob) {
             element.player.open_new_file(blob, data.name, just_load);
-            return (function() {
-              var update_cover;
-              if (!just_load) {
-                play_button.icon = 'pause';
-                cs.bus.fire('player/play', id);
-                cs.bus.state.player = 'playing';
+            if (!just_load) {
+              play_button.icon = 'pause';
+              cs.bus.fire('player/play', id);
+              cs.bus.state.player = 'playing';
+            }
+            music_library.get_meta(id, function(data) {
+              if (data) {
+                element.title = data.title || _('unknown');
+                element.artist = data.artist;
+                if (data.artist && data.album) {
+                  return element.artist += ": " + data.album;
+                }
+              } else {
+                element.title = _('unknown');
+                return element.artist = '';
               }
-              music_library.get_meta(id, function(data) {
-                if (data) {
-                  element.title = data.title || _('unknown');
-                  element.artist = data.artist;
-                  if (data.artist && data.album) {
-                    return element.artist += ": " + data.album;
-                  }
-                } else {
-                  element.title = _('unknown');
-                  return element.artist = '';
-                }
-              });
-              update_cover = function(cover) {
-                var cs_cover;
-                cover = cover || 'img/bg.jpg';
-                if (body.style.backgroundImage !== ("url(" + cover + ")")) {
-                  cs_cover = element.shadowRoot.querySelector('cs-cover');
-                  cs_cover.style.backgroundImage = "url(" + cover + ")";
-                  if (music_settings.low_performance) {
-                    return body.style.backgroundImage = "url(" + cover + ")";
-                  } else {
-                    return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
-                      var el;
-                      el = document.createElement('div');
-                      return new Blur({
-                        el: el,
-                        path: cover,
-                        radius: 10,
-                        callback: function() {
-                          body.style.backgroundImage = el.style.backgroundImage;
-                          setTimeout((function() {
-                            return URL.revokeObjectURL(cover);
-                          }), 500);
-                          return callback();
-                        }
-                      });
-                    });
-                  }
-                }
-              };
-              return parseAudioMetadata(blob, function(metadata) {
-                var cover;
-                cover = metadata.picture;
-                if (cover) {
-                  cover = URL.createObjectURL(cover);
-                }
-                return update_cover(cover);
-              }, function() {
-                return update_cover('img/bg.jpg');
-              });
-            })();
-          };
-          return get_file.onerror = function(e) {
+            });
+            return parseAudioMetadata(blob, function(metadata) {
+              var cover;
+              cover = metadata.picture;
+              if (cover) {
+                cover = URL.createObjectURL(cover);
+              }
+              return update_cover(cover, element, callback);
+            }, function() {
+              return update_cover('img/bg.jpg', element, callback);
+            });
+          }, function(e) {
             return alert(_('cant-play-this-file', {
               error: e.target.error.name
             }));
-          };
+          });
         });
       } else {
         return music_playlist.current((function(_this) {

@@ -21,7 +21,9 @@ cs.storage.scan	= (callback) ->
 			callback(files)
 	cursor.onerror = ->
 		console.error(@error.name)
-cs.storage.get	= (filename, callback) ->
-	music_storage.get(filename).onsuccess = ->
+cs.storage.get	= (filename, success_callback, error_callback = ->) ->
+	result	= music_storage.get(filename)
+	result.onsuccess	= ->
 		if @result
-			callback(@result)
+			success_callback(@result)
+	result.onerror		= error_callback

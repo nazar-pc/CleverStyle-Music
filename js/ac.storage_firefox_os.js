@@ -40,12 +40,18 @@
     };
   };
 
-  cs.storage.get = function(filename, callback) {
-    return music_storage.get(filename).onsuccess = function() {
+  cs.storage.get = function(filename, success_callback, error_callback) {
+    var result;
+    if (error_callback == null) {
+      error_callback = function() {};
+    }
+    result = music_storage.get(filename);
+    result.onsuccess = function() {
       if (this.result) {
-        return callback(this.result);
+        return success_callback(this.result);
       }
     };
+    return result.onerror = error_callback;
   };
 
 }).call(this);
