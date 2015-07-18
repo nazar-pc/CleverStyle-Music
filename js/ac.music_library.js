@@ -45,10 +45,9 @@
         callback = function() {};
       }
       callback = callback.bind(this);
-      return db.read('music', 'name', name)(function() {
-        var data, store;
-        if (this.result) {
-          data = this.result;
+      return db.read('music', name, 'name')(function(data) {
+        var store;
+        if (data) {
           store = function(metadata) {
             return store_metadata(data.id, callback, metadata);
           };
@@ -176,6 +175,8 @@
               cs.bus.fire('library/rescan/found', found_files);
               return add_new_files(files);
             }
+          }, function(e) {
+            return console.log(e);
           });
         };
       })(this);

@@ -34,9 +34,8 @@ cs.music_library	=
 		)
 	parse_metadata	: (name, callback = ->) ->
 		callback	= callback.bind(@)
-		db.read('music', 'name', name) ->
-			if @result
-				data	= @result
+		db.read('music', name, 'name') (data) ->
+			if data
 				store	= (metadata) -> store_metadata(data.id, callback, metadata)
 				storage.get(
 					data.name
@@ -129,21 +128,25 @@ cs.music_library	=
 				callback()
 				return
 			filename	= files.shift()
-			db.read('music', filename, 'name') (result) =>
-				if !result
-					@add(filename, ->
-						@parse_metadata(filename, ->
-							new_files.push(filename)
-							++found_files
-							cs.bus.fire('library/rescan/found', found_files)
-							add_new_files(files)
+			db.read('music', filename, 'name')(
+				(result) =>
+					if !result
+						@add(filename, ->
+							@parse_metadata(filename, ->
+								new_files.push(filename)
+								++found_files
+								cs.bus.fire('library/rescan/found', found_files)
+								add_new_files(files)
+							)
 						)
-					)
-				else
-					new_files.push(filename)
-					++found_files
-					cs.bus.fire('library/rescan/found', found_files)
-					add_new_files(files)
+					else
+						new_files.push(filename)
+						++found_files
+						cs.bus.fire('library/rescan/found', found_files)
+						add_new_files(files)
+				(e) ->
+					console.log e
+			)
 		storage.scan(
 			(files) =>
 				if !files.length

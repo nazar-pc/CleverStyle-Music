@@ -38,8 +38,9 @@
     }
     if (public_settings.low_performance === null) {
       document.webL10n.ready(function() {
-        public_settings.low_performance = confirm(_('low-performance-mode-details'));
-        return location.reload();
+        if (public_settings.low_performance = confirm(_('low-performance-mode-details'))) {
+          return location.reload();
+        }
       });
     }
     if (public_settings.low_performance) {
