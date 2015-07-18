@@ -9,12 +9,14 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_library, music_library_action, stop;
     music_library = cs.music_library;
     stop = false;
     music_library_action = document.querySelector('cs-music-library-action');
-    return Polymer('cs-music-library-grouped', {
+    return Polymer({
+      'is': 'cs-music-library-grouped',
+      behaviors: [cs.behaviors.Screen],
       list: [],
       grouped_field: '',
       update: function(group_field, all) {

@@ -5,8 +5,11 @@
  * @copyright Copyright (c) 2014-2015, Nazar Mokrynskyi
  * @license   MIT License, see license.txt
 ###
+window.Polymer		= window.Polymer || {}
+window.Polymer.dom	= 'shadow'
 if !window.cs
-	window.cs = {}
+	window.cs =
+		behaviors	: {}
 ###*
  * Randomize array element order in-place.
  * Using Fisher-Yates shuffle algorithm.

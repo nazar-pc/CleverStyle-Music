@@ -9,13 +9,15 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_library, music_library_grouped, music_playlist, player;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
     music_library_grouped = document.querySelector('cs-music-library-grouped');
-    return Polymer('cs-music-library', {
+    return Polymer({
+      'is': 'cs-music-library',
+      behaviors: [cs.behaviors.Screen],
       all_text: _('all-songs'),
       artists_text: _('artists'),
       albums_text: _('albums'),

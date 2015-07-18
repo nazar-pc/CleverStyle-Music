@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	music_settings	= cs.music_settings
@@ -14,7 +14,8 @@ document.webL10n.ready ->
 	scroll_interval	= 0
 
 	Polymer(
-		'cs-music-playlist'
+		'is'			: 'cs-music-playlist'
+		behaviors		: [cs.behaviors.Screen]
 		list			: []
 		created			: ->
 			cs.bus.on('player/play', (id) =>

@@ -29,9 +29,9 @@ cs.music_settings	= do ->
 					localStorage.settings	= JSON.stringify(settings)
 			)
 	if public_settings.low_performance == null
-		document.webL10n.ready ->
-			if public_settings.low_performance = confirm _('low-performance-mode-details')
-				location.reload()
+		$ ->
+			public_settings.low_performance = confirm _('low-performance-mode-details')
+			location.reload()
 	if public_settings.low_performance
 		$ ->
 			$('body').addClass('low-performance')

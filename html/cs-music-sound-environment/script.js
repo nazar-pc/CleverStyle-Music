@@ -9,7 +9,7 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var mode, modes, sound_processing;
     sound_processing = cs.sound_processing;
     modes = {};
@@ -24,7 +24,9 @@
       }
       return results;
     })();
-    return Polymer('cs-music-sound-environment', {
+    return Polymer({
+      'is': 'cs-music-sound-environment',
+      behaviors: [cs.behaviors.Screen],
       current_mode: sound_processing.get_reverb_mode(),
       modes: (function() {
         var results;

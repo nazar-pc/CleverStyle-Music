@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	equalizer										= document.querySelector('cs-music-equalizer')
 	known_presets									= {}
 	known_presets[_('reset')]						= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -29,7 +29,8 @@ document.webL10n.ready ->
 	known_presets['Techno']							= [4.8, 3.36, 0, -3.36, -2.88, 0, 4.8, 5.76, 5.76, 5.28]
 
 	Polymer(
-		'cs-music-equalizer-presets'
+		'is'			: 'cs-music-equalizer-presets'
+		behaviors		: [cs.behaviors.Screen]
 		presets_names	:
 			for preset of known_presets
 				preset

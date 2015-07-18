@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-Polymer(
+cs.behaviors.Screen	=
 	publish			:
 		show	:
 			value	: false
@@ -21,4 +21,3 @@ Polymer(
 		@go_to_screen(@screen_from, true)
 	get_screen_name	: ->
 		@tagName.toLowerCase().substr(9)
-)

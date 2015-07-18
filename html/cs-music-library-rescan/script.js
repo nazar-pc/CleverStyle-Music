@@ -9,11 +9,13 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_playlist, player;
     music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
-    return Polymer('cs-music-library-rescan', {
+    return Polymer({
+      'is': 'cs-music-library-rescan',
+      behaviors: [cs.behaviors.Screen],
       searching_for_music_text: _('searching-for-music'),
       files_found_text: _('files-found'),
       found: 0,

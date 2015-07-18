@@ -9,11 +9,12 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
-    var equalizer_presets, sound_processing;
+  $(function() {
+    var sound_processing;
     sound_processing = cs.sound_processing;
-    equalizer_presets = document.querySelector('cs-music-equalizer-presets');
-    return Polymer('cs-music-equalizer', {
+    return Polymer({
+      'is': 'cs-music-equalizer',
+      behaviors: [cs.behaviors.Screen],
       gain_levels: sound_processing.get_gain_levels(),
       ready: function() {
         var gain_levels;

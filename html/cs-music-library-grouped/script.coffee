@@ -6,13 +6,14 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_library			= cs.music_library
 	stop					= false
 	music_library_action	= document.querySelector('cs-music-library-action')
 
 	Polymer(
-		'cs-music-library-grouped'
+		'is'			: 'cs-music-library-grouped'
+		behaviors		: [cs.behaviors.Screen]
 		list			: []
 		grouped_field	: ''
 		update			: (group_field, all) ->

@@ -9,7 +9,7 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var equalizer, known_presets, preset;
     equalizer = document.querySelector('cs-music-equalizer');
     known_presets = {};
@@ -31,7 +31,9 @@
     known_presets['Soft'] = [2.88, 0.96, 0, -1.44, 0, 2.4, 4.8, 5.76, 6.72, 7.2];
     known_presets['Soft rock'] = [2.4, 2.4, 1.44, 0, -2.4, -3.36, -1.92, 0, 1.44, 5.28];
     known_presets['Techno'] = [4.8, 3.36, 0, -3.36, -2.88, 0, 4.8, 5.76, 5.76, 5.28];
-    return Polymer('cs-music-equalizer-presets', {
+    return Polymer({
+      'is': 'cs-music-equalizer-presets',
+      behaviors: [cs.behaviors.Screen],
       presets_names: (function() {
         var results;
         results = [];

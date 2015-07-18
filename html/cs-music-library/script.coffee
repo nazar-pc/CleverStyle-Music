@@ -6,14 +6,15 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_library			= cs.music_library
 	music_playlist			= cs.music_playlist
 	player					= document.querySelector('cs-music-player')
 	music_library_grouped	= document.querySelector('cs-music-library-grouped')
 
 	Polymer(
-		'cs-music-library'
+		'is'			: 'cs-music-library'
+		behaviors		: [cs.behaviors.Screen]
 		all_text		: _('all-songs')
 		artists_text	: _('artists')
 		albums_text		: _('albums')

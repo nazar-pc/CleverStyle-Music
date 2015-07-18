@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	sound_processing	= cs.sound_processing
 	modes				= {}
 	modes[_('reset')]	= ''
@@ -16,7 +16,8 @@ document.webL10n.ready ->
 			modes[mode]	= mode
 
 	Polymer(
-		'cs-music-sound-environment'
+		'is'			: 'cs-music-sound-environment'
+		behaviors		: [cs.behaviors.Screen]
 		current_mode	: sound_processing.get_reverb_mode()
 		modes			:
 			for mode of modes

@@ -6,12 +6,13 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_playlist	= cs.music_playlist
 	player			= document.querySelector('cs-music-player')
 
 	Polymer(
-		'cs-music-library-rescan'
+		'is'						: 'cs-music-library-rescan'
+		behaviors					: [cs.behaviors.Screen]
 		searching_for_music_text	: _('searching-for-music')
 		files_found_text			: _('files-found')
 		found						: 0

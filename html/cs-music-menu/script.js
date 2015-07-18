@@ -13,8 +13,10 @@
 
   music_settings = cs.music_settings;
 
-  document.webL10n.ready(function() {
-    return Polymer('cs-music-menu', {
+  $(function() {
+    return Polymer({
+      'is': 'cs-music-menu',
+      behaviors: [cs.behaviors.Screen],
       playlist_text: _('playlist'),
       equalizer_text: _('equalizer'),
       sound_environment_text: _('sound-environment'),

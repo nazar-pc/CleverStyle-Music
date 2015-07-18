@@ -9,7 +9,7 @@
  */
 
 (function() {
-  Polymer({
+  cs.behaviors.Screen = {
     publish: {
       show: {
         value: false,
@@ -34,6 +34,6 @@
     get_screen_name: function() {
       return this.tagName.toLowerCase().substr(9);
     }
-  });
+  };
 
 }).call(this);

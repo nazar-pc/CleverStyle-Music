@@ -9,11 +9,13 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_playlist, player;
     music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
-    return Polymer('cs-music-library-action', {
+    return Polymer({
+      'is': 'cs-music-library-action',
+      behaviors: [cs.behaviors.Screen],
       create_playlist_text: _('create-playlist'),
       add_to_playlist_text: _('add-to-playlist'),
       items: [],

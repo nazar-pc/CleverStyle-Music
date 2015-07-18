@@ -9,7 +9,7 @@
  */
 
 (function() {
-  var body, music_library, music_playlist, music_settings, resize_image, seeking_bar, sound_processing, storage, update_cover;
+  var body, music_library, music_playlist, music_settings, resize_image, seeking_bar, sound_processing, storage, update_cover, update_cover_timeout;
 
   storage = cs.storage;
 
@@ -24,6 +24,8 @@
   body = document.querySelector('body');
 
   seeking_bar = null;
+
+  update_cover_timeout = 0;
 
   resize_image = function(src, max_size, callback) {
     var image;
@@ -46,106 +48,72 @@
     return image.src = src;
   };
 
-  update_cover = function(cover, element, filename, callback) {
-    var update;
-    update = function(cover) {
-      var cs_cover;
-      if (body.style.backgroundImage !== ("url(" + cover + ")")) {
-        cs_cover = element.shadowRoot.querySelector('cs-cover');
-        cs_cover.style.backgroundImage = "url(" + cover + ")";
-        if (music_settings.low_performance) {
-          return body.style.backgroundImage = "url(" + cover + ")";
-        } else {
-          return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
-            var el;
-            el = document.createElement('div');
-            return new Blur({
-              el: el,
-              path: cover,
-              radius: 10,
-              callback: function() {
-                body.style.backgroundImage = el.style.backgroundImage;
-                setTimeout((function() {
-                  return URL.revokeObjectURL(cover);
-                }), 500);
-                return callback();
-              }
-            });
+  update_cover = function(cover, element, callback) {
+    var cs_cover;
+    cover = cover || 'img/bg.jpg';
+    if (body.style.backgroundImage !== ("url(" + cover + ")")) {
+      cs_cover = element.shadowRoot.querySelector('cs-cover');
+      cs_cover.style.backgroundImage = "url(" + cover + ")";
+      if (music_settings.low_performance) {
+        return body.style.backgroundImage = "url(" + cover + ")";
+      } else {
+        return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
+          var el;
+          el = document.createElement('div');
+          return new Blur({
+            el: el,
+            path: cover,
+            radius: 10,
+            callback: function() {
+              body.style.backgroundImage = el.style.backgroundImage;
+              setTimeout((function() {
+                return URL.revokeObjectURL(cover);
+              }), 500);
+              return callback();
+            }
           });
-        }
+        });
       }
-    };
-    if (cover) {
-      return update(cover);
-    } else {
-      return storage.get_cover(filename, function(cover) {
-        if (cover) {
-          cover = URL.createObjectURL(cover);
-        }
-        return update(cover, element, callback);
-      }, function() {
-        return update('img/bg.jpg');
-      });
     }
   };
 
-  Polymer('cs-music-player', {
-    title: '',
-    artist: '',
-    ready: function() {
-      seeking_bar = this.shadowRoot.querySelector('cs-seeking-bar');
-      $(seeking_bar).on('seeking-update', (function(_this) {
-        return function(e, data) {
-          return _this.seeking(data.percents);
-        };
-      })(this));
-      this.player = (function(_this) {
-        return function() {
-          var aurora_player, object_url, play_with_aurora, player_element, playing_started;
-          player_element = document.createElement('audio');
-          player_element.preload = 'metadata';
-          sound_processing.add_to_element(player_element);
-          cs.bus.on('sound-processing/update', function() {
-            return sound_processing.update_element(player_element);
-          });
-          aurora_player = null;
-          playing_started = 0;
-          player_element.mozAudioChannelType = 'content';
-          object_url = null;
-          player_element.addEventListener('loadeddata', function() {
-            URL.revokeObjectURL(object_url);
-            return object_url = null;
-          });
-          player_element.addEventListener('error', function() {
-            if (new Date - playing_started > 1000) {
-              return _this.player.pause();
-            } else {
-              return play_with_aurora();
-            }
-          });
-          player_element.addEventListener('ended', function() {
-            _this.play();
-            switch (music_settings.repeat) {
-              case 'one':
-                return music_playlist.current(function(id) {
-                  return _this.play(id);
-                });
-              default:
-                return _this.next();
-            }
-          });
-          player_element.addEventListener('timeupdate', function() {
-            return _this.update(player_element.currentTime, player_element.duration);
-          });
-          player_element.addEventListener('loadedmetadata', function() {
-            return _this.update(player_element.currentTime, player_element.duration);
-          });
-          play_with_aurora = function(just_load) {
-            aurora_player = AV.Player.fromURL(object_url);
-            aurora_player.on('ready', function() {
-              return this.device.device.node.context.mozAudioChannelType = 'content';
+  $(function() {
+    return Polymer({
+      'is': 'cs-music-player',
+      behaviors: [cs.behaviors.Screen],
+      title: '',
+      artist: '',
+      ready: function() {
+        seeking_bar = this.shadowRoot.querySelector('cs-seeking-bar');
+        $(seeking_bar).on('seeking-update', (function(_this) {
+          return function(e, data) {
+            return _this.seeking(data.percents);
+          };
+        })(this));
+        this.player = (function(_this) {
+          return function() {
+            var aurora_player, object_url, play_with_aurora, player_element, playing_started;
+            player_element = document.createElement('audio');
+            sound_processing.add_to_element(player_element);
+            cs.bus.on('sound-processing/update', function() {
+              return sound_processing.update_element(player_element);
             });
-            aurora_player.on('end', function() {
+            aurora_player = null;
+            playing_started = 0;
+            player_element.mozAudioChannelType = 'content';
+            object_url = null;
+            player_element.addEventListener('loadeddata', function() {
+              URL.revokeObjectURL(object_url);
+              return object_url = null;
+            });
+            player_element.addEventListener('error', function() {
+              if (new Date - playing_started > 1000) {
+                return _this.player.pause();
+              } else {
+                return play_with_aurora();
+              }
+            });
+            player_element.addEventListener('ended', function() {
               _this.play();
               switch (music_settings.repeat) {
                 case 'one':
@@ -156,179 +124,199 @@
                   return _this.next();
               }
             });
-            aurora_player.on('duration', function(duration) {
-              duration /= 1000;
-              return aurora_player.on('progress', function() {
-                return this.update(aurora_player.currentTime / 1000, duration);
+            player_element.addEventListener('timeupdate', function() {
+              return _this.update(player_element.currentTime, player_element.duration);
+            });
+            play_with_aurora = function(just_load) {
+              aurora_player = AV.Player.fromURL(object_url);
+              aurora_player.on('ready', function() {
+                return this.device.device.node.context.mozAudioChannelType = 'content';
               });
-            });
-            if (!just_load) {
-              return aurora_player.play();
-            }
-          };
-          return {
-            open_new_file: function(blob, filename, just_load) {
-              playing_started = new Date;
-              if (this.playing) {
-                this.pause();
-              }
-              if (aurora_player) {
-                aurora_player.stop();
-                aurora_player = null;
-              }
-              if (object_url) {
-                URL.revokeObjectURL(object_url);
-              }
-              object_url = URL.createObjectURL(blob);
-              if (filename.substr(0, -4) === 'alac' || filename.substr(0, -4) === 'alac.mp3') {
-                return play_with_aurora(just_load);
-              } else {
-                player_element.src = object_url;
-                player_element.load();
-                this.file_loaded = true;
-                if (!just_load) {
-                  player_element.play();
-                  return this.playing = true;
+              aurora_player.on('end', function() {
+                _this.play();
+                switch (music_settings.repeat) {
+                  case 'one':
+                    return music_playlist.current(function(id) {
+                      return _this.play(id);
+                    });
+                  default:
+                    return _this.next();
                 }
+              });
+              aurora_player.on('duration', function(duration) {
+                duration /= 1000;
+                return aurora_player.on('progress', function() {
+                  return this.update(aurora_player.currentTime / 1000, duration);
+                });
+              });
+              if (!just_load) {
+                return aurora_player.play();
               }
-            },
-            play: function() {
-              playing_started = new Date;
-              if (aurora_player) {
-                aurora_player.play();
-              } else {
-                player_element.play();
-              }
-              return this.playing = true;
-            },
-            pause: function() {
-              if (aurora_player) {
-                aurora_player.pause();
-              } else {
-                player_element.pause();
-              }
-              return this.playing = false;
-            },
-            seeking: function(percents) {
-              if (aurora_player) {
-                return aurora_player.seek(aurora_player.duration * percents / 100);
-              } else if (player_element.duration) {
-                player_element.pause();
-                player_element.currentTime = player_element.duration * percents / 100;
-                if (cs.bus.state.player === 'playing') {
-                  return player_element.play();
+            };
+            return {
+              open_new_file: function(blob, filename, just_load) {
+                playing_started = new Date;
+                if (this.playing) {
+                  this.pause();
+                }
+                if (aurora_player) {
+                  aurora_player.stop();
+                  aurora_player = null;
+                }
+                if (object_url) {
+                  URL.revokeObjectURL(object_url);
+                }
+                object_url = URL.createObjectURL(blob);
+                if (filename.substr(0, -4) === 'alac' || filename.substr(0, -4) === 'alac.mp3') {
+                  return play_with_aurora(just_load);
                 } else {
-                  return _this.play();
+                  player_element.src = object_url;
+                  player_element.load();
+                  this.file_loaded = true;
+                  if (!just_load) {
+                    player_element.play();
+                    return this.playing = true;
+                  }
+                }
+              },
+              play: function() {
+                playing_started = new Date;
+                if (aurora_player) {
+                  aurora_player.play();
+                } else {
+                  player_element.play();
+                }
+                return this.playing = true;
+              },
+              pause: function() {
+                if (aurora_player) {
+                  aurora_player.pause();
+                } else {
+                  player_element.pause();
+                }
+                return this.playing = false;
+              },
+              seeking: function(percents) {
+                if (aurora_player) {
+                  return aurora_player.seek(aurora_player.duration * percents / 100);
+                } else if (player_element.duration) {
+                  player_element.pause();
+                  player_element.currentTime = player_element.duration * percents / 100;
+                  if (cs.bus.state.player === 'playing') {
+                    return player_element.play();
+                  } else {
+                    return _this.play();
+                  }
                 }
               }
-            }
+            };
           };
-        };
-      })(this)();
-      return this.play(null, null, true);
-    },
-    update: function(current_time, duration) {
-      var progress_percentage;
-      progress_percentage = duration ? current_time / duration * 100 : 0;
-      if (progress_percentage !== seeking_bar.progress_percentage && progress_percentage >= 0 && progress_percentage <= 100 && !isNaN(progress_percentage)) {
-        seeking_bar.progress_percentage = progress_percentage;
-      }
-      current_time = time_format(current_time);
-      if (current_time !== seeking_bar.current_time) {
-        seeking_bar.current_time = current_time;
-      }
-      duration = duration ? time_format(duration) : '00:00';
-      if (duration !== seeking_bar.duration) {
-        return seeking_bar.duration = duration;
-      }
-    },
-    play: function(id, callback, just_load) {
-      var element, play_button;
-      id = !isNaN(parseInt(id)) ? id : void 0;
-      if (typeof callback !== 'function') {
-        callback = function() {};
-      } else {
-        callback.bind(this);
-      }
-      element = this;
-      play_button = element.shadowRoot.querySelector('[icon=play]');
-      if (this.player.file_loaded && !id) {
-        if (this.player.playing) {
-          this.player.pause();
-          play_button.icon = 'play';
-          cs.bus.fire('player/pause');
-          return cs.bus.state.player = 'paused';
-        } else {
-          this.player.play();
-          play_button.icon = 'pause';
-          cs.bus.fire('player/resume');
-          return cs.bus.state.player = 'playing';
+        })(this)();
+        return this.play(null, null, true);
+      },
+      update: function(current_time, duration) {
+        var progress_percentage;
+        progress_percentage = duration ? current_time / duration * 100 : 0;
+        if (progress_percentage !== seeking_bar.progress_percentage && progress_percentage >= 0 && progress_percentage <= 100 && !isNaN(progress_percentage)) {
+          seeking_bar.progress_percentage = progress_percentage;
         }
-      } else if (id) {
-        return music_library.get(id, function(data) {
-          return storage.get(data.name, function(blob) {
-            element.player.open_new_file(blob, data.name, just_load);
-            if (!just_load) {
-              play_button.icon = 'pause';
-              cs.bus.fire('player/play', id);
-              cs.bus.state.player = 'playing';
-            }
-            music_library.get_meta(id, function(data) {
-              if (data) {
-                element.title = data.title || _('unknown');
-                element.artist = data.artist;
-                if (data.artist && data.album) {
-                  return element.artist += ": " + data.album;
+        current_time = time_format(current_time);
+        if (current_time !== seeking_bar.current_time) {
+          seeking_bar.current_time = current_time;
+        }
+        duration = duration ? time_format(duration) : '00:00';
+        if (duration !== seeking_bar.duration) {
+          return seeking_bar.duration = duration;
+        }
+      },
+      play: function(id, callback, just_load) {
+        var element, play_button;
+        id = !isNaN(parseInt(id)) ? id : void 0;
+        if (typeof callback !== 'function') {
+          callback = function() {};
+        } else {
+          callback.bind(this);
+        }
+        element = this;
+        play_button = element.shadowRoot.querySelector('[icon=play]');
+        if (this.player.file_loaded && !id) {
+          if (this.player.playing) {
+            this.player.pause();
+            play_button.icon = 'play';
+            cs.bus.fire('player/pause');
+            return cs.bus.state.player = 'paused';
+          } else {
+            this.player.play();
+            play_button.icon = 'pause';
+            cs.bus.fire('player/resume');
+            return cs.bus.state.player = 'playing';
+          }
+        } else if (id) {
+          return music_library.get(id, function(data) {
+            return storage.get(data.name, function(blob) {
+              element.player.open_new_file(blob, data.name, just_load);
+              if (!just_load) {
+                play_button.icon = 'pause';
+                cs.bus.fire('player/play', id);
+                cs.bus.state.player = 'playing';
+              }
+              music_library.get_meta(id, function(data) {
+                if (data) {
+                  element.title = data.title || _('unknown');
+                  element.artist = data.artist;
+                  if (data.artist && data.album) {
+                    return element.artist += ": " + data.album;
+                  }
+                } else {
+                  element.title = _('unknown');
+                  return element.artist = '';
                 }
-              } else {
-                element.title = _('unknown');
-                return element.artist = '';
-              }
+              });
+              return parseAudioMetadata(blob, function(metadata) {
+                var cover;
+                cover = metadata.picture;
+                if (cover) {
+                  cover = URL.createObjectURL(cover);
+                }
+                return update_cover(cover, element, callback);
+              }, function() {
+                return update_cover('img/bg.jpg', element, callback);
+              });
+            }, function(e) {
+              return alert(_('cant-play-this-file', {
+                error: e.target.error.name
+              }));
             });
-            return parseAudioMetadata(blob, function(metadata) {
-              var cover;
-              cover = metadata.picture;
-              if (cover) {
-                cover = URL.createObjectURL(cover);
-              }
-              return update_cover(cover, element, data.name, callback);
-            }, function() {
-              return update_cover('', element, data.name, callback);
-            });
-          }, function(e) {
-            return alert(_('cant-play-this-file', {
-              error: e.target.error.name
-            }));
           });
-        });
-      } else {
-        return music_playlist.current((function(_this) {
+        } else {
+          return music_playlist.current((function(_this) {
+            return function(id) {
+              return _this.play(id, callback, just_load);
+            };
+          })(this));
+        }
+      },
+      prev: function(callback) {
+        return music_playlist.prev((function(_this) {
           return function(id) {
-            return _this.play(id, callback, just_load);
+            return _this.play(id, callback);
           };
         })(this));
+      },
+      next: function(callback) {
+        return music_playlist.next((function(_this) {
+          return function(id) {
+            return _this.play(id, callback);
+          };
+        })(this));
+      },
+      menu: function() {
+        return this.go_to_screen('menu');
+      },
+      seeking: function(percents) {
+        return this.player.seeking(percents);
       }
-    },
-    prev: function(callback) {
-      return music_playlist.prev((function(_this) {
-        return function(id) {
-          return _this.play(id, callback);
-        };
-      })(this));
-    },
-    next: function(callback, just_load) {
-      return music_playlist.next((function(_this) {
-        return function(id) {
-          return _this.play(id, callback, just_load === true);
-        };
-      })(this));
-    },
-    menu: function() {
-      return this.go_to_screen('menu');
-    },
-    seeking: function(percents) {
-      return this.player.seeking(percents);
-    }
+    });
   });
 
 }).call(this);

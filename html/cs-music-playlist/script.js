@@ -9,14 +9,16 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_library, music_playlist, music_settings, player, scroll_interval;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     music_settings = cs.music_settings;
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
-    return Polymer('cs-music-playlist', {
+    return Polymer({
+      'is': 'cs-music-playlist',
+      behaviors: [cs.behaviors.Screen],
       list: [],
       created: function() {
         return cs.bus.on('player/play', (function(_this) {

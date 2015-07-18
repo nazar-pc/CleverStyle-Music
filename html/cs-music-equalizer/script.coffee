@@ -6,16 +6,16 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	sound_processing	= cs.sound_processing
-	equalizer_presets	= document.querySelector('cs-music-equalizer-presets')
 
 	Polymer(
-		'cs-music-equalizer'
+		'is'				: 'cs-music-equalizer'
+		behaviors			: [cs.behaviors.Screen]
 		gain_levels			: sound_processing.get_gain_levels()
 		ready				: ->
 			gain_levels	= @gain_levels
-			$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger(
+			$(@shadowRoot.querySelectorAll('input[type=range]')).ranger(
 				vertical	: true
 				label		: false
 				min			: -10
@@ -29,7 +29,7 @@ document.webL10n.ready ->
 			@gain_levels	= gain_levels
 			sound_processing.set_gain_levels(gain_levels)
 			setTimeout (=>
-				$(@.shadowRoot.querySelectorAll('input[type=range]')).ranger('reset')
+				$(@shadowRoot.querySelectorAll('input[type=range]')).ranger('reset')
 			), 100
 		equalizer_presets	: ->
 			@go_to_screen('equalizer-presets')
