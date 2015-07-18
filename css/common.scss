@@ -50,8 +50,8 @@ body {
 		}
 
 		&[show] {
-			// Backward ease-out
-			@include animation(show cubic-bezier(0.18, 0.89, 0.31, 1.07) .8s both);
+			// Quintic ease-out
+			@include animation(show cubic-bezier(.23, 1, .32, 1) .8s both);
 			z-index : 2;
 		}
 	}
