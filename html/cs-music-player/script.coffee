@@ -13,7 +13,6 @@ music_playlist			= cs.music_playlist
 music_settings			= cs.music_settings
 body					= document.querySelector('body')
 seeking_bar				= null
-update_cover_timeout	= 0
 
 resize_image			= (src, max_size, callback) ->
 	image			= new Image
@@ -31,34 +30,47 @@ resize_image			= (src, max_size, callback) ->
 		callback(canvas.toDataURL())
 	image.src = src
 
-update_cover			= (cover, element, callback) ->
-	cover	= cover || 'img/bg.jpg'
-	if body.style.backgroundImage != "url(#{cover})"
-		cs_cover						= element.shadowRoot.querySelector('cs-cover')
-		cs_cover.style.backgroundImage	= "url(#{cover})"
-		# No blurring in low performance mode
-		if music_settings.low_performance
-			body.style.backgroundImage		= "url(#{cover})"
-		else
-			# Resize cover to needed size to decrease memory consumption and speed-up blurring
-			resize_image(
-				cover
-				Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
-				(cover) ->
-					# Start blurring of resized image
-					el	= document.createElement('div')
-					new Blur(
-						el			: el
-						path		: cover
-						radius		: 10
-						callback	: ->
-							body.style.backgroundImage	= el.style.backgroundImage
-							setTimeout (->
-								URL.revokeObjectURL(cover)
-							), 500
-							callback()
-					)
-			)
+update_cover			= (cover, element, filename, callback) ->
+	update	= (cover) ->
+		if body.style.backgroundImage != "url(#{cover})"
+			cs_cover						= element.shadowRoot.querySelector('cs-cover')
+			cs_cover.style.backgroundImage	= "url(#{cover})"
+			# No blurring in low performance mode
+			if music_settings.low_performance
+				body.style.backgroundImage		= "url(#{cover})"
+			else
+				# Resize cover to needed size to decrease memory consumption and speed-up blurring
+				resize_image(
+					cover
+					Math.max(cs_cover.clientHeight, cs_cover.clientWidth)
+					(cover) ->
+						# Start blurring of resized image
+						el	= document.createElement('div')
+						new Blur(
+							el			: el
+							path		: cover
+							radius		: 10
+							callback	: ->
+								body.style.backgroundImage	= el.style.backgroundImage
+								setTimeout (->
+									URL.revokeObjectURL(cover)
+								), 500
+								callback()
+						)
+				)
+	if cover
+		update(cover)
+	else
+		storage.get_cover(
+			filename
+			(cover) ->
+				if cover
+					cover	= URL.createObjectURL(cover)
+				update_cover(cover, element, callback)
+			->
+				update('img/bg.jpg')
+		)
+
 Polymer(
 	'cs-music-player'
 	title				: ''
@@ -234,9 +246,9 @@ Polymer(
 								cover	= metadata.picture
 								if cover
 									cover	= URL.createObjectURL(cover)
-								update_cover(cover, element, callback)
+								update_cover(cover, element, data.name, callback)
 							->
-								update_cover('img/bg.jpg', element, callback)
+								update_cover('', element, data.name, callback)
 						)
 					(e) ->
 						alert _(

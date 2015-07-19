@@ -9,7 +9,7 @@
  */
 
 (function() {
-  var body, music_library, music_playlist, music_settings, resize_image, seeking_bar, sound_processing, storage, update_cover, update_cover_timeout;
+  var body, music_library, music_playlist, music_settings, resize_image, seeking_bar, sound_processing, storage, update_cover;
 
   storage = cs.storage;
 
@@ -24,8 +24,6 @@
   body = document.querySelector('body');
 
   seeking_bar = null;
-
-  update_cover_timeout = 0;
 
   resize_image = function(src, max_size, callback) {
     var image;
@@ -48,32 +46,46 @@
     return image.src = src;
   };
 
-  update_cover = function(cover, element, callback) {
-    var cs_cover;
-    cover = cover || 'img/bg.jpg';
-    if (body.style.backgroundImage !== ("url(" + cover + ")")) {
-      cs_cover = element.shadowRoot.querySelector('cs-cover');
-      cs_cover.style.backgroundImage = "url(" + cover + ")";
-      if (music_settings.low_performance) {
-        return body.style.backgroundImage = "url(" + cover + ")";
-      } else {
-        return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
-          var el;
-          el = document.createElement('div');
-          return new Blur({
-            el: el,
-            path: cover,
-            radius: 10,
-            callback: function() {
-              body.style.backgroundImage = el.style.backgroundImage;
-              setTimeout((function() {
-                return URL.revokeObjectURL(cover);
-              }), 500);
-              return callback();
-            }
+  update_cover = function(cover, element, filename, callback) {
+    var update;
+    update = function(cover) {
+      var cs_cover;
+      if (body.style.backgroundImage !== ("url(" + cover + ")")) {
+        cs_cover = element.shadowRoot.querySelector('cs-cover');
+        cs_cover.style.backgroundImage = "url(" + cover + ")";
+        if (music_settings.low_performance) {
+          return body.style.backgroundImage = "url(" + cover + ")";
+        } else {
+          return resize_image(cover, Math.max(cs_cover.clientHeight, cs_cover.clientWidth), function(cover) {
+            var el;
+            el = document.createElement('div');
+            return new Blur({
+              el: el,
+              path: cover,
+              radius: 10,
+              callback: function() {
+                body.style.backgroundImage = el.style.backgroundImage;
+                setTimeout((function() {
+                  return URL.revokeObjectURL(cover);
+                }), 500);
+                return callback();
+              }
+            });
           });
-        });
+        }
       }
+    };
+    if (cover) {
+      return update(cover);
+    } else {
+      return storage.get_cover(filename, function(cover) {
+        if (cover) {
+          cover = URL.createObjectURL(cover);
+        }
+        return update_cover(cover, element, callback);
+      }, function() {
+        return update('img/bg.jpg');
+      });
     }
   };
 
@@ -279,9 +291,9 @@
               if (cover) {
                 cover = URL.createObjectURL(cover);
               }
-              return update_cover(cover, element, callback);
+              return update_cover(cover, element, data.name, callback);
             }, function() {
-              return update_cover('img/bg.jpg', element, callback);
+              return update_cover('', element, data.name, callback);
             });
           }, function(e) {
             return alert(_('cant-play-this-file', {

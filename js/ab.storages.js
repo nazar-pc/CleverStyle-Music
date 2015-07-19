@@ -12,7 +12,35 @@
   cs.storage = {
     known_extensions: ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'],
     scan: function(callback) {},
-    get: function(filename, callback) {}
+    get: function(filename, success_callback, error_callback) {
+      if (error_callback == null) {
+        error_callback = function() {};
+      }
+    },
+    get_cover: function(filename, success_callback, error_callback) {
+      var basename;
+      if (error_callback == null) {
+        error_callback = function() {};
+      }
+      basename = (function() {
+        var splitted;
+        splitted = filename.split('/');
+        if (splitted.length > 1) {
+          return splitted.slice(0, -1).join('/') + '/';
+        } else {
+          return filename.substr(0, 1);
+        }
+      })();
+      return this.get(basename + 'cover.jpg', success_callback, (function(_this) {
+        return function() {
+          return _this.get(basename + 'Cover.jpg', success_callback, function() {
+            return _this.get(basename + 'cover.png', success_callback, function() {
+              return _this.get(basename + 'Cover.png', success_callback, error_callback);
+            });
+          });
+        };
+      })(this));
+    }
   };
 
 }).call(this);
