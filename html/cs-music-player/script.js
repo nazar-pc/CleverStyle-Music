@@ -319,7 +319,7 @@
     next: function(callback, just_load) {
       return music_playlist.next((function(_this) {
         return function(id) {
-          return _this.play(id, callback, just_load);
+          return _this.play(id, callback, just_load === true);
         };
       })(this));
     },
