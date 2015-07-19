@@ -82,7 +82,7 @@
         if (cover) {
           cover = URL.createObjectURL(cover);
         }
-        return update_cover(cover, element, callback);
+        return update(cover, element, callback);
       }, function() {
         return update('img/bg.jpg');
       });

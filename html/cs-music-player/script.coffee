@@ -66,7 +66,7 @@ update_cover			= (cover, element, filename, callback) ->
 			(cover) ->
 				if cover
 					cover	= URL.createObjectURL(cover)
-				update_cover(cover, element, callback)
+				update(cover, element, callback)
 			->
 				update('img/bg.jpg')
 		)
