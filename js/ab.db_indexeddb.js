@@ -12,7 +12,6 @@
   var db, on_db_ready, onready, wrap;
 
   if (!window.indexedDB) {
-    alert("Indexed DB is not supported O_o");
     return;
   }
 
@@ -22,7 +21,7 @@
 
   (function() {
     var request;
-    request = indexedDB.open('music_db', 2);
+    request = indexedDB.open('music_db', 3);
     request.onsuccess = function() {
       var callback;
       db = request.result;
@@ -39,6 +38,9 @@
       if (db.objectStoreNames.contains('music')) {
         db.deleteObjectStore('music');
       }
+      if (db.objectStoreNames.contains('meta')) {
+        db.deleteObjectStore('meta');
+      }
       music_store = db.createObjectStore('music', {
         keyPath: 'id',
         autoIncrement: true
@@ -49,10 +51,11 @@
       meta_store = db.createObjectStore('meta', {
         keyPath: 'id'
       });
-      meta_store.createIndex('title', 'title');
-      meta_store.createIndex('artist', 'artist');
       meta_store.createIndex('album', 'album');
+      meta_store.createIndex('artist', 'artist');
       meta_store.createIndex('genre', 'genre');
+      meta_store.createIndex('rated', 'rated');
+      meta_store.createIndex('title', 'title');
       meta_store.createIndex('year', 'year');
       db.transaction.oncomplete = function() {
         var callback, results;
