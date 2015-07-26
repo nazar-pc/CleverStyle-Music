@@ -537,6 +537,16 @@ var recognizers = Gestures.recognizers;
 for (var i = 0, r; i < recognizers.length; i++) {
 r = recognizers[i];
 if (gs[r.name] && !handled[r.name]) {
+if (r.flow && r.flow.start.indexOf(ev.type) > -1) {
+if (r.reset) {
+r.reset();
+}
+}
+}
+}
+for (var i = 0, r; i < recognizers.length; i++) {
+r = recognizers[i];
+if (gs[r.name] && !handled[r.name]) {
 handled[r.name] = true;
 r[type](ev);
 }
@@ -568,6 +578,8 @@ prevent = dx > dy;
 }
 if (prevent) {
 ev.preventDefault();
+} else {
+Gestures.prevent('track');
 }
 }
 },
@@ -709,6 +721,16 @@ deps: [
 'touchmove',
 'touchend'
 ],
+flow: {
+start: [
+'mousedown',
+'touchstart'
+],
+end: [
+'mouseup',
+'touchend'
+]
+},
 emits: ['track'],
 info: {
 x: 0,
@@ -724,7 +746,7 @@ this.moves.push(move);
 },
 prevent: false
 },
-clearInfo: function () {
+reset: function () {
 this.info.state = 'start';
 this.info.started = false;
 this.info.moves = [];
@@ -763,7 +785,6 @@ if (self.info.started) {
 Gestures.prevent('tap');
 movefn(e);
 }
-self.clearInfo();
 document.removeEventListener('mousemove', movefn);
 document.removeEventListener('mouseup', upfn);
 };
@@ -803,7 +824,6 @@ y: ct.clientY
 });
 this.fire(t, ct);
 }
-this.clearInfo();
 },
 fire: function (target, touch) {
 var secondlast = this.info.moves[this.info.moves.length - 2];
@@ -838,6 +858,16 @@ deps: [
 'touchstart',
 'touchend'
 ],
+flow: {
+start: [
+'mousedown',
+'touchstart'
+],
+end: [
+'click',
+'touchend'
+]
+},
 emits: ['tap'],
 info: {
 x: NaN,
@@ -878,7 +908,6 @@ sourceEvent: e
 });
 }
 }
-this.reset();
 }
 });
 var DIRECTION_MAP = {
@@ -1575,7 +1604,12 @@ this._effectEffects('__static__', null, this._propertyEffects.__static__);
 });
 Polymer.Base._addFeature({
 _setupConfigure: function (initialConfig) {
-this._config = initialConfig || {};
+this._config = {};
+for (var i in initialConfig) {
+if (initialConfig[i] !== undefined) {
+this._config[i] = initialConfig[i];
+}
+}
 this._handlers = [];
 },
 _marshalAttributes: function () {
@@ -1704,8 +1738,9 @@ var array;
 var last = parts[parts.length - 1];
 if (parts.length > 1) {
 for (var i = 0; i < parts.length - 1; i++) {
-prop = prop[parts[i]];
-if (array) {
+var part = parts[i];
+prop = prop[part];
+if (array && parseInt(part) == part) {
 parts[i] = Polymer.Collection.get(array).getKey(prop);
 }
 if (!prop) {
@@ -1713,14 +1748,12 @@ return;
 }
 array = Array.isArray(prop) ? prop : null;
 }
-if (array) {
+if (array && parseInt(last) == last) {
 var coll = Polymer.Collection.get(array);
 var old = prop[last];
 var key = coll.getKey(old);
-if (key) {
 parts[i] = key;
 coll.setItem(key, value);
-}
 }
 prop[last] = value;
 if (!root) {
@@ -2817,6 +2850,7 @@ Polymer.Base._addFeature({
 _prepStyleProperties: function () {
 this._ownStylePropertyNames = this._styles ? propertyUtils.decorateStyles(this._styles) : [];
 },
+customStyle: {},
 _setupStyleProperties: function () {
 this.customStyle = {};
 },
@@ -3048,15 +3082,8 @@ styleTransformer.documentRule(rule);
 }());
 Polymer.Templatizer = {
 properties: { __hideTemplateChildren__: { observer: '_showHideChildren' } },
-_templatizerStatic: {
-count: 0,
-callbacks: {},
-debouncer: null
-},
 _instanceProps: Polymer.nob,
-created: function () {
-this._templatizerId = this._templatizerStatic.count++;
-},
+_parentPropPrefix: '_parent_',
 templatize: function (template) {
 if (!template._content) {
 template._content = template.content;
@@ -3100,20 +3127,10 @@ n.__hideTemplateChildren__ = hide;
 }
 },
 _debounceTemplate: function (fn) {
-this._templatizerStatic.callbacks[this._templatizerId] = fn.bind(this);
-this._templatizerStatic.debouncer = Polymer.Debounce(this._templatizerStatic.debouncer, this._flushTemplates.bind(this, true));
+Polymer.dom.addDebouncer(this.debounce('_debounceTemplate', fn));
 },
 _flushTemplates: function (debouncerExpired) {
-var db = this._templatizerStatic.debouncer;
-while (debouncerExpired || db && db.finish) {
-db.stop();
-var cbs = this._templatizerStatic.callbacks;
-this._templatizerStatic.callbacks = {};
-for (var id in cbs) {
-cbs[id]();
-}
-debouncerExpired = false;
-}
+Polymer.dom.flush();
 },
 _customPrepEffects: function (archetype) {
 var parentProps = archetype._parentProps;
@@ -3153,7 +3170,7 @@ if (template != this) {
 Polymer.Bind.prepareModel(proto);
 }
 for (prop in parentProps) {
-var parentProp = '_parent_' + prop;
+var parentProp = this._parentPropPrefix + prop;
 var effects = [
 {
 kind: 'function',
@@ -3177,8 +3194,9 @@ this._forwardParentProp(prop, value);
 };
 },
 _createHostPropEffector: function (prop) {
+var prefix = this._parentPropPrefix;
 return function (source, value) {
-this.dataHost['_parent_' + prop] = value;
+this.dataHost[prefix + prop] = value;
 };
 },
 _createInstancePropEffector: function (prop) {
@@ -3210,12 +3228,12 @@ var dot = path.indexOf('.');
 var root = dot < 0 ? path : path.slice(0, dot);
 dataHost._forwardInstancePath.call(dataHost, this, path, value);
 if (root in dataHost._parentProps) {
-dataHost.notifyPath('_parent_' + path, value);
+dataHost.notifyPath(dataHost._parentPropPrefix + path, value);
 }
 },
 _pathEffector: function (path, value, fromAbove) {
 if (this._forwardParentPath) {
-if (path.indexOf('_parent_') === 0) {
+if (path.indexOf(this._parentPropPrefix) === 0) {
 this._forwardParentPath(path.substring(8), value);
 }
 }
@@ -3263,7 +3281,7 @@ stamp: function (model) {
 model = model || {};
 if (this._parentProps) {
 for (var prop in this._parentProps) {
-model[prop] = this['_parent_' + prop];
+model[prop] = this[this._parentPropPrefix + prop];
 }
 }
 return new this.ctor(model, this);
@@ -3979,7 +3997,16 @@ Polymer({
 is: 'dom-bind',
 extends: 'template',
 created: function () {
-Polymer.ImportStatus.whenLoaded(this._readySelf.bind(this));
+Polymer.ImportStatus.whenLoaded(this._markImportsReady.bind(this));
+},
+_ensureReady: function () {
+if (!this._readied) {
+this._readySelf();
+}
+},
+_markImportsReady: function () {
+this._importsReady = true;
+this._ensureReady();
 },
 _registerFeatures: function () {
 this._prepConstructor();
@@ -4012,6 +4039,15 @@ config[prop] = this[prop];
 this._setupConfigure = this._setupConfigure.bind(this, config);
 },
 attached: function () {
+if (this._importsReady) {
+this.render();
+}
+},
+detached: function () {
+this._removeChildren();
+},
+render: function () {
+this._ensureReady();
 if (!this._children) {
 this._template = this;
 this._prepAnnotations();
@@ -4024,8 +4060,5 @@ this._children = Array.prototype.slice.call(this.root.childNodes);
 }
 this._insertChildren();
 this.fire('dom-change');
-},
-detached: function () {
-this._removeChildren();
 }
 });

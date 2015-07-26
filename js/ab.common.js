@@ -9,9 +9,9 @@
  */
 
 (function() {
-  window.Polymer = window.Polymer || {};
-
-  window.Polymer.dom = 'shadow';
+  window.Polymer = {
+    dom: 'shadow'
+  };
 
   if (!window.cs) {
     window.cs = {
