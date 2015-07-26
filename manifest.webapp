@@ -101,6 +101,21 @@
 					"description" : "Програвання музики в фоні"
 				}
 			}
+		},
+		"fr" : {
+			"name"        : "CleverStyle Music",
+			"description" : "Lecteur de musique simple qui supporte les formats de fichiers mp3, mp4, flac et alac",
+			"permissions" : {
+				"device-storage:sdcard"  : {
+					"description" : "Accès à la musique"
+				},
+				"storage"               : {
+					"description" : "Accès à la base de données IndexDB pour ne pas rescanner toute la médiatheque à chaque démarrage"
+				},
+				"audio-channel-content" : {
+					"description" : "Jouer de la musique dans le fond"
+				}
+			}
 		}
 	}
 }
