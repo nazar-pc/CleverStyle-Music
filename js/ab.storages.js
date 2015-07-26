@@ -10,7 +10,7 @@
 
 (function() {
   cs.storage = {
-    known_extensions: ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', '3gp', 'mp4', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'],
+    known_extensions: ['mp3', 'wave', 'm4a', 'm4b', 'm4p', 'm4r', 'aac', 'ogg', 'oga', 'opus', 'flac', 'alac'],
     scan: function(callback) {},
     get: function(filename, success_callback, error_callback) {
       if (error_callback == null) {

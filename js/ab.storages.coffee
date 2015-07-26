@@ -14,8 +14,6 @@ cs.storage	=
 		'm4b',
 		'm4p',
 		'm4r',
-		'3gp',
-		'mp4',
 		'aac',
 
 		'ogg',
