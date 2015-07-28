@@ -1,7 +1,7 @@
 <dom-module id="cs-music-library">
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
-		<template if="{{!loading}}">
+		<template is="dom-if" if="{{!loading}}">
 			<cs-music-menu-items>
 				<cs-music-menu-item data-group-field="" on-tap="group">{{all_text}}</cs-music-menu-item>
 				<cs-music-menu-item data-group-field="artist" on-tap="group">{{artists_text}}</cs-music-menu-item>
@@ -11,7 +11,7 @@
 				<cs-music-menu-item data-group-field="rated" on-tap="group">{{ratings_text}}</cs-music-menu-item>
 			</cs-music-menu-items>
 		</template>
-		<template if="{{loading}}">
+		<template is="dom-if" if="{{loading}}">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>

@@ -1,11 +1,11 @@
 <dom-module id="cs-music-playlist">
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
-		<template if="{{list.length}}">
+		<template is="dom-if" if="{{list.length}}">
 			<cs-music-playlist-items>
 				<template repeat="{{item, index in list}}">
 					<cs-music-playlist-item data-index="{{index}}" on-tap="play" playing="{{item.playing}}">
-						<template if="{{item.playing == 'yes'}}">
+						<template is="dom-if" if="{{item.playing == 'yes'}}">
 							<i class="fa fa-{{item.icon}}"></i>
 						</template>
 						{{item.artist_title}}
@@ -13,7 +13,7 @@
 				</template>
 			</cs-music-playlist-items>
 		</template>
-		<template if="{{!list.length}}">
+		<template is="dom-if" if="{{!list.length}}">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>

@@ -3,10 +3,10 @@
 	<template vertical center layout>
 		<cs-music-menu-items>
 			<template repeat="{{mode in modes}}">
-				<template if="{{current_mode == mode}}">
+				<template is="dom-if" if="{{current_mode == mode}}">
 					<cs-music-menu-item on-tap="update_mode" data-mode="{{mode}}" icon="check">{{mode}}</cs-music-menu-item>
 				</template>
-				<template if="{{current_mode != mode}}">
+				<template is="dom-if" if="{{current_mode != mode}}">
 					<cs-music-menu-item on-tap="update_mode" data-mode="{{mode}}">{{mode}}</cs-music-menu-item>
 				</template>
 			</template>

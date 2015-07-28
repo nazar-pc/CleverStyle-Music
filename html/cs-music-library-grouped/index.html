@@ -1,7 +1,7 @@
 <dom-module id="cs-music-library-grouped">
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
-		<template if="{{list.length}}">
+		<template is="dom-if" if="{{list.length}}">
 			<cs-music-library-grouped-items>
 				<template repeat="{{item in list}}">
 					<cs-music-library-grouped-item on-tap="choose_action" data-items="{{item.items}}">
@@ -10,7 +10,7 @@
 				</template>
 			</cs-music-library-grouped-items>
 		</template>
-		<template if="{{!list.length}}">
+		<template is="dom-if" if="{{!list.length}}">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
