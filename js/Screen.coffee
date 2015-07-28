@@ -7,16 +7,17 @@
 ###
 
 cs.behaviors.Screen	=
-	publish			:
+	properties		:
 		show	:
-			value	: false
-			reflect	: true
+			type				: Boolean
+			value				: false
+			reflectToAttribute	: true
 	go_to_screen	: (screen, back = false) ->
-		document.querySelector('[show]').setAttribute('show', false)
+		document.querySelector('[show]').set('show', false)
 		target	= document.querySelector('cs-music-' + screen)
 		if !back
 			target.screen_from	= @get_screen_name()
-		target.setAttribute('show', true)
+		target.set('show', true)
 	go_back_screen	: ->
 		@go_to_screen(@screen_from, true)
 	get_screen_name	: ->
