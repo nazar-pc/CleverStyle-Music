@@ -1,16 +1,16 @@
 <dom-module id="cs-music-player">
+	<link rel="import" type="css" href="style.css">
 	<template>
-		<link rel="stylesheet" href="style.css">
 		<audio></audio>
 		<cs-title>{{title}}</cs-title>
 		<cs-artist>{{artist}}</cs-artist>
 		<cs-cover></cs-cover>
 		<cs-seeking-bar></cs-seeking-bar>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="bars" on-tap="{{menu}}"></cs-control>
-			<cs-control flex icon="step-backward" on-tap="{{prev}}"></cs-control>
-			<cs-control flex icon="play" on-tap="{{play}}"></cs-control>
-			<cs-control flex icon="step-forward" on-tap="{{next}}"></cs-control>
+			<cs-control flex icon="bars" on-tap="menu"></cs-control>
+			<cs-control flex icon="step-backward" on-tap="prev"></cs-control>
+			<cs-control flex icon="play" on-tap="play"></cs-control>
+			<cs-control flex icon="step-forward" on-tap="next"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="script.js"></script>

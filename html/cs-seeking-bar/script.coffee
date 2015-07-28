@@ -9,11 +9,19 @@
 $ ->
 	Polymer(
 		'is'			: 'cs-seeking-bar'
-		current_time	: '00:00'
-		duration		: '00:00'
+		properties		:
+			progress_percentage	:
+				type	: Number
+				value	: 0
+			current_time		:
+				type	: String
+				value	: '00:00'
+			duration			:
+				type	: String
+				value	: '00:00'
 		ready			: ->
 			@addEventListener('click', (e) ->
-				progress_container	= @.shadowRoot.querySelector('.progress-container')
+				progress_container	= @shadowRoot.querySelector('.progress-container')
 				percents			= (e.pageX - progress_container.offsetLeft - @offsetLeft) / progress_container.clientWidth * 100
 				if percents < 0 || percents > 100 || isNaN(percents)
 					return
@@ -38,4 +46,6 @@ $ ->
 					=>
 						@removeAttribute('blinking')
 				)
+		progress_style	: (progress_percentage) ->
+			"transform: translateX(#{progress_percentage - 100}%);"
 	)
