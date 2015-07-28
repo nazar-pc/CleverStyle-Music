@@ -11,13 +11,28 @@ $ ->
 	Polymer(
 		'is'						: 'cs-music-menu'
 		behaviors					: [cs.behaviors.Screen]
-		playlist_text				: _('playlist')
-		equalizer_text				: _('equalizer')
-		sound_environment_text		: _('sound-environment')
-		library_text				: _('library')
-		rescan_library_text			: _('rescan-library')
-		low_performance_mode_text	: _('low-performance-mode')
-		low_performance				: music_settings.low_performance
+		properties					:
+			playlist_text				:
+				type	: String
+				value	: _('playlist')
+			equalizer_text				:
+				type	: String
+				value	: _('equalizer')
+			sound_environment_text		:
+				type	: String
+				value	: _('sound-environment')
+			library_text				:
+				type	: String
+				value	: _('library')
+			rescan_library_text			:
+				type	: String
+				value	: _('rescan-library')
+			low_performance_mode_text	:
+				type	: String
+				value	: _('low-performance-mode')
+			low_performance				:
+				type	: Boolean
+				value	: music_settings.low_performance
 		playlist				: ->
 			@go_to_screen('playlist')
 		equalizer				: ->
