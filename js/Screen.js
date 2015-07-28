@@ -22,12 +22,12 @@
       if (back == null) {
         back = false;
       }
-      document.querySelector('[show]').set('show', false);
+      document.querySelector('[show]').show = false;
       target = document.querySelector('cs-music-' + screen);
       if (!back) {
         target.screen_from = this.get_screen_name();
       }
-      return target.set('show', true);
+      return target.show = true;
     },
     go_back_screen: function() {
       return this.go_to_screen(this.screen_from, true);
