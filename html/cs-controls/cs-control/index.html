@@ -1,8 +1,10 @@
-<dom-module id="cs-control" attributes="icon" noscript>
+<dom-module id="cs-control">
+	<link rel="import" type="css" href="style.css">
 	<template>
-		<i class="fa fa-{{icon}}"></i>
+		<i class$="{{icon_class(icon)}}"></i>
 		<div>
 			<content></content>
 		</div>
 	</template>
+	<script src="script.js"></script>
 </dom-module>

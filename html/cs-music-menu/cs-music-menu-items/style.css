@@ -1,1 +1,1 @@
-:host{height:calc(100vh - 3rem);overflow-x:hidden;position:absolute;width:100%}:host cs-music-menu-item{cursor:pointer;display:block;padding:1rem .5rem;text-shadow:0 0 .1rem #000;width:100%}:host cs-music-menu-item:hover{background:rgba(0,0,0,0.3)}:host cs-music-menu-item i{margin-right:.5rem}
+:host{height:calc(100vh - 3rem);overflow-x:hidden;position:absolute;width:100%}

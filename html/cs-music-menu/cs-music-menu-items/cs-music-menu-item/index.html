@@ -1,6 +1,9 @@
-<dom-module id="cs-controls">
+<dom-module id="cs-music-menu-item">
 	<link rel="import" type="css" href="style.css">
-	<template vertical layout center>
+	<template>
+		<template if="{{icon}}">
+			<i class$="{{icon_class(icon)}}"></i>
+		</template>
 		<content></content>
 	</template>
 	<script src="script.js"></script>
