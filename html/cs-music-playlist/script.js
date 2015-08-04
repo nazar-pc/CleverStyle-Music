@@ -57,7 +57,7 @@
               get_next_item = function() {
                 if (index < count) {
                   return music_library.get_meta(all[index], function(data) {
-                    data.playing = data.id === current_id ? 'yes' : 'no';
+                    data.playing = data.id === current_id;
                     data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
                     data.artist_title = [];
                     if (data.artist) {
@@ -78,7 +78,7 @@
                     var item, items_container;
                     items_container = _this.shadowRoot.querySelector('cs-music-playlist-items');
                     if (items_container) {
-                      item = items_container.querySelector('cs-music-playlist-item[playing=yes]');
+                      item = items_container.querySelector('cs-music-playlist-item[playing]');
                       clearInterval(scroll_interval);
                       scroll_interval = 0;
                       return items_container.scrollTop = item.offsetTop;
@@ -111,22 +111,19 @@
         return this.list.forEach((function(_this) {
           return function(data, index) {
             if (data.id === new_id) {
-              _this.list[index].playing = 'yes';
-              return _this.list[index].icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-            } else {
-              _this.list[index].playing = 'no';
-              return delete _this.list[index].icon;
+              data.playing = true;
+              data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
+              return _this.splice('list', index, 1, data);
+            } else if (data.playing) {
+              data.playing = true;
+              delete data.icon;
+              return _this.splice('list', index, 1, data);
             }
           };
         })(this));
       },
       back: function() {
-        var items_container;
         this.go_back_screen();
-        items_container = this.shadowRoot.querySelector('cs-music-playlist-items');
-        if (items_container) {
-          items_container.style.opacity = 0;
-        }
         return requestAnimationFrame((function(_this) {
           return function() {
             _this.list = [];
@@ -175,6 +172,9 @@
             });
           };
         })(this));
+      },
+      icon_class: function(icon) {
+        return "fa fa-" + icon;
       }
     });
   });

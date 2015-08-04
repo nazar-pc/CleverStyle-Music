@@ -12,6 +12,8 @@ cs.behaviors.Screen	=
 			type				: Boolean
 			value				: false
 			reflectToAttribute	: true
+			observer			: 'showChanged'
+	showChanged		: ->
 	go_to_screen	: (screen, back = false) ->
 		document.querySelector('[show]').show	= false
 		target	= document.querySelector('cs-music-' + screen)

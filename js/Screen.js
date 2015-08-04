@@ -14,9 +14,11 @@
       show: {
         type: Boolean,
         value: false,
-        reflectToAttribute: true
+        reflectToAttribute: true,
+        observer: 'showChanged'
       }
     },
+    showChanged: function() {},
     go_to_screen: function(screen, back) {
       var target;
       if (back == null) {

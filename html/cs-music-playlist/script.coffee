@@ -42,7 +42,7 @@ $ ->
 					get_next_item	= =>
 						if index < count
 							music_library.get_meta(all[index], (data) =>
-								data.playing		= if data.id == current_id then 'yes' else 'no'
+								data.playing		= data.id == current_id
 								data.icon			= if cs.bus.state.player == 'playing' then 'play' else 'pause'
 								data.artist_title	= []
 								if data.artist
@@ -60,7 +60,7 @@ $ ->
 							scroll_interval	= setInterval (=>
 								items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 								if items_container
-									item			= items_container.querySelector('cs-music-playlist-item[playing=yes]')
+									item			= items_container.querySelector('cs-music-playlist-item[playing]')
 									clearInterval(scroll_interval)
 									scroll_interval				= 0
 									items_container.scrollTop	= item.offsetTop
@@ -81,16 +81,15 @@ $ ->
 		update_status	: (new_id) ->
 			@list.forEach (data, index) =>
 				if data.id == new_id
-					@list[index].playing	= 'yes'
-					@list[index].icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
-				else
-					@list[index].playing = 'no'
-					delete @list[index].icon
+					data.playing	= true
+					data.icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
+					@splice('list', index, 1, data)
+				else if data.playing
+					data.playing	= true
+					delete data.icon
+					@splice('list', index, 1, data)
 		back			: ->
 			@go_back_screen()
-			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
-			if items_container
-				items_container.style.opacity = 0
 			requestAnimationFrame =>
 				@list = []
 				if scroll_interval
@@ -120,4 +119,6 @@ $ ->
 				music_playlist.refresh =>
 					music_playlist.set_current_id(id)
 					@update()
+		icon_class		: (icon) ->
+			"fa fa-#{icon}"
 	)

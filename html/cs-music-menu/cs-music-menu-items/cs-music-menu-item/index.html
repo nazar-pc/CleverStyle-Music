@@ -2,7 +2,7 @@
 	<link rel="import" type="css" href="style.css">
 	<template>
 		<template is="dom-if" if="{{icon}}">
-			<i class$="{{icon_class(icon)}}"></i>
+			<i class$="[[icon_class(icon)]]"></i>
 		</template>
 		<content></content>
 	</template>

@@ -1,19 +1,19 @@
 <dom-module id="cs-music-playlist">
 	<link rel="import" type="css" href="style.css">
-	<template vertical center layout>
-		<template is="dom-if" if="{{list.length}}">
+	<template>
+		<template is="dom-if" if="[[list.length]]">
 			<cs-music-playlist-items>
-				<template repeat="{{item, index in list}}">
-					<cs-music-playlist-item data-index="{{index}}" on-tap="play" playing="{{item.playing}}">
-						<template is="dom-if" if="{{item.playing == 'yes'}}">
-							<i class="fa fa-{{item.icon}}"></i>
+				<template is="dom-repeat" items="[[list]]">
+					<cs-music-playlist-item data-index$="[[index]]" on-tap="play" playing$="[[item.playing]]">
+						<template is="dom-if" if="[[item.playing]]">
+							<i class$="[[icon_class(item.icon)]]"></i>
 						</template>
-						{{item.artist_title}}
+						<span>[[item.artist_title]]</span>
 					</cs-music-playlist-item>
 				</template>
 			</cs-music-playlist-items>
 		</template>
-		<template is="dom-if" if="{{!list.length}}">
+		<template is="dom-if" if="[[!list.length]]">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>

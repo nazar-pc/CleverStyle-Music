@@ -19,7 +19,7 @@ cs-music-playlist-items {
 		width       : 100vw;
 
 		&:hover,
-		&[playing=yes] {
+		&[playing] {
 			background : rgba(0, 0, 0, .3);
 		}
 	}
