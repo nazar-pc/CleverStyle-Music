@@ -111,7 +111,7 @@
       play: function(e) {
         return music_playlist.current((function(_this) {
           return function(old_id) {
-            music_playlist.set_current(e.target.dataset.index);
+            music_playlist.set_current(e.currentTarget.dataset.index);
             return music_playlist.current(function(id) {
               if (id !== old_id) {
                 return player.play(id);

@@ -81,7 +81,7 @@ $ ->
 		play			: (e) ->
 			music_playlist.current (old_id) =>
 				music_playlist.set_current(
-					e.target.dataset.index
+					e.currentTarget.dataset.index
 				)
 				music_playlist.current (id) =>
 					if id != old_id

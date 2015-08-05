@@ -6,9 +6,9 @@
 				<template is="dom-repeat" items="[[list]]">
 					<cs-music-playlist-item data-index$="[[index]]" on-tap="play" playing$="[[item.playing]]">
 						<template is="dom-if" if="[[item.playing]]">
-							<i class$="[[icon_class(item.icon)]]" data-index$="[[index]]"></i>
+							<i class$="[[icon_class(item.icon)]]"></i>
 						</template>
-						<span data-index$="[[index]]">[[item.artist_title]]</span>
+						<span>[[item.artist_title]]</span>
 					</cs-music-playlist-item>
 				</template>
 			</cs-music-playlist-items>
