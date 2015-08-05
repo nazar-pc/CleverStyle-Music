@@ -61,11 +61,11 @@ update_cover			= (cover, element, callback) ->
 			)
 $ ->
 	Polymer(
-		'is'				: 'cs-music-player'
-		behaviors			: [cs.behaviors.Screen]
-		title				: ''
-		artist				: ''
-		ready	: ->
+		'is'		: 'cs-music-player'
+		behaviors	: [cs.behaviors.Screen]
+		title		: ''
+		artist		: ''
+		ready		: ->
 			seeking_bar	= @shadowRoot.querySelector('cs-seeking-bar')
 			$(seeking_bar).on('seeking-update', (e, data) =>
 				@seeking(data.percents)
@@ -177,7 +177,7 @@ $ ->
 								@play()
 				}
 			@play(null, null, true)
-		update	: (current_time, duration) ->
+		update		: (current_time, duration) ->
 			progress_percentage = if duration then current_time / duration * 100 else 0
 			if progress_percentage != seeking_bar.progress_percentage && progress_percentage >= 0 && progress_percentage <= 100 && !isNaN(progress_percentage)
 				seeking_bar.progress_percentage = progress_percentage
@@ -187,7 +187,7 @@ $ ->
 			duration = if duration then time_format(duration) else '00:00'
 			if duration != seeking_bar.duration
 				seeking_bar.duration			= duration
-		play	: (id, callback, just_load) ->
+		play		: (id, callback, just_load) ->
 			id			= if !isNaN(parseInt(id)) then id else undefined
 			if typeof callback != 'function'
 				callback	= ->
@@ -246,14 +246,14 @@ $ ->
 			else
 				music_playlist.current (id) =>
 					@play(id, callback, just_load)
-		prev	: (callback) ->
+		prev		: (callback) ->
 			music_playlist.prev (id) =>
 				@play(id, callback)
-		next	: (callback) ->
+		next		: (callback) ->
 			music_playlist.next (id) =>
 				@play(id, callback)
-		menu	: ->
+		menu		: ->
 			@go_to_screen('menu')
-		seeking	: (percents) ->
+		seeking		: (percents) ->
 			@player.seeking(percents)
 	)

@@ -27,6 +27,18 @@
               return _this.update_status(id);
             }
           };
+        })(this)).on('player/pause', (function(_this) {
+          return function() {
+            if (_this.list.length) {
+              return _this.update_status();
+            }
+          };
+        })(this)).on('player/resume', (function(_this) {
+          return function() {
+            if (_this.list.length) {
+              return _this.update_status();
+            }
+          };
         })(this));
       },
       ready: function() {
@@ -97,11 +109,9 @@
             music_playlist.set_current(e.target.dataset.index);
             return music_playlist.current(function(id) {
               if (id !== old_id) {
-                player.play(id);
-                return _this.update_status(id);
+                return player.play(id);
               } else {
-                player.play();
-                return _this.update_status(id);
+                return player.play();
               }
             });
           };
@@ -110,14 +120,16 @@
       update_status: function(new_id) {
         return this.list.forEach((function(_this) {
           return function(data, index) {
-            if (data.id === new_id) {
+            if (data.id === new_id || (data.playing && !new_id)) {
               data.playing = true;
               data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-              return _this.splice('list', index, 1, data);
+              _this.notifyPath('list.' + index + '.playing', data.playing);
+              return _this.notifyPath('list.' + index + '.icon', data.icon);
             } else if (data.playing) {
-              data.playing = true;
+              data.playing = false;
               delete data.icon;
-              return _this.splice('list', index, 1, data);
+              _this.notifyPath('list.' + index + '.playing', data.playing);
+              return _this.notifyPath('list.' + index + '.icon', data.icon);
             }
           };
         })(this));

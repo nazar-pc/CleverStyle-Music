@@ -18,10 +18,19 @@ $ ->
 		behaviors		: [cs.behaviors.Screen]
 		list			: []
 		created			: ->
-			cs.bus.on('player/play', (id) =>
-				if @list.length
-					@update_status(id)
-			)
+			cs.bus
+				.on('player/play', (id) =>
+					if @list.length
+						@update_status(id)
+				)
+				.on('player/pause', =>
+					if @list.length
+						@update_status()
+				)
+				.on('player/resume', =>
+					if @list.length
+						@update_status()
+				)
 		ready			: ->
 			switch music_settings.repeat
 				when 'none'
@@ -74,20 +83,29 @@ $ ->
 				music_playlist.current (id) =>
 					if id != old_id
 						player.play(id)
-						@update_status(id)
 					else
 						player.play()
-						@update_status(id)
 		update_status	: (new_id) ->
 			@list.forEach (data, index) =>
-				if data.id == new_id
+				if (
+					data.id == new_id ||
+					(
+						data.playing && !new_id
+					)
+				)
 					data.playing	= true
 					data.icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
-					@splice('list', index, 1, data)
+#					@splice('list', index, 1, data)
+					#Hack: ugly manual notification because Polymer is not smart enough at the moment to do that in one line
+					@notifyPath('list.' + index + '.playing', data.playing)
+					@notifyPath('list.' + index + '.icon', data.icon)
 				else if data.playing
-					data.playing	= true
+					data.playing	= false
 					delete data.icon
-					@splice('list', index, 1, data)
+#					@splice('list', index, 1, data)
+					#Hack: ugly manual notification because Polymer is not smart enough at the moment to do that in one line
+					@notifyPath('list.' + index + '.playing', data.playing)
+					@notifyPath('list.' + index + '.icon', data.icon)
 		back			: ->
 			@go_back_screen()
 			requestAnimationFrame =>
