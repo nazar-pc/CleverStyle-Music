@@ -96,19 +96,11 @@ $ ->
 						data.playing && !new_id
 					)
 				)
-					data.playing	= true
-					data.icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
-#					@splice('list', index, 1, data)
-					#Hack: ugly manual notification because Polymer is not smart enough at the moment to do that in one line
-					@notifyPath('list.' + index + '.playing', data.playing)
-					@notifyPath('list.' + index + '.icon', data.icon)
+					@set(['list', index, 'playing'], true)
+					@set(['list', index, 'icon'], if cs.bus.state.player == 'playing' then 'play' else 'pause')
 				else if data.playing
-					data.playing	= false
-					delete data.icon
-#					@splice('list', index, 1, data)
-					#Hack: ugly manual notification because Polymer is not smart enough at the moment to do that in one line
-					@notifyPath('list.' + index + '.playing', data.playing)
-					@notifyPath('list.' + index + '.icon', data.icon)
+					@set(['list', index, 'playing'], false)
+					@set(['list', index, 'icon'], null)
 		back			: ->
 			@go_back_screen()
 			requestAnimationFrame =>

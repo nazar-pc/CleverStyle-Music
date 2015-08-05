@@ -126,15 +126,11 @@
         return this.list.forEach((function(_this) {
           return function(data, index) {
             if (data.id === new_id || (data.playing && !new_id)) {
-              data.playing = true;
-              data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-              _this.notifyPath('list.' + index + '.playing', data.playing);
-              return _this.notifyPath('list.' + index + '.icon', data.icon);
+              _this.set(['list', index, 'playing'], true);
+              return _this.set(['list', index, 'icon'], cs.bus.state.player === 'playing' ? 'play' : 'pause');
             } else if (data.playing) {
-              data.playing = false;
-              delete data.icon;
-              _this.notifyPath('list.' + index + '.playing', data.playing);
-              return _this.notifyPath('list.' + index + '.icon', data.icon);
+              _this.set(['list', index, 'playing'], false);
+              return _this.set(['list', index, 'icon'], null);
             }
           };
         })(this));
