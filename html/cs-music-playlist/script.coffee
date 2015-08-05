@@ -16,7 +16,10 @@ $ ->
 	Polymer(
 		'is'			: 'cs-music-playlist'
 		behaviors		: [cs.behaviors.Screen]
-		list			: []
+		properties		:
+			list	:
+				type	: Array
+				value	: []
 		created			: ->
 			cs.bus
 				.on('player/play', (id) =>

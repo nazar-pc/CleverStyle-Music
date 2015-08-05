@@ -1,17 +1,17 @@
 <dom-module id="cs-music-library">
 	<link rel="import" type="css" href="style.css">
-	<template vertical center layout>
-		<template is="dom-if" if="{{!loading}}">
+	<template>
+		<template is="dom-if" if="[[!loading]]">
 			<cs-music-menu-items>
-				<cs-music-menu-item data-group-field="" on-tap="group">{{all_text}}</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="artist" on-tap="group">{{artists_text}}</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="album" on-tap="group">{{albums_text}}</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="genre" on-tap="group">{{genres_text}}</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="year" on-tap="group">{{years_text}}</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="rated" on-tap="group">{{ratings_text}}</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="" on-tap="group">[[all_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="artist" on-tap="group">[[artists_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="album" on-tap="group">[[albums_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="genre" on-tap="group">[[genres_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="year" on-tap="group">[[years_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="rated" on-tap="group">[[ratings_text]]</cs-music-menu-item>
 			</cs-music-menu-items>
 		</template>
-		<template is="dom-if" if="{{loading}}">
+		<template is="dom-if" if="[[loading]]">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
