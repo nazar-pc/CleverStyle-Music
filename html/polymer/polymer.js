@@ -1633,18 +1633,47 @@ this._mixinConfigure(config, this._aboveConfig);
 this._config = config;
 this._distributeConfig(this._config);
 },
-_configureProperties: function (properties, config) {
-for (var i in properties) {
-var c = properties[i];
-if (c.value !== undefined) {
-var value = c.value;
-if (typeof value == 'function') {
-value = value.call(this, this._config);
-}
-config[i] = value;
-}
-}
-},
+ _configureProperties: function(properties, config) {
+  for (var i in properties) {
+   var property = properties[i];
+   // .value presence means that we have expanded declaration,
+   // otherwise infer type from simplified default value declaration
+   if (property.value !== undefined) {
+    var value = property.value;
+    if (typeof value == 'function') {
+     // pass existing config values (this._config) to value function
+     value = value.call(this, this._config);
+    }
+    config[i] = value;
+   } else {
+    var type = (function () {
+     switch (typeof property) {
+      case 'boolean':
+       return Boolean;
+      case 'number':
+       return Number;
+      case 'string':
+       return String;
+      default:
+       if (property instanceof Date) {
+        return Date;
+       } else if (property instanceof Array) {
+        return Array;
+       }
+     }
+    })();
+    // expand declaration if type was inferred, skip otherwise
+    if (type) {
+     properties[i] = {
+      type: type,
+      value: property,
+      defined: true
+     };
+     config[i] = property;
+    }
+   }
+  }
+ },
 _mixinConfigure: function (a, b) {
 for (var prop in b) {
 if (!this.getPropertyInfo(prop).readOnly) {

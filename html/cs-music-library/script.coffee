@@ -16,27 +16,13 @@ $ ->
 		'is'			: 'cs-music-library'
 		behaviors		: [cs.behaviors.Screen]
 		properties		:
-			all_text		:
-				type	: String
-				value	: _('all-songs')
-			artists_text	:
-				type	: String
-				value	: _('artists')
-			albums_text		:
-				type	: String
-				value	: _('albums')
-			genres_text		:
-				type	: String
-				value	: _('genres')
-			years_text		:
-				type	: String
-				value	: _('years')
-			ratings_text	:
-				type	: String
-				value	: _('ratings')
-			loading			:
-				type	: Boolean
-				value	: false
+			all_text		: _('all-songs')
+			artists_text	: _('artists')
+			albums_text		: _('albums')
+			genres_text		: _('genres')
+			years_text		: _('years')
+			ratings_text	: _('ratings')
+			loading			: false
 		group			: (e) ->
 			group_field		= e.originalTarget.dataset.groupField
 			music_library.get_all (all) =>

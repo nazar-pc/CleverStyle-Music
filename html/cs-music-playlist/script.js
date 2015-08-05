@@ -20,10 +20,7 @@
       'is': 'cs-music-playlist',
       behaviors: [cs.behaviors.Screen],
       properties: {
-        list: {
-          type: Array,
-          value: []
-        }
+        list: []
       },
       created: function() {
         return cs.bus.on('player/play', (function(_this) {

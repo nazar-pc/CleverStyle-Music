@@ -17,9 +17,7 @@ $ ->
 		'is'			: 'cs-music-playlist'
 		behaviors		: [cs.behaviors.Screen]
 		properties		:
-			list	:
-				type	: Array
-				value	: []
+			list	: []
 		created			: ->
 			cs.bus
 				.on('player/play', (id) =>
