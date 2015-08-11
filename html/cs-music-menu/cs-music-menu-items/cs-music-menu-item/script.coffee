@@ -10,6 +10,4 @@ Polymer(
 	'is'		: 'cs-music-menu-item'
 	properties	:
 		icon	: String
-	icon_class	: (icon) ->
-		"fa fa-#{icon}"
 )

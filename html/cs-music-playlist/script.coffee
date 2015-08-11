@@ -130,6 +130,4 @@ $ ->
 				music_playlist.refresh =>
 					music_playlist.set_current_id(id)
 					@update()
-		icon_class		: (icon) ->
-			"fa fa-#{icon}"
 	)

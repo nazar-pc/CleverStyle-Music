@@ -182,9 +182,6 @@
             });
           };
         })(this));
-      },
-      icon_class: function(icon) {
-        return "fa fa-" + icon;
       }
     });
   });

@@ -13,9 +13,6 @@
     'is': 'cs-music-menu-item',
     properties: {
       icon: String
-    },
-    icon_class: function(icon) {
-      return "fa fa-" + icon;
     }
   });
 

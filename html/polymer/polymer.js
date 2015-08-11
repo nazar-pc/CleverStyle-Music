@@ -4091,3 +4091,46 @@ this._insertChildren();
 this.fire('dom-change');
 }
 });
+Polymer.Base._addFeature({
+
+ // if(condition, then [, otherwise [, prefix [, postfix]]])
+ 'if': function(condition, then, otherwise, prefix, postfix) {
+  otherwise = otherwise || '';
+  prefix = prefix || '';
+  postfix = postfix || '';
+  return '' + prefix + (condition ? then : otherwise) + postfix;
+ },
+
+ // join(array [, separator = ','])
+ join: function(array, separator) {
+  separator = separator !== undefined ? separator : ',';
+  return array.join(separator)
+ },
+
+ // concat(thing [, another [, ...]])
+ concat: function(thing, another) {
+  return Array.prototype.slice.call(arguments).join('')
+ },
+
+ // and(x, y [, z [,...]])
+ and: function(x, y, z) {
+  return !!Array.prototype.slice.call(arguments).reduce(function(x, y) {
+   return x && y;
+  });
+ },
+
+ // or(x, y [, z [,...]])
+ or: function(x, y, z) {
+  return !!Array.prototype.slice.call(arguments).reduce(function(x, y) {
+   return x || y;
+  });
+ },
+
+ // xor(x, y [, z [,...]])
+ xor: function(x, y, z) {
+  return Array.prototype.slice.call(arguments).reduce(function(x, y) {
+   return !x != !y;
+  });
+ }
+
+});
