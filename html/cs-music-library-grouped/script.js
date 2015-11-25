@@ -17,8 +17,10 @@
     return Polymer({
       'is': 'cs-music-library-grouped',
       behaviors: [cs.behaviors.Screen],
-      list: [],
-      grouped_field: '',
+      properties: {
+        list: [],
+        grouped_field: ''
+      },
       update: function(group_field, all) {
         var _unknown, count, get_next_item, index, list;
         this.grouped_field = group_field;
@@ -61,7 +63,7 @@
                 final_list.push({
                   field: group_field,
                   value: value.property,
-                  items: JSON.stringify(value.ids),
+                  items: value.ids,
                   count: value.ids.length
                 });
               }
@@ -69,7 +71,7 @@
                 final_list.push({
                   field: group_field,
                   value: _unknown,
-                  items: JSON.stringify(unknown.ids),
+                  items: unknown.ids,
                   count: unknown.ids.length
                 });
               }
@@ -91,12 +93,7 @@
         return get_next_item();
       },
       choose_action: function(e) {
-        var target;
-        target = e.target;
-        if (target.tagName === 'SPAN') {
-          target = target.parentNode;
-        }
-        music_library_action.update(JSON.parse(target.dataset.items));
+        music_library_action.update(e.model.item.items);
         return this.go_to_screen('library-action');
       },
       back: function() {

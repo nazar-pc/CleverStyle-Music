@@ -2,8 +2,8 @@
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
 		<cs-music-menu-items>
-			<cs-music-menu-item on-tap="create_playlist">{{create_playlist_text}}</cs-music-menu-item>
-			<cs-music-menu-item on-tap="add_to_playlist">{{add_to_playlist_text}}</cs-music-menu-item>
+			<cs-music-menu-item on-tap="create_playlist">[[create_playlist_text]]</cs-music-menu-item>
+			<cs-music-menu-item on-tap="add_to_playlist">[[add_to_playlist_text]]</cs-music-menu-item>
 		</cs-music-menu-items>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-left" on-tap="back"></cs-control>

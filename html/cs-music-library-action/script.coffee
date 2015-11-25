@@ -13,11 +13,12 @@ $ ->
 	Polymer(
 		'is'					: 'cs-music-library-action'
 		behaviors				: [cs.behaviors.Screen]
-		create_playlist_text	: _('create-playlist')
-		add_to_playlist_text	: _('add-to-playlist')
-		items					: []
+		properties:
+			create_playlist_text	: _('create-playlist')
+			add_to_playlist_text	: _('add-to-playlist')
+			items					: []
 		update					: (items) ->
-			@items	= items
+			@set('items', items)
 		create_playlist			: ->
 			music_playlist.set(@items, =>
 				player.next =>

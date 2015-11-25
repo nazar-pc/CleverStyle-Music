@@ -1,16 +1,16 @@
 <dom-module id="cs-music-library-grouped">
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
-		<template is="dom-if" if="{{list.length}}">
+		<template is="dom-if" if="[[list.length]]">
 			<cs-music-library-grouped-items>
-				<template repeat="{{item in list}}">
-					<cs-music-library-grouped-item on-tap="choose_action" data-items="{{item.items}}">
-						{{item.value}} <span>({{item.count}})</span>
+				<template is="dom-repeat" items="[[list]]">
+					<cs-music-library-grouped-item on-tap="choose_action">
+						[[item.value]] <span>([[item.count]])</span>
 					</cs-music-library-grouped-item>
 				</template>
 			</cs-music-library-grouped-items>
 		</template>
-		<template is="dom-if" if="{{!list.length}}">
+		<template is="dom-if" if="[[!list.length]]">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>

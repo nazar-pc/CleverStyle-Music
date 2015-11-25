@@ -16,11 +16,13 @@
     return Polymer({
       'is': 'cs-music-library-action',
       behaviors: [cs.behaviors.Screen],
-      create_playlist_text: _('create-playlist'),
-      add_to_playlist_text: _('add-to-playlist'),
-      items: [],
+      properties: {
+        create_playlist_text: _('create-playlist'),
+        add_to_playlist_text: _('add-to-playlist'),
+        items: []
+      },
       update: function(items) {
-        return this.items = items;
+        return this.set('items', items);
       },
       create_playlist: function() {
         return music_playlist.set(this.items, (function(_this) {

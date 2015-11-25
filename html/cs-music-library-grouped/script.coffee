@@ -14,8 +14,9 @@ $ ->
 	Polymer(
 		'is'			: 'cs-music-library-grouped'
 		behaviors		: [cs.behaviors.Screen]
-		list			: []
-		grouped_field	: ''
+		properties:
+			list			: []
+			grouped_field	: ''
 		update			: (group_field, all) ->
 			@grouped_field	= group_field
 			stop			= false
@@ -50,14 +51,14 @@ $ ->
 						final_list.push(
 							field	: group_field
 							value	: value.property
-							items	: JSON.stringify(value.ids)
+							items	: value.ids
 							count	: value.ids.length
 						)
 					if unknown
 						final_list.push(
 							field	: group_field
 							value	: _unknown
-							items	: JSON.stringify(unknown.ids)
+							items	: unknown.ids
 							count	: unknown.ids.length
 						)
 					final_list.sort (a, b) ->
@@ -69,12 +70,7 @@ $ ->
 					@list			= final_list
 			get_next_item()
 		choose_action	: (e) ->
-			target	= e.target
-			if target.tagName == 'SPAN'
-				target	= target.parentNode
-			music_library_action.update(
-				JSON.parse(target.dataset.items)
-			)
+			music_library_action.update(e.model.item.items)
 			@go_to_screen('library-action')
 		back			: ->
 			@go_back_screen()

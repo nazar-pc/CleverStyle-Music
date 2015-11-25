@@ -2,8 +2,8 @@
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
 		<cs-music-menu-items>
-			<template repeat="{{preset in presets_names}}">
-				<cs-music-menu-item on-tap="load_preset" data-preset="{{preset}}">{{preset}}</cs-music-menu-item>
+			<template is="dom-repeat" items="[[presets_names]]" as="preset">
+				<cs-music-menu-item on-tap="load_preset" data-preset="[[preset]]">[[preset]]</cs-music-menu-item>
 			</template>
 		</cs-music-menu-items>
 		<cs-controls horizontal center layout>
