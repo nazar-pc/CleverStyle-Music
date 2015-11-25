@@ -27,17 +27,19 @@
     return Polymer({
       'is': 'cs-music-sound-environment',
       behaviors: [cs.behaviors.Screen],
-      current_mode: sound_processing.get_reverb_mode(),
-      modes: (function() {
-        var results;
-        results = [];
-        for (mode in modes) {
-          results.push(mode);
-        }
-        return results;
-      })(),
+      properties: {
+        current_mode: sound_processing.get_reverb_mode(),
+        modes: (function() {
+          var results;
+          results = [];
+          for (mode in modes) {
+            results.push(mode);
+          }
+          return results;
+        })()
+      },
       update_mode: function(e) {
-        this.current_mode = $(e.target).data('mode');
+        this.current_mode = e.model.mode;
         return sound_processing.set_reverb_mode(modes[this.current_mode]);
       },
       back: function() {

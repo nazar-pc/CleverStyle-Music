@@ -18,12 +18,13 @@ $ ->
 	Polymer(
 		'is'			: 'cs-music-sound-environment'
 		behaviors		: [cs.behaviors.Screen]
-		current_mode	: sound_processing.get_reverb_mode()
-		modes			:
-			for mode of modes
-				mode
+		properties:
+			current_mode	: sound_processing.get_reverb_mode()
+			modes			:
+				for mode of modes
+					mode
 		update_mode		: (e) ->
-			@current_mode	= $(e.target).data('mode')
+			@current_mode	= e.model.mode
 			sound_processing.set_reverb_mode(modes[@current_mode])
 		back			: ->
 			@go_back_screen()
