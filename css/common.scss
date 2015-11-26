@@ -42,7 +42,6 @@ body {
 		position    : absolute;
 		top         : 0;
 		width       : 100vw;
-		will-change : transform, opacity;
 		z-index     : 1;
 
 		&:not([show]) > cs-loading {

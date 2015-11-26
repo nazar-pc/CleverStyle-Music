@@ -34,17 +34,18 @@
     return Polymer({
       'is': 'cs-music-equalizer-presets',
       behaviors: [cs.behaviors.Screen],
-      presets_names: (function() {
-        var results;
-        results = [];
-        for (preset in known_presets) {
-          results.push(preset);
-        }
-        return results;
-      })(),
+      properties: {
+        presets_names: (function() {
+          var results;
+          results = [];
+          for (preset in known_presets) {
+            results.push(preset);
+          }
+          return results;
+        })()
+      },
       load_preset: function(e) {
-        preset = $(e.target).data('preset');
-        return equalizer.update(known_presets[preset]);
+        return equalizer.update(known_presets[e.model.preset]);
       },
       back: function() {
         return this.go_back_screen();

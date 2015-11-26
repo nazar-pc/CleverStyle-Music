@@ -31,12 +31,12 @@ $ ->
 	Polymer(
 		'is'			: 'cs-music-equalizer-presets'
 		behaviors		: [cs.behaviors.Screen]
-		presets_names	:
-			for preset of known_presets
-				preset
+		properties:
+			presets_names	:
+				for preset of known_presets
+					preset
 		load_preset			: (e) ->
-			preset	= $(e.target).data('preset')
-			equalizer.update(known_presets[preset])
+			equalizer.update(known_presets[e.model.preset])
 		back			: ->
 			@go_back_screen()
 	)

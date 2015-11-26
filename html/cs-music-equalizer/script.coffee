@@ -12,21 +12,31 @@ $ ->
 	Polymer(
 		'is'				: 'cs-music-equalizer'
 		behaviors			: [cs.behaviors.Screen]
-		gain_levels			: sound_processing.get_gain_levels()
+		properties:
+			gain_levels	: sound_processing.get_gain_levels()
 		ready				: ->
 			gain_levels	= @gain_levels
-			$(@shadowRoot.querySelectorAll('input[type=range]')).ranger(
+			$inputs		= $(@shadowRoot.querySelectorAll('input[type=range]'))
+			that		= @
+			$inputs.ranger(
 				vertical	: true
 				label		: false
 				min			: -10
 				max			: 10
 				step		: .01
 				callback	: (val) ->
-					gain_levels[$(@).prev().data('index')]	= Math.round(val * 100) / 100
+					index				= $(@).prev().data('index')
+					gain_levels[index]	= Math.round(val * 100) / 100
+					# Hack: normal changing without slice or changing just one item doesn't work unfortunately
+					that.set('gain_levels', gain_levels.slice())
 					sound_processing.set_gain_levels(gain_levels)
 			)
+			# Fix styling for ranger since it was created without Polymer awareness
+			@scopeSubtree(@$.levels, false)
+			# Force track height recalculation
+			$inputs.ranger('reset')
 		update				: (gain_levels) ->
-			@gain_levels	= gain_levels
+			@set('gain_levels', gain_levels)
 			sound_processing.set_gain_levels(gain_levels)
 			setTimeout (=>
 				$(@shadowRoot.querySelectorAll('input[type=range]')).ranger('reset')

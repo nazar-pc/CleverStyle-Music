@@ -15,24 +15,33 @@
     return Polymer({
       'is': 'cs-music-equalizer',
       behaviors: [cs.behaviors.Screen],
-      gain_levels: sound_processing.get_gain_levels(),
+      properties: {
+        gain_levels: sound_processing.get_gain_levels()
+      },
       ready: function() {
-        var gain_levels;
+        var $inputs, gain_levels, that;
         gain_levels = this.gain_levels;
-        return $(this.shadowRoot.querySelectorAll('input[type=range]')).ranger({
+        $inputs = $(this.shadowRoot.querySelectorAll('input[type=range]'));
+        that = this;
+        $inputs.ranger({
           vertical: true,
           label: false,
           min: -10,
           max: 10,
           step: .01,
           callback: function(val) {
-            gain_levels[$(this).prev().data('index')] = Math.round(val * 100) / 100;
+            var index;
+            index = $(this).prev().data('index');
+            gain_levels[index] = Math.round(val * 100) / 100;
+            that.set('gain_levels', gain_levels.slice());
             return sound_processing.set_gain_levels(gain_levels);
           }
         });
+        this.scopeSubtree(this.$.levels, false);
+        return $inputs.ranger('reset');
       },
       update: function(gain_levels) {
-        this.gain_levels = gain_levels;
+        this.set('gain_levels', gain_levels);
         sound_processing.set_gain_levels(gain_levels);
         return setTimeout(((function(_this) {
           return function() {
