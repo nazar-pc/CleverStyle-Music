@@ -30,7 +30,7 @@ Main features of CleverStyle Music player:
 * Start Simulator (If you do not have Firefox OS Simulator extension installed yet - you have to install it)
 * Press Update in App Manager
 * Click "CleverStyle Music" icon on home screen inside simulator
-* To emulate SD Card you'll need to [add fake-sdcard directory to Simulator profile](https://developer.mozilla.org/en/docs/Tools/Firefox_OS_Simulator#SD_card_emulation)
+* To emulate SD Card you'll need to [add fake-sdcard directory to Simulator profile](https://developer.mozilla.org/en/docs/Tools/Firefox_OS_Simulator#SD_card_emulation) for Firefox OS Simulator 2.1-, for Firefox OS Simulator 2.2+ you'll need to put your files into `{firefox_profile}/extensions/fxos_2_2_simulator@mozilla.org/profile/storage/permanent` (change 2_2 according to your simulator version)
 
 # Contribute
 
