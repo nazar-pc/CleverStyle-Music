@@ -1,7 +1,7 @@
 <dom-module id="cs-music-library-rescan">
 	<link rel="import" type="css" href="style.css">
-	<template vertical center layout>
-		<cs-scanning-progress>{{searching_for_music_text}} {{found}} {{files_found_text}}</cs-scanning-progress>
+	<template>
+		<cs-scanning-progress>[[L.searching-for-music]] [[found]] [[L.files-found]]</cs-scanning-progress>
 		<cs-loading></cs-loading>
 		<cs-controls horizontal center layout>
 			<cs-control flex icon="chevron-left" on-tap="back"></cs-control>

@@ -30,7 +30,7 @@ cs.music_settings	= do ->
 			)
 	if public_settings.low_performance == null
 		$ ->
-			public_settings.low_performance = confirm _('low-performance-mode-details')
+			public_settings.low_performance = confirm __('low-performance-mode-details')
 			location.reload()
 	if public_settings.low_performance
 		$ ->

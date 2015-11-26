@@ -11,24 +11,26 @@ $ ->
 	player			= document.querySelector('cs-music-player')
 
 	Polymer(
-		'is'						: 'cs-music-library-rescan'
-		behaviors					: [cs.behaviors.Screen]
-		searching_for_music_text	: _('searching-for-music')
-		files_found_text			: _('files-found')
-		found						: 0
-		created						: ->
+		'is'		: 'cs-music-library-rescan'
+		behaviors	: [
+			Polymer.cs.behaviors.Language
+			Polymer.cs.behaviors.Screen
+		]
+		properties	:
+			found	: 0
+		created : ->
 			cs.bus.on('library/rescan/found', (found) =>
 				@found	= found
 			)
-		showChanged				: ->
+		showChanged : ->
 			if !@found && @show
 				@rescan()
-		rescan					: ->
+		rescan : ->
 			cs.music_library.rescan(=>
 				music_playlist
 					.clear()
 					.refresh()
-				alert _('library-rescanned-playlist-updated')
+				alert __('library-rescanned-playlist-updated')
 				$(player).one('animationend', ->
 					player.next((->), true)
 				)
@@ -36,6 +38,6 @@ $ ->
 				# Some events might be stuck at the moment and thus they'll override zero here, so better add event firing here
 				cs.bus.fire('library/rescan/found', 0)
 			)
-		back						: ->
+		back : ->
 			@go_back_screen()
 	)

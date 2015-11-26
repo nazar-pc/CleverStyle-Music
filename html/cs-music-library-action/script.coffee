@@ -11,23 +11,24 @@ $ ->
 	player			= document.querySelector('cs-music-player')
 
 	Polymer(
-		'is'					: 'cs-music-library-action'
-		behaviors				: [cs.behaviors.Screen]
-		properties:
-			create_playlist_text	: _('create-playlist')
-			add_to_playlist_text	: _('add-to-playlist')
-			items					: []
-		update					: (items) ->
+		'is'		: 'cs-music-library-action'
+		behaviors	: [
+			Polymer.cs.behaviors.Language
+			Polymer.cs.behaviors.Screen
+		]
+		properties	:
+			items	: []
+		update : (items) ->
 			@set('items', items)
-		create_playlist			: ->
+		create_playlist : ->
 			music_playlist.set(@items, =>
 				player.next =>
 					@go_to_screen('player')
 			)
-		add_to_playlist			: ->
+		add_to_playlist : ->
 			music_playlist.append(@items, =>
 				@go_back_screen()
 			)
-		back			: ->
+		back : ->
 			@go_back_screen()
 	)

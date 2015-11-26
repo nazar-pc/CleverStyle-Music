@@ -13,7 +13,7 @@
     var mode, modes, sound_processing;
     sound_processing = cs.sound_processing;
     modes = {};
-    modes[_('reset')] = '';
+    modes[__('reset')] = '';
     (function() {
       var i, len, loaded_modes, mode, results;
       loaded_modes = sound_processing.get_reverb_modes();
@@ -26,7 +26,7 @@
     })();
     return Polymer({
       'is': 'cs-music-sound-environment',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Screen],
       properties: {
         current_mode: sound_processing.get_reverb_mode(),
         modes: (function() {

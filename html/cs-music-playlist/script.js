@@ -18,7 +18,7 @@
     scroll_interval = 0;
     return Polymer({
       'is': 'cs-music-playlist',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Screen],
       properties: {
         list: []
       },
@@ -80,7 +80,7 @@
                     if (data.title) {
                       data.artist_title.push(data.title);
                     }
-                    data.artist_title = data.artist_title.join(' — ') || _('unknown');
+                    data.artist_title = data.artist_title.join(' — ') || __('unknown');
                     list.push(data);
                     data = null;
                     ++index;

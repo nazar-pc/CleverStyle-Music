@@ -38,7 +38,7 @@
     }
     if (public_settings.low_performance === null) {
       $(function() {
-        public_settings.low_performance = confirm(_('low-performance-mode-details'));
+        public_settings.low_performance = confirm(__('low-performance-mode-details'));
         return location.reload();
       });
     }

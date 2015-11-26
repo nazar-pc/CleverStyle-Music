@@ -10,16 +10,15 @@
 
 
 /*
-  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js and after "localized" event triggered by document.webL10n
+  * Fix for jQuery "ready" event, trigger it after "WebComponentsReady" event triggered by WebComponents.js
  */
 
 (function() {
   (function($) {
-    var functions, localization_ready, ready_original, restore_original_ready, webcomponents_ready;
+    var functions, ready_original, restore_original_ready, webcomponents_ready;
     ready_original = $.fn.ready;
     functions = [];
     webcomponents_ready = false;
-    localization_ready = false;
     $.fn.ready = function(fn) {
       return functions.push(fn);
     };
@@ -30,20 +29,10 @@
       });
       return functions = [];
     };
-    document.addEventListener('WebComponentsReady', function() {
+    return document.addEventListener('WebComponentsReady', function() {
       if (!webcomponents_ready) {
         webcomponents_ready = true;
-        if (localization_ready) {
-          return restore_original_ready();
-        }
-      }
-    });
-    return document.addEventListener('localized', function() {
-      if (!localization_ready) {
-        localization_ready = true;
-        if (webcomponents_ready) {
-          return restore_original_ready();
-        }
+        return restore_original_ready();
       }
     });
   })(jQuery);

@@ -2,18 +2,18 @@
 	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
 		<cs-music-menu-items>
-			<cs-music-menu-item icon="list" on-tap="playlist">{{playlist_text}}</cs-music-menu-item>
-			<template is="dom-if" if="{{!low_performance}}">
-				<cs-music-menu-item icon="sliders" on-tap="equalizer">{{equalizer_text}}</cs-music-menu-item>
-				<cs-music-menu-item icon="magic" on-tap="sound_environment">{{sound_environment_text}}</cs-music-menu-item>
+			<cs-music-menu-item icon="list" on-tap="playlist">[[L.playlist]]</cs-music-menu-item>
+			<template is="dom-if" if="[[!low_performance]]">
+				<cs-music-menu-item icon="sliders" on-tap="equalizer">[[L.equalizer]]</cs-music-menu-item>
+				<cs-music-menu-item icon="magic" on-tap="sound_environment">[[L.sound-environment]]</cs-music-menu-item>
 			</template>
-			<cs-music-menu-item icon="music" on-tap="library">{{library_text}}</cs-music-menu-item>
-			<cs-music-menu-item icon="refresh" on-tap="rescan">{{rescan_library_text}}</cs-music-menu-item>
-			<template is="dom-if" if="{{low_performance}}">
-				<cs-music-menu-item icon="check" on-tap="performance">{{low_performance_mode_text}}</cs-music-menu-item>
+			<cs-music-menu-item icon="music" on-tap="library">[[L.library]]</cs-music-menu-item>
+			<cs-music-menu-item icon="refresh" on-tap="rescan">[[L.rescan-library]]</cs-music-menu-item>
+			<template is="dom-if" if="[[low_performance]]">
+				<cs-music-menu-item icon="check" on-tap="performance">[[L.low-performance-mode]]</cs-music-menu-item>
 			</template>
-			<template is="dom-if" if="{{!low_performance}}">
-				<cs-music-menu-item icon="tachometer" on-tap="performance">{{low_performance_mode_text}}</cs-music-menu-item>
+			<template is="dom-if" if="[[!low_performance]]">
+				<cs-music-menu-item icon="tachometer" on-tap="performance">[[L.low-performance-mode]]</cs-music-menu-item>
 			</template>
 		</cs-music-menu-items>
 		<cs-controls horizontal center layout>

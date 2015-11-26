@@ -3,12 +3,12 @@
 	<template>
 		<template is="dom-if" if="[[!loading]]">
 			<cs-music-menu-items>
-				<cs-music-menu-item data-group-field="" on-tap="group">[[all_text]]</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="artist" on-tap="group">[[artists_text]]</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="album" on-tap="group">[[albums_text]]</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="genre" on-tap="group">[[genres_text]]</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="year" on-tap="group">[[years_text]]</cs-music-menu-item>
-				<cs-music-menu-item data-group-field="rated" on-tap="group">[[ratings_text]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="" on-tap="group">[[L.all-songs]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="artist" on-tap="group">[[L.artists]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="album" on-tap="group">[[L.albums]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="genre" on-tap="group">[[L.genres]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="year" on-tap="group">[[L.years]]</cs-music-menu-item>
+				<cs-music-menu-item data-group-field="rated" on-tap="group">[[L.ratings]]</cs-music-menu-item>
 			</cs-music-menu-items>
 		</template>
 		<template is="dom-if" if="[[loading]]">

@@ -17,14 +17,8 @@
     music_library_grouped = document.querySelector('cs-music-library-grouped');
     return Polymer({
       'is': 'cs-music-library',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Language, Polymer.cs.behaviors.Screen],
       properties: {
-        all_text: _('all-songs'),
-        artists_text: _('artists'),
-        albums_text: _('albums'),
-        genres_text: _('genres'),
-        years_text: _('years'),
-        ratings_text: _('ratings'),
         loading: false
       },
       group: function(e) {

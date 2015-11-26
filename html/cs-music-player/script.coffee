@@ -62,7 +62,7 @@ update_cover			= (cover, element, callback) ->
 $ ->
 	Polymer(
 		'is'		: 'cs-music-player'
-		behaviors	: [cs.behaviors.Screen]
+		behaviors	: [Polymer.cs.behaviors.Screen]
 		title		: ''
 		artist		: ''
 		ready		: ->
@@ -218,12 +218,12 @@ $ ->
 								cs.bus.state.player	= 'playing'
 							music_library.get_meta(id, (data) ->
 								if data
-									element.title	= data.title || _('unknown')
+									element.title	= data.title || __('unknown')
 									element.artist	= data.artist
 									if data.artist && data.album
 										element.artist += ": #{data.album}"
 								else
-									element.title	= _('unknown')
+									element.title	= __('unknown')
 									element.artist	= ''
 							)
 							parseAudioMetadata(
@@ -237,7 +237,7 @@ $ ->
 									update_cover('img/bg.jpg', element, callback)
 							)
 						(e) ->
-							alert _(
+							alert __(
 								'cant-play-this-file'
 								error	: e.target.error.name
 							)

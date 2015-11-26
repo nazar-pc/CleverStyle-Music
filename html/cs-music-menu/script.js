@@ -16,14 +16,8 @@
   $(function() {
     return Polymer({
       'is': 'cs-music-menu',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Language, Polymer.cs.behaviors.Screen],
       properties: {
-        playlist_text: _('playlist'),
-        equalizer_text: _('equalizer'),
-        sound_environment_text: _('sound-environment'),
-        library_text: _('library'),
-        rescan_library_text: _('rescan-library'),
-        low_performance_mode_text: _('low-performance-mode'),
         low_performance: music_settings.low_performance
       },
       playlist: function() {
@@ -42,7 +36,7 @@
         return this.go_to_screen('library-rescan');
       },
       performance: function() {
-        if (music_settings.low_performance !== confirm(_('low-performance-mode-details'))) {
+        if (music_settings.low_performance !== confirm(__('low-performance-mode-details'))) {
           music_settings.low_performance = !music_settings.low_performance;
           return location.reload();
         }

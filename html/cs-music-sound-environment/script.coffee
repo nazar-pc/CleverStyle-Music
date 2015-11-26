@@ -9,7 +9,7 @@
 $ ->
 	sound_processing	= cs.sound_processing
 	modes				= {}
-	modes[_('reset')]	= ''
+	modes[__('reset')]	= ''
 	do ->
 		loaded_modes	= sound_processing.get_reverb_modes()
 		for mode in loaded_modes
@@ -17,7 +17,7 @@ $ ->
 
 	Polymer(
 		'is'			: 'cs-music-sound-environment'
-		behaviors		: [cs.behaviors.Screen]
+		behaviors		: [Polymer.cs.behaviors.Screen]
 		properties:
 			current_mode	: sound_processing.get_reverb_mode()
 			modes			:

@@ -15,10 +15,8 @@
     player = document.querySelector('cs-music-player');
     return Polymer({
       'is': 'cs-music-library-action',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Language, Polymer.cs.behaviors.Screen],
       properties: {
-        create_playlist_text: _('create-playlist'),
-        add_to_playlist_text: _('add-to-playlist'),
         items: []
       },
       update: function(items) {

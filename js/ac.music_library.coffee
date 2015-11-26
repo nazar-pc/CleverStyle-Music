@@ -146,7 +146,7 @@ cs.music_library	=
 		storage.scan(
 			(files) =>
 				if !files.length
-					alert _('no_files_found')
+					alert __('no_files_found')
 					return
 				###
 				 * At first we'll remove old non-existing files, and afterwards will add new found

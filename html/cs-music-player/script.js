@@ -80,7 +80,7 @@
   $(function() {
     return Polymer({
       'is': 'cs-music-player',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Screen],
       title: '',
       artist: '',
       ready: function() {
@@ -262,13 +262,13 @@
               }
               music_library.get_meta(id, function(data) {
                 if (data) {
-                  element.title = data.title || _('unknown');
+                  element.title = data.title || __('unknown');
                   element.artist = data.artist;
                   if (data.artist && data.album) {
                     return element.artist += ": " + data.album;
                   }
                 } else {
-                  element.title = _('unknown');
+                  element.title = __('unknown');
                   return element.artist = '';
                 }
               });
@@ -283,7 +283,7 @@
                 return update_cover('img/bg.jpg', element, callback);
               });
             }, function(e) {
-              return alert(_('cant-play-this-file', {
+              return alert(__('cant-play-this-file', {
                 error: e.target.error.name
               }));
             });

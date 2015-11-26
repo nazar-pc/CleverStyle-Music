@@ -13,17 +13,14 @@ $ ->
 	music_library_grouped	= document.querySelector('cs-music-library-grouped')
 
 	Polymer(
-		'is'			: 'cs-music-library'
-		behaviors		: [cs.behaviors.Screen]
-		properties		:
-			all_text		: _('all-songs')
-			artists_text	: _('artists')
-			albums_text		: _('albums')
-			genres_text		: _('genres')
-			years_text		: _('years')
-			ratings_text	: _('ratings')
-			loading			: false
-		group			: (e) ->
+		'is'		: 'cs-music-library'
+		behaviors	: [
+			Polymer.cs.behaviors.Language
+			Polymer.cs.behaviors.Screen
+		]
+		properties	:
+			loading	: false
+		group : (e) ->
 			group_field		= e.originalTarget.dataset.groupField
 			music_library.get_all (all) =>
 				for value, i in all
@@ -39,6 +36,6 @@ $ ->
 								@go_to_screen('player')
 								@loading	= false
 						)
-		back			: ->
+		back : ->
 			@go_back_screen()
 	)

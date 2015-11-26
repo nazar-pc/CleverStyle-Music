@@ -11,7 +11,7 @@ $ ->
 
 	Polymer(
 		'is'				: 'cs-music-equalizer'
-		behaviors			: [cs.behaviors.Screen]
+		behaviors			: [Polymer.cs.behaviors.Screen]
 		properties:
 			gain_levels	: sound_processing.get_gain_levels()
 		ready				: ->

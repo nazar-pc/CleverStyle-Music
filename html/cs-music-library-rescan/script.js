@@ -15,10 +15,10 @@
     player = document.querySelector('cs-music-player');
     return Polymer({
       'is': 'cs-music-library-rescan',
-      behaviors: [cs.behaviors.Screen],
-      searching_for_music_text: _('searching-for-music'),
-      files_found_text: _('files-found'),
-      found: 0,
+      behaviors: [Polymer.cs.behaviors.Language, Polymer.cs.behaviors.Screen],
+      properties: {
+        found: 0
+      },
       created: function() {
         return cs.bus.on('library/rescan/found', (function(_this) {
           return function(found) {
@@ -35,7 +35,7 @@
         return cs.music_library.rescan((function(_this) {
           return function() {
             music_playlist.clear().refresh();
-            alert(_('library-rescanned-playlist-updated'));
+            alert(__('library-rescanned-playlist-updated'));
             $(player).one('animationend', function() {
               return player.next((function() {}), true);
             });

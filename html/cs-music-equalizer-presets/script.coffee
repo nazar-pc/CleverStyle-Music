@@ -9,7 +9,7 @@
 $ ->
 	equalizer										= document.querySelector('cs-music-equalizer')
 	known_presets									= {}
-	known_presets[_('reset')]						= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	known_presets[__('reset')]						= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	known_presets['Classical']						= [0, 0, 0, 0, 0, 0, -4.32, -4.32, -4.32, -5.76]
 	known_presets['Club']							= [0, 0, 4.8, 3.36, 3.36, 3.36, 1.92, 0, 0, 0]
 	known_presets['Dance']							= [5.76, 4.32, 1.44, 0, 0, -3.36, -4.32, -4.32, 0, 0]
@@ -30,7 +30,7 @@ $ ->
 
 	Polymer(
 		'is'			: 'cs-music-equalizer-presets'
-		behaviors		: [cs.behaviors.Screen]
+		behaviors		: [Polymer.cs.behaviors.Screen]
 		properties:
 			presets_names	:
 				for preset of known_presets

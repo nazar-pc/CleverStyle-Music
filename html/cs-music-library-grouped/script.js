@@ -16,7 +16,7 @@
     music_library_action = document.querySelector('cs-music-library-action');
     return Polymer({
       'is': 'cs-music-library-grouped',
-      behaviors: [cs.behaviors.Screen],
+      behaviors: [Polymer.cs.behaviors.Screen],
       properties: {
         list: [],
         grouped_field: ''
@@ -28,7 +28,7 @@
         index = 0;
         list = {};
         count = all.length;
-        _unknown = _('unknown');
+        _unknown = __('unknown');
         get_next_item = (function(_this) {
           return function() {
             var final_list, key, unknown, value;
