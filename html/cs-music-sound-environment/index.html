@@ -1,19 +1,19 @@
-<polymer-element name="cs-music-sound-environment" extends="cs-music-screen">
+<dom-module id="cs-music-sound-environment">
+	<link rel="import" type="css" href="style.css">
 	<template vertical center layout>
-		<link rel="stylesheet" href="style.css">
 		<cs-music-menu-items>
-			<template repeat="{{mode in modes}}">
-				<template if="{{current_mode == mode}}">
-					<cs-music-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}" icon="check">{{mode}}</cs-music-menu-item>
+			<template is="dom-repeat" items="[[modes]]" as="mode">
+				<template is="dom-if" if="[[equal(current_mode, mode)]]">
+					<cs-music-menu-item on-tap="update_mode" icon="check">[[mode]]</cs-music-menu-item>
 				</template>
-				<template if="{{current_mode != mode}}">
-					<cs-music-menu-item on-tap="{{update_mode}}" data-mode="{{mode}}">{{mode}}</cs-music-menu-item>
+				<template is="dom-if" if="[[!equal(current_mode, mode)]]">
+					<cs-music-menu-item on-tap="update_mode">[[mode]]</cs-music-menu-item>
 				</template>
 			</template>
 		</cs-music-menu-items>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="back"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="script.js"></script>
-</polymer-element>
+</dom-module>

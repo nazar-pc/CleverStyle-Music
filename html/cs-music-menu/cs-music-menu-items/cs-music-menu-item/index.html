@@ -1,0 +1,10 @@
+<dom-module id="cs-music-menu-item">
+	<link rel="import" type="css" href="style.css">
+	<template>
+		<template is="dom-if" if="{{icon}}">
+			<i class$="[[concat('fa fa-', icon)]]"></i>
+		</template>
+		<content></content>
+	</template>
+	<script src="script.js"></script>
+</dom-module>

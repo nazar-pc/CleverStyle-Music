@@ -6,22 +6,24 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_library			= cs.music_library
 	stop					= false
 	music_library_action	= document.querySelector('cs-music-library-action')
 
 	Polymer(
-		'cs-music-library-grouped'
-		list			: []
-		grouped_field	: ''
+		'is'			: 'cs-music-library-grouped'
+		behaviors		: [Polymer.cs.behaviors.Screen]
+		properties:
+			list			: []
+			grouped_field	: ''
 		update			: (group_field, all) ->
 			@grouped_field	= group_field
 			stop			= false
 			index			= 0
 			list			= {}
 			count			= all.length
-			_unknown		= _('unknown')
+			_unknown		= __('unknown')
 			get_next_item	= =>
 				if index < count
 					music_library.get_meta(all[index], (data) =>
@@ -49,14 +51,14 @@ document.webL10n.ready ->
 						final_list.push(
 							field	: group_field
 							value	: value.property
-							items	: JSON.stringify(value.ids)
+							items	: value.ids
 							count	: value.ids.length
 						)
 					if unknown
 						final_list.push(
 							field	: group_field
 							value	: _unknown
-							items	: JSON.stringify(unknown.ids)
+							items	: unknown.ids
 							count	: unknown.ids.length
 						)
 					final_list.sort (a, b) ->
@@ -68,12 +70,7 @@ document.webL10n.ready ->
 					@list			= final_list
 			get_next_item()
 		choose_action	: (e) ->
-			target	= e.target
-			if target.tagName == 'SPAN'
-				target	= target.parentNode
-			music_library_action.update(
-				JSON.parse(target.dataset.items)
-			)
+			music_library_action.update(e.model.item.items)
 			@go_to_screen('library-action')
 		back			: ->
 			@go_back_screen()

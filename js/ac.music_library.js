@@ -181,7 +181,7 @@
       storage.scan((function(_this) {
         return function(files) {
           if (!files.length) {
-            alert(_('no_files_found'));
+            alert(__('no_files_found'));
             return;
           }
 

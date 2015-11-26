@@ -9,20 +9,36 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_library, music_playlist, music_settings, player, scroll_interval;
     music_library = cs.music_library;
     music_playlist = cs.music_playlist;
     music_settings = cs.music_settings;
     player = document.querySelector('cs-music-player');
     scroll_interval = 0;
-    return Polymer('cs-music-playlist', {
-      list: [],
+    return Polymer({
+      'is': 'cs-music-playlist',
+      behaviors: [Polymer.cs.behaviors.Screen],
+      properties: {
+        list: []
+      },
       created: function() {
         return cs.bus.on('player/play', (function(_this) {
           return function(id) {
             if (_this.list.length) {
               return _this.update_status(id);
+            }
+          };
+        })(this)).on('player/pause', (function(_this) {
+          return function() {
+            if (_this.list.length) {
+              return _this.update_status();
+            }
+          };
+        })(this)).on('player/resume', (function(_this) {
+          return function() {
+            if (_this.list.length) {
+              return _this.update_status();
             }
           };
         })(this));
@@ -55,7 +71,7 @@
               get_next_item = function() {
                 if (index < count) {
                   return music_library.get_meta(all[index], function(data) {
-                    data.playing = data.id === current_id ? 'yes' : 'no';
+                    data.playing = data.id === current_id;
                     data.icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
                     data.artist_title = [];
                     if (data.artist) {
@@ -64,7 +80,7 @@
                     if (data.title) {
                       data.artist_title.push(data.title);
                     }
-                    data.artist_title = data.artist_title.join(' — ') || _('unknown');
+                    data.artist_title = data.artist_title.join(' — ') || __('unknown');
                     list.push(data);
                     data = null;
                     ++index;
@@ -76,7 +92,7 @@
                     var item, items_container;
                     items_container = _this.shadowRoot.querySelector('cs-music-playlist-items');
                     if (items_container) {
-                      item = items_container.querySelector('cs-music-playlist-item[playing=yes]');
+                      item = items_container.querySelector('cs-music-playlist-item[playing]');
                       clearInterval(scroll_interval);
                       scroll_interval = 0;
                       return items_container.scrollTop = item.offsetTop;
@@ -92,14 +108,12 @@
       play: function(e) {
         return music_playlist.current((function(_this) {
           return function(old_id) {
-            music_playlist.set_current(e.target.dataset.index);
+            music_playlist.set_current(e.currentTarget.dataset.index);
             return music_playlist.current(function(id) {
               if (id !== old_id) {
-                player.play(id);
-                return _this.update_status(id);
+                return player.play(id);
               } else {
-                player.play();
-                return _this.update_status(id);
+                return player.play();
               }
             });
           };
@@ -108,23 +122,18 @@
       update_status: function(new_id) {
         return this.list.forEach((function(_this) {
           return function(data, index) {
-            if (data.id === new_id) {
-              _this.list[index].playing = 'yes';
-              return _this.list[index].icon = cs.bus.state.player === 'playing' ? 'play' : 'pause';
-            } else {
-              _this.list[index].playing = 'no';
-              return delete _this.list[index].icon;
+            if (data.id === new_id || (data.playing && !new_id)) {
+              _this.set(['list', index, 'playing'], true);
+              return _this.set(['list', index, 'icon'], cs.bus.state.player === 'playing' ? 'play' : 'pause');
+            } else if (data.playing) {
+              _this.set(['list', index, 'playing'], false);
+              return _this.set(['list', index, 'icon'], null);
             }
           };
         })(this));
       },
       back: function() {
-        var items_container;
         this.go_back_screen();
-        items_container = this.shadowRoot.querySelector('cs-music-playlist-items');
-        if (items_container) {
-          items_container.style.opacity = 0;
-        }
         return requestAnimationFrame((function(_this) {
           return function() {
             _this.list = [];

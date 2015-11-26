@@ -1,26 +1,26 @@
-<polymer-element name="cs-music-playlist" extends="cs-music-screen">
-	<template vertical center layout>
-		<link rel="stylesheet" href="style.css">
-		<template if="{{list.length}}">
+<dom-module id="cs-music-playlist">
+	<link rel="import" type="css" href="style.css">
+	<template>
+		<template is="dom-if" if="[[list.length]]">
 			<cs-music-playlist-items>
-				<template repeat="{{item, index in list}}">
-					<cs-music-playlist-item data-index="{{index}}" on-tap="{{play}}" playing="{{item.playing}}">
-						<template if="{{item.playing == 'yes'}}">
-							<i class="fa fa-{{item.icon}}"></i>
+				<template is="dom-repeat" items="[[list]]">
+					<cs-music-playlist-item data-index$="[[index]]" on-tap="play" playing$="[[item.playing]]">
+						<template is="dom-if" if="[[item.playing]]">
+							<i class$="[[concat('fa fa-', item.icon)]]"></i>
 						</template>
-						{{item.artist_title}}
+						<span>[[item.artist_title]]</span>
 					</cs-music-playlist-item>
 				</template>
 			</cs-music-playlist-items>
 		</template>
-		<template if="{{!list.length}}">
+		<template is="dom-if" if="[[!list.length]]">
 			<cs-loading></cs-loading>
 		</template>
 		<cs-controls horizontal center layout>
-			<cs-control flex icon="chevron-left" on-tap="{{back}}"></cs-control>
-			<cs-control flex icon="repeat" on-tap="{{repeat}}"></cs-control>
-			<cs-control flex icon="random" on-tap="{{shuffle}}"></cs-control>
+			<cs-control flex icon="chevron-left" on-tap="back"></cs-control>
+			<cs-control flex icon="repeat" on-tap="repeat"></cs-control>
+			<cs-control flex icon="random" on-tap="shuffle"></cs-control>
 		</cs-controls>
 	</template>
 	<script src="script.js"></script>
-</polymer-element>
+</dom-module>

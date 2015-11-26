@@ -11,20 +11,4 @@
 	overflow-x : hidden;
 	position   : absolute;
 	width      : 100%;
-
-	cs-music-menu-item {
-		cursor      : pointer;
-		display     : block;
-		padding     : 1rem .5rem;
-		text-shadow : 0 0 .1rem #000;
-		width       : 100%;
-
-		&:hover {
-			background : rgba(0, 0, 0, .3);
-		}
-
-		i {
-			margin-right : .5rem;
-		}
-	}
 }

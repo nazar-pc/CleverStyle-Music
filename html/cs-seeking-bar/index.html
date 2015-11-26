@@ -1,11 +1,11 @@
-<polymer-element name="cs-seeking-bar" attributes="progress_percentage current_time duration">
+<dom-module id="cs-seeking-bar" attributes="">
+	<link rel="import" type="css" href="style.css">
 	<template>
-		<link rel="stylesheet" href="style.css">
 		<div class="time">{{current_time}}</div>
 		<div class="progress-container">
-			<div class="progress" style="transform: translateX({{progress_percentage - 100}}%);"></div>
+			<div class="progress" style="{{progress_style(progress_percentage)}}"></div>
 		</div>
 		<div class="time">{{duration}}</div>
 	</template>
 	<script src="script.js"></script>
-</polymer-element>
+</dom-module>

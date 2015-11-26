@@ -1,14 +1,7 @@
-<polymer-element name="cs-controls" noscript>
+<dom-module id="cs-controls">
+	<link rel="import" type="css" href="style.css">
 	<template vertical layout center>
-		<link rel="stylesheet" href="style.css">
 		<content></content>
 	</template>
-</polymer-element>
-<polymer-element name="cs-control" attributes="icon" noscript>
-	<template>
-		<i class="fa fa-{{icon}}"></i>
-		<div>
-			<content></content>
-		</div>
-	</template>
-</polymer-element>
+	<script src="script.js"></script>
+</dom-module>

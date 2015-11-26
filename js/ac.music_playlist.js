@@ -152,7 +152,7 @@
                 all[i] = value.id;
               }
               return _this.set(all, callback);
-            } else if (confirm(_('library-empty-want-to-rescan'))) {
+            } else if (confirm(__('library-empty-want-to-rescan'))) {
               return $('body > [show]')[0].go_to_screen('library-rescan');
             }
           };
@@ -177,7 +177,7 @@
               if (data.title) {
                 artist_title.push(data.title);
               }
-              artist_title = artist_title.join(' — ') || _('unknown');
+              artist_title = artist_title.join(' — ') || __('unknown');
               list.push({
                 id: data.id,
                 value: artist_title

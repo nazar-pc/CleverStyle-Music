@@ -9,16 +9,18 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_playlist, player;
     music_playlist = cs.music_playlist;
     player = document.querySelector('cs-music-player');
-    return Polymer('cs-music-library-action', {
-      create_playlist_text: _('create-playlist'),
-      add_to_playlist_text: _('add-to-playlist'),
-      items: [],
+    return Polymer({
+      'is': 'cs-music-library-action',
+      behaviors: [Polymer.cs.behaviors.Language, Polymer.cs.behaviors.Screen],
+      properties: {
+        items: []
+      },
       update: function(items) {
-        return this.items = items;
+        return this.set('items', items);
       },
       create_playlist: function() {
         return music_playlist.set(this.items, (function(_this) {

@@ -6,7 +6,7 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	music_library	= cs.music_library
 	music_playlist	= cs.music_playlist
 	music_settings	= cs.music_settings
@@ -14,13 +14,24 @@ document.webL10n.ready ->
 	scroll_interval	= 0
 
 	Polymer(
-		'cs-music-playlist'
-		list			: []
+		'is'			: 'cs-music-playlist'
+		behaviors		: [Polymer.cs.behaviors.Screen]
+		properties		:
+			list	: []
 		created			: ->
-			cs.bus.on('player/play', (id) =>
-				if @list.length
-					@update_status(id)
-			)
+			cs.bus
+				.on('player/play', (id) =>
+					if @list.length
+						@update_status(id)
+				)
+				.on('player/pause', =>
+					if @list.length
+						@update_status()
+				)
+				.on('player/resume', =>
+					if @list.length
+						@update_status()
+				)
 		ready			: ->
 			switch music_settings.repeat
 				when 'none'
@@ -41,14 +52,14 @@ document.webL10n.ready ->
 					get_next_item	= =>
 						if index < count
 							music_library.get_meta(all[index], (data) =>
-								data.playing		= if data.id == current_id then 'yes' else 'no'
+								data.playing		= data.id == current_id
 								data.icon			= if cs.bus.state.player == 'playing' then 'play' else 'pause'
 								data.artist_title	= []
 								if data.artist
 									data.artist_title.push(data.artist)
 								if data.title
 									data.artist_title.push(data.title)
-								data.artist_title	= data.artist_title.join(' — ') || _('unknown')
+								data.artist_title	= data.artist_title.join(' — ') || __('unknown')
 								list.push(data)
 								data	= null
 								++index
@@ -59,7 +70,7 @@ document.webL10n.ready ->
 							scroll_interval	= setInterval (=>
 								items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
 								if items_container
-									item			= items_container.querySelector('cs-music-playlist-item[playing=yes]')
+									item			= items_container.querySelector('cs-music-playlist-item[playing]')
 									clearInterval(scroll_interval)
 									scroll_interval				= 0
 									items_container.scrollTop	= item.offsetTop
@@ -68,28 +79,28 @@ document.webL10n.ready ->
 		play			: (e) ->
 			music_playlist.current (old_id) =>
 				music_playlist.set_current(
-					e.target.dataset.index
+					e.currentTarget.dataset.index
 				)
 				music_playlist.current (id) =>
 					if id != old_id
 						player.play(id)
-						@update_status(id)
 					else
 						player.play()
-						@update_status(id)
 		update_status	: (new_id) ->
 			@list.forEach (data, index) =>
-				if data.id == new_id
-					@list[index].playing	= 'yes'
-					@list[index].icon		= if cs.bus.state.player == 'playing' then 'play' else 'pause'
-				else
-					@list[index].playing = 'no'
-					delete @list[index].icon
+				if (
+					data.id == new_id ||
+					(
+						data.playing && !new_id
+					)
+				)
+					@set(['list', index, 'playing'], true)
+					@set(['list', index, 'icon'], if cs.bus.state.player == 'playing' then 'play' else 'pause')
+				else if data.playing
+					@set(['list', index, 'playing'], false)
+					@set(['list', index, 'icon'], null)
 		back			: ->
 			@go_back_screen()
-			items_container	= @shadowRoot.querySelector('cs-music-playlist-items')
-			if items_container
-				items_container.style.opacity = 0
 			requestAnimationFrame =>
 				@list = []
 				if scroll_interval

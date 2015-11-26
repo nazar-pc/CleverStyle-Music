@@ -6,10 +6,10 @@
  * @license   MIT License, see license.txt
 ###
 
-document.webL10n.ready ->
+$ ->
 	equalizer										= document.querySelector('cs-music-equalizer')
 	known_presets									= {}
-	known_presets[_('reset')]						= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	known_presets[__('reset')]						= [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 	known_presets['Classical']						= [0, 0, 0, 0, 0, 0, -4.32, -4.32, -4.32, -5.76]
 	known_presets['Club']							= [0, 0, 4.8, 3.36, 3.36, 3.36, 1.92, 0, 0, 0]
 	known_presets['Dance']							= [5.76, 4.32, 1.44, 0, 0, -3.36, -4.32, -4.32, 0, 0]
@@ -29,13 +29,14 @@ document.webL10n.ready ->
 	known_presets['Techno']							= [4.8, 3.36, 0, -3.36, -2.88, 0, 4.8, 5.76, 5.76, 5.28]
 
 	Polymer(
-		'cs-music-equalizer-presets'
-		presets_names	:
-			for preset of known_presets
-				preset
+		'is'			: 'cs-music-equalizer-presets'
+		behaviors		: [Polymer.cs.behaviors.Screen]
+		properties:
+			presets_names	:
+				for preset of known_presets
+					preset
 		load_preset			: (e) ->
-			preset	= $(e.target).data('preset')
-			equalizer.update(known_presets[preset])
+			equalizer.update(known_presets[e.model.preset])
 		back			: ->
 			@go_back_screen()
 	)

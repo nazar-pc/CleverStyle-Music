@@ -9,8 +9,14 @@
  */
 
 (function() {
+  window.Polymer = {
+    dom: 'shadow'
+  };
+
   if (!window.cs) {
-    window.cs = {};
+    window.cs = {
+      behaviors: {}
+    };
   }
 
 

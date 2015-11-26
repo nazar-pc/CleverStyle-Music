@@ -9,14 +9,18 @@
  */
 
 (function() {
-  document.webL10n.ready(function() {
+  $(function() {
     var music_library, music_library_action, stop;
     music_library = cs.music_library;
     stop = false;
     music_library_action = document.querySelector('cs-music-library-action');
-    return Polymer('cs-music-library-grouped', {
-      list: [],
-      grouped_field: '',
+    return Polymer({
+      'is': 'cs-music-library-grouped',
+      behaviors: [Polymer.cs.behaviors.Screen],
+      properties: {
+        list: [],
+        grouped_field: ''
+      },
       update: function(group_field, all) {
         var _unknown, count, get_next_item, index, list;
         this.grouped_field = group_field;
@@ -24,7 +28,7 @@
         index = 0;
         list = {};
         count = all.length;
-        _unknown = _('unknown');
+        _unknown = __('unknown');
         get_next_item = (function(_this) {
           return function() {
             var final_list, key, unknown, value;
@@ -59,7 +63,7 @@
                 final_list.push({
                   field: group_field,
                   value: value.property,
-                  items: JSON.stringify(value.ids),
+                  items: value.ids,
                   count: value.ids.length
                 });
               }
@@ -67,7 +71,7 @@
                 final_list.push({
                   field: group_field,
                   value: _unknown,
-                  items: JSON.stringify(unknown.ids),
+                  items: unknown.ids,
                   count: unknown.ids.length
                 });
               }
@@ -89,12 +93,7 @@
         return get_next_item();
       },
       choose_action: function(e) {
-        var target;
-        target = e.target;
-        if (target.tagName === 'SPAN') {
-          target = target.parentNode;
-        }
-        music_library_action.update(JSON.parse(target.dataset.items));
+        music_library_action.update(e.model.item.items);
         return this.go_to_screen('library-action');
       },
       back: function() {
